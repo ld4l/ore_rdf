@@ -16,7 +16,7 @@ describe 'LD4L::OreRDF::Proxy' do
 
     it "should append to base URI when setting to non-URI subject" do
       subject.set_subject! '123'
-      expect(subject.rdf_subject).to eq RDF::URI("#{LD4L::OreRDF::Proxy.base_uri}#{LD4L::OreRDF::Proxy.id_prefix}123")
+      expect(subject.rdf_subject).to eq RDF::URI("#{LD4L::OreRDF::Proxy.base_uri}123")
     end
 
     describe 'when changing subject' do
@@ -57,67 +57,87 @@ describe 'LD4L::OreRDF::Proxy' do
   # -------------------------------------------------
 
   describe 'type' do
-    it "should default to an unordered collection" do
-      expect(subject.type.first.rdf_subject).to eq RDFVocabularies::ORE.Proxy
+    it "should be an RDFVocabularies::ORE.Proxy" do
+      expect(subject.type.first.value).to eq RDFVocabularies::ORE.Proxy.value
     end
   end
 
-  describe 'proxyFor' do
+  describe 'proxy_for' do
     it "should be empty array if we haven't set it" do
-      expect(subject.proxyFor).to match_array([])
+      expect(subject.proxy_for).to match_array([])
     end
 
     it "should be settable" do
-      subject.proxyFor = RDF::URI("http://example.org/b1")
-      expect(subject.proxyFor.first.rdf_subject).to eq RDF::URI("http://example.org/b1")
+      subject.proxy_for = RDF::URI("http://example.org/b1")
+      expect(subject.proxy_for.first.rdf_subject).to eq RDF::URI("http://example.org/b1")
     end
 
     it "should be changeable" do
       orig_proxy_for = RDF::URI("http://example.org/b1")
       new_proxy_for  = RDF::URI("http://example.org/b1_NEW")
-      subject.proxyFor = orig_proxy_for
-      subject.proxyFor = new_proxy_for
-      expect(subject.proxyFor.first.rdf_subject).to eq new_proxy_for
+      subject.proxy_for = orig_proxy_for
+      subject.proxy_for = new_proxy_for
+      expect(subject.proxy_for.first.rdf_subject).to eq new_proxy_for
     end
   end
 
-  describe 'proxyIn' do
+  describe 'proxy_in' do
     it "should be empty array if we haven't set it" do
-      expect(subject.proxyIn).to match_array([])
+      expect(subject.proxy_in).to match_array([])
     end
 
     it "should be settable" do
-      a_virtual_collection = LD4L::OreRDF::Aggregation.new('1')
-      subject.proxyIn = a_virtual_collection
-      expect(subject.proxyIn.first).to eq a_virtual_collection
+      an_aggregation = LD4L::OreRDF::Aggregation.new('1')
+      subject.proxy_in = an_aggregation
+      expect(subject.proxy_in.first).to eq an_aggregation
     end
 
     it "should be changeable" do
-      orig_virtual_collection = LD4L::OreRDF::Aggregation.new('1')
-      new_virtual_collection = LD4L::OreRDF::Aggregation.new('2')
-      subject.proxyIn = orig_virtual_collection
-      subject.proxyIn = new_virtual_collection
-      expect(subject.proxyIn.first).to eq new_virtual_collection
+      orig_aggregation = LD4L::OreRDF::Aggregation.new('1')
+      new_aggregation = LD4L::OreRDF::Aggregation.new('2')
+      subject.proxy_in = orig_aggregation
+      subject.proxy_in = new_aggregation
+      expect(subject.proxy_in.first).to eq new_aggregation
     end
   end
 
-  describe 'next' do
+  describe 'next_proxy' do
     it "should be empty array if we haven't set it" do
-      expect(subject.next).to match_array([])
+      expect(subject.next_proxy).to match_array([])
     end
 
     it "should be settable" do
-      a_virtual_collection_item = LD4L::OreRDF::Proxy.new('1')
-      subject.next = a_virtual_collection_item
-      expect(subject.next.first).to eq a_virtual_collection_item
+      an_proxy = LD4L::OreRDF::Proxy.new('1')
+      subject.next_proxy = an_proxy
+      expect(subject.next_proxy.first).to eq an_proxy
     end
 
     it "should be changeable" do
-      orig_virtual_collection_item = LD4L::OreRDF::Proxy.new('1')
-      new_virtual_collection_item = LD4L::OreRDF::Proxy.new('2')
-      subject.next = orig_virtual_collection_item
-      subject.next = new_virtual_collection_item
-      expect(subject.next.first).to eq new_virtual_collection_item
+      orig_proxy = LD4L::OreRDF::Proxy.new('1')
+      new_proxy = LD4L::OreRDF::Proxy.new('2')
+      subject.next_proxy = orig_proxy
+      subject.next_proxy = new_proxy
+      expect(subject.next_proxy.first).to eq new_proxy
+    end
+  end
+
+  describe 'prev_proxy' do
+    it "should be empty array if we haven't set it" do
+      expect(subject.prev_proxy).to match_array([])
+    end
+
+    it "should be settable" do
+      an_proxy = LD4L::OreRDF::Proxy.new('1')
+      subject.prev_proxy = an_proxy
+      expect(subject.prev_proxy.first).to eq an_proxy
+    end
+
+    it "should be changeable" do
+      orig_proxy = LD4L::OreRDF::Proxy.new('1')
+      new_proxy = LD4L::OreRDF::Proxy.new('2')
+      subject.prev_proxy = orig_proxy
+      subject.prev_proxy = new_proxy
+      expect(subject.prev_proxy.first).to eq new_proxy
     end
   end
 
@@ -154,26 +174,26 @@ describe 'LD4L::OreRDF::Proxy' do
     it "should create a LD4L::OreRDF::Proxy instance" do
       vc  = LD4L::OreRDF::Aggregation.new
       vci = LD4L::OreRDF::Proxy.create(content:   RDF::URI("http://example.org/individual/b1"),
-                                                      virtual_collection: vc)
-      expect(vci).to be_a(LD4L::OreRDF::Proxy)
+                                                      aggregation: vc)
+      expect(vci).to be_kind_of LD4L::OreRDF::Proxy
     end
 
     context "when id is not passed in" do
       it "should generate an id with random ending" do
         vc  = LD4L::OreRDF::Aggregation.new
         vci = LD4L::OreRDF::Proxy.create(content:   RDF::URI("http://example.org/individual/b1"),
-                                                        virtual_collection: vc)
-        expect(vci.rdf_subject.to_s).to start_with "#{LD4L::OreRDF::Proxy.base_uri}#{LD4L::OreRDF::Proxy.id_prefix}"
+                                                        aggregation: vc)
+        expect(vci.rdf_subject.to_s).to start_with "#{LD4L::OreRDF::Proxy.base_uri}#{LD4L::OreRDF::Proxy.localname_prefix}"
       end
 
       it "should set property values" do
         vc  = LD4L::OreRDF::Aggregation.new
         vci = LD4L::OreRDF::Proxy.create(content:   RDF::URI("http://example.org/individual/b1"),
-                                                        virtual_collection: vc)
-        expect(vci.proxyFor.first.rdf_subject.to_s).to eq "http://example.org/individual/b1"
-        expect(vci.proxyIn.first).to eq vc
-        expect(vci.next).to eq []
-        expect(vci.previous).to eq []
+                                                        aggregation: vc)
+        expect(vci.proxy_for.first.rdf_subject.to_s).to eq "http://example.org/individual/b1"
+        expect(vci.proxy_in.first).to eq vc
+        expect(vci.next_proxy).to eq []
+        expect(vci.prev_proxy).to eq []
         # expect(vci.contentContent.first.rdf_subject.to_s).to eq "http://example.org/individual/b1"
         # expect(vci.index).to eq []
         # expect(vci.nextItem).to eq []
@@ -187,19 +207,19 @@ describe 'LD4L::OreRDF::Proxy' do
         vc  = LD4L::OreRDF::Aggregation.new
         vci = LD4L::OreRDF::Proxy.create(id:     "123",
                                                        content: RDF::URI("http://example.org/individual/b1"),
-                                                        virtual_collection: vc)
-        expect(vci.rdf_subject.to_s).to eq "#{LD4L::OreRDF::Proxy.base_uri}#{LD4L::OreRDF::Proxy.id_prefix}123"
+                                                        aggregation: vc)
+        expect(vci.rdf_subject.to_s).to eq "#{LD4L::OreRDF::Proxy.base_uri}/123"
       end
 
       it "should set property values" do
         vc  = LD4L::OreRDF::Aggregation.new
         vci = LD4L::OreRDF::Proxy.create(id:      "123",
                                                         content: RDF::URI("http://example.org/individual/b1"),
-                                                        virtual_collection: vc)
-        expect(vci.proxyFor.first.rdf_subject.to_s).to eq "http://example.org/individual/b1"
-        expect(vci.proxyIn.first).to eq vc
-        expect(vci.next).to eq []
-        expect(vci.previous).to eq []
+                                                        aggregation: vc)
+        expect(vci.proxy_for.first.rdf_subject.to_s).to eq "http://example.org/individual/b1"
+        expect(vci.proxy_in.first).to eq vc
+        expect(vci.next_proxy).to eq []
+        expect(vci.prev_proxy).to eq []
         # expect(vci.contentContent.first.rdf_subject.to_s).to eq "http://example.org/individual/b1"
         # expect(vci.index).to eq []
         # expect(vci.nextItem).to eq []
@@ -213,7 +233,7 @@ describe 'LD4L::OreRDF::Proxy' do
         vc  = LD4L::OreRDF::Aggregation.new
         vci = LD4L::OreRDF::Proxy.create(id:      "http://example.org/individual/vc123",
                                                         content: RDF::URI("http://example.org/individual/b1"),
-                                                        virtual_collection: vc)
+                                                        aggregation: vc)
         expect(vci.rdf_subject.to_s).to eq "http://example.org/individual/vc123"
       end
 
@@ -221,11 +241,11 @@ describe 'LD4L::OreRDF::Proxy' do
         vc  = LD4L::OreRDF::Aggregation.new
         vci = LD4L::OreRDF::Proxy.create(id:      "http://example.org/individual/vc123",
                                                         content: RDF::URI("http://example.org/individual/b1"),
-                                                        virtual_collection: vc)
-        expect(vci.proxyFor.first.rdf_subject.to_s).to eq "http://example.org/individual/b1"
-        expect(vci.proxyIn.first).to eq vc
-        expect(vci.next).to eq []
-        expect(vci.previous).to eq []
+                                                        aggregation: vc)
+        expect(vci.proxy_for.first.rdf_subject.to_s).to eq "http://example.org/individual/b1"
+        expect(vci.proxy_in.first).to eq vc
+        expect(vci.next_proxy).to eq []
+        expect(vci.prev_proxy).to eq []
         # expect(vci.itemContent.first.rdf_subject.to_s).to eq "http://example.org/individual/b1"
         # expect(vci.index).to eq []
         # expect(vci.nextItem).to eq []
@@ -350,10 +370,10 @@ describe 'LD4L::OreRDF::Proxy' do
           vci_array = LD4L::OreRDF::Proxy.get_range(vc)
           vci_array.each do |vci|
             expect(vci).to be_a(LD4L::OreRDF::Proxy)
-            expect(vci.proxyIn.first).to eq vc
+            expect(vci.proxy_in.first).to eq vc
           end
           results = []
-          vci_array.each { |vci| results << vci.proxyFor.first }
+          vci_array.each { |vci| results << vci.proxy_for.first }
           expect(results).to include ActiveTriples::Resource.new(RDF::URI("http://example.org/individual/b1"))
           expect(results).to include ActiveTriples::Resource.new(RDF::URI("http://example.org/individual/b2"))
           expect(results).to include ActiveTriples::Resource.new(RDF::URI("http://example.org/individual/b3"))
@@ -453,9 +473,9 @@ describe 'LD4L::OreRDF::Proxy' do
           allow(subject.class).to receive(:repository).and_return(nil)
           allow(subject).to receive(:repository).and_return(@repo)
           subject.contributor = "John Smith"
-          a_virtual_collection = LD4L::OreRDF::Aggregation.new('1')
-          subject.proxyIn = a_virtual_collection
-          subject.proxyFor = RDF::URI("http://example.org/b1")
+          an_aggregation = LD4L::OreRDF::Aggregation.new('1')
+          subject.proxy_in = an_aggregation
+          subject.proxy_for = RDF::URI("http://example.org/b1")
           subject.persist!
         end
 
@@ -467,8 +487,8 @@ describe 'LD4L::OreRDF::Proxy' do
           subject.reload
           expect(subject.contributor).to eq ["John Smith"]
           subject.contributor = []
-          subject.proxyIn = []
-          subject.proxyFor = []
+          subject.proxy_in = []
+          subject.proxy_for = []
           expect(subject.contributor).to eq []
           subject.persist!
           subject.reload
@@ -479,7 +499,7 @@ describe 'LD4L::OreRDF::Proxy' do
 
       context "and the item is created by create method" do
 
-        subject { LD4L::OreRDF::Proxy.create(id: "123", virtual_collection: LD4L::OreRDF::Aggregation.new('1'), content: RDF::URI("http://example.org/b1"), contributor: "John Smith")}
+        subject { LD4L::OreRDF::Proxy.create(id: "123", aggregation: LD4L::OreRDF::Aggregation.new('1'), content: RDF::URI("http://example.org/b1"), contributor: "John Smith")}
 
         before do
           # Create inmemory repository
@@ -497,8 +517,8 @@ describe 'LD4L::OreRDF::Proxy' do
           subject.reload
           expect(subject.contributor).to eq ["John Smith"]
           subject.contributor = []
-          subject.proxyIn = []
-          subject.proxyFor = []
+          subject.proxy_in = []
+          subject.proxy_for = []
           expect(subject.contributor).to eq []
           subject.persist!
           subject.reload
@@ -552,7 +572,7 @@ describe 'LD4L::OreRDF::Proxy' do
   describe 'attributes' do
     before do
       subject.contributor = contributor
-      subject.proxyFor = 'Dummy Proxy'
+      subject.proxy_for = 'Dummy Proxy'
     end
 
     subject {LD4L::OreRDF::Proxy.new("123")}
@@ -564,7 +584,7 @@ describe 'LD4L::OreRDF::Proxy' do
     end
 
     it 'should contain data' do
-      expect(subject.attributes['proxyFor']).to eq ['Dummy Proxy']
+      expect(subject.attributes['proxy_for']).to eq ['Dummy Proxy']
     end
 
     it 'should contain child objects' do
@@ -611,8 +631,8 @@ describe 'LD4L::OreRDF::Proxy' do
 
   describe 'property methods' do
     it 'should set and get properties' do
-      subject.proxyFor = 'Comet in Moominland'
-      expect(subject.proxyFor).to eq ['Comet in Moominland']
+      subject.proxy_for = 'Comet in Moominland'
+      expect(subject.proxy_for).to eq ['Comet in Moominland']
     end
   end
 
@@ -641,7 +661,7 @@ describe 'LD4L::OreRDF::Proxy' do
     end
 
     it 'should return the default label as URI when no title property exists' do
-      expect(subject.rdf_label).to eq [RDF::URI("#{LD4L::OreRDF::Proxy.base_uri}#{LD4L::OreRDF::Proxy.id_prefix}123")]
+      expect(subject.rdf_label).to eq [RDF::URI("#{LD4L::OreRDF::Proxy.base_uri}#{LD4L::OreRDF::Proxy.localname_prefix}123")]
     end
 
     it 'should prioritize configured label values' do
@@ -666,13 +686,13 @@ describe 'LD4L::OreRDF::Proxy' do
   describe 'editing the graph' do
     it 'should write properties when statements are added' do
       subject << RDF::Statement.new(subject.rdf_subject, RDFVocabularies::ORE.proxyFor, 'Comet in Moominland')
-      expect(subject.proxyFor).to include 'Comet in Moominland'
+      expect(subject.proxy_for).to include 'Comet in Moominland'
     end
 
     it 'should delete properties when statements are removed' do
       subject << RDF::Statement.new(subject.rdf_subject, RDFVocabularies::ORE.proxyFor, 'Comet in Moominland')
       subject.delete RDF::Statement.new(subject.rdf_subject, RDFVocabularies::ORE.proxyFor, 'Comet in Moominland')
-      expect(subject.proxyFor).to eq []
+      expect(subject.proxy_for).to eq []
     end
   end
 
@@ -680,7 +700,7 @@ describe 'LD4L::OreRDF::Proxy' do
     before do
       class DummyPerson < ActiveTriples::Resource
         configure :type => RDF::URI('http://example.org/Person')
-        property :name, :predicate => RDF::FOAF.name
+        property :foafname, :predicate => RDF::FOAF.name
         property :publications, :predicate => RDF::FOAF.publications, :class_name => 'DummyDocument'
         property :knows, :predicate => RDF::FOAF.knows, :class_name => DummyPerson
       end
@@ -710,13 +730,13 @@ describe 'LD4L::OreRDF::Proxy' do
 
     let (:person1) do
       p = DummyPerson.new
-      p.name = 'Alice'
+      p.foafname = 'Alice'
       p
     end
 
     let (:person2) do
       p = DummyPerson.new
-      p.name = 'Bob'
+      p.foafname = 'Bob'
       p
     end
 
@@ -745,7 +765,7 @@ END
       document2.creator = person1
       person1.knows = person2
       subject.item = [document1]
-      expect(subject.item.first.creator.first.knows.first.name).to eq ['Bob']
+      expect(subject.item.first.creator.first.knows.first.foafname).to eq ['Bob']
     end
   end
 end

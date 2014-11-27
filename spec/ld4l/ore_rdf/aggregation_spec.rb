@@ -283,8 +283,8 @@ describe 'LD4L::OreRDF::Aggregation' do
 
     it "should generate the item instance for a single item" do
       vci = subject.add_item_with_content(RDF::URI("http://example.org/individual/b1"))
-      expect(vci.proxyFor.first.rdf_subject).to eq RDF::URI("http://example.org/individual/b1")
-      expect(vci.proxyIn.first).to eq subject
+      expect(vci.proxy_for.first.rdf_subject).to eq RDF::URI("http://example.org/individual/b1")
+      expect(vci.proxy_in.first).to eq subject
     end
   end
 
@@ -334,11 +334,11 @@ describe 'LD4L::OreRDF::Aggregation' do
                                                   RDF::URI("http://example.org/individual/b3")])
       vci_array.each do |vci|
         expect(vci).to be_a(LD4L::OreRDF::Proxy)
-        expect(vci.proxyIn.first).to eq subject
+        expect(vci.proxy_in.first).to eq subject
       end
       results = []
       vci_array.each do |vci|
-        results << vci.proxyFor.first
+        results << vci.proxy_for.first
       end
       expect(results).to include ActiveTriples::Resource.new(RDF::URI("http://example.org/individual/b1"))
       expect(results).to include ActiveTriples::Resource.new(RDF::URI("http://example.org/individual/b2"))
@@ -472,10 +472,10 @@ describe 'LD4L::OreRDF::Aggregation' do
           vci_array = subject.get_items
           vci_array.each do |vci|
             expect(vci).to be_a(LD4L::OreRDF::Proxy)
-            expect(vci.proxyIn.first).to eq subject
+            expect(vci.proxy_in.first).to eq subject
           end
           results = []
-          vci_array.each { |vci| results << vci.proxyFor.first }
+          vci_array.each { |vci| results << vci.proxy_for.first }
           expect(results).to include ActiveTriples::Resource.new(RDF::URI("http://example.org/individual/b1"))
           expect(results).to include ActiveTriples::Resource.new(RDF::URI("http://example.org/individual/b2"))
           expect(results).to include ActiveTriples::Resource.new(RDF::URI("http://example.org/individual/b3"))
@@ -854,7 +854,7 @@ describe 'LD4L::OreRDF::Aggregation' do
     before do
       class DummyPerson < ActiveTriples::Resource
         configure :type => RDF::URI('http://example.org/Person')
-        property :name, :predicate => RDF::FOAF.name
+        property :foafname, :predicate => RDF::FOAF.name
         property :publications, :predicate => RDF::FOAF.publications, :class_name => 'DummyDocument'
         property :knows, :predicate => RDF::FOAF.knows, :class_name => DummyPerson
       end
@@ -884,13 +884,13 @@ describe 'LD4L::OreRDF::Aggregation' do
 
     let (:person1) do
       p = DummyPerson.new
-      p.name = 'Alice'
+      p.foafname = 'Alice'
       p
     end
 
     let (:person2) do
       p = DummyPerson.new
-      p.name = 'Bob'
+      p.foafname = 'Bob'
       p
     end
 
@@ -919,7 +919,7 @@ END
       document2.creator = person1
       person1.knows = person2
       subject.item = [document1]
-      expect(subject.item.first.creator.first.knows.first.name).to eq ['Bob']
+      expect(subject.item.first.creator.first.knows.first.foafname).to eq ['Bob']
     end
   end
 end

@@ -1,7 +1,12 @@
 require 'rdf'
 require 'active_triples'
+require 'active_triples/local_name'
 require	'linkeddata'
+require 'ld4l/foaf_rdf'
 require 'ld4l/ore_rdf/version'
+require 'ld4l/ore_rdf/vocab/ore'
+require 'ld4l/ore_rdf/vocab/iana'
+require 'ld4l/ore_rdf/vocab/dcterms'
 
 module LD4L
   module OreRDF

@@ -1,13 +1,9 @@
-require 'ld4l/ore_rdf/vocab/ore'
-require 'ld4l/ore_rdf/vocab/iana'
-require 'ld4l/foaf_rdf'
-require 'rdf'
-
 module LD4L
   module OreRDF
     class Proxy < ActiveTriples::Resource
 
-      @id_prefix="vci"
+      class << self; attr_reader :localname_prefix end
+      @localname_prefix="px"
 
       ORE_UNORDERED_LIST_ITEM_TYPE = RDFVocabularies::ORE.Proxy
       ORE_ORDERED_LIST_ITEM_TYPE   = RDFVocabularies::ORE.Proxy
@@ -19,7 +15,7 @@ module LD4L
       configure :type => RDFVocabularies::ORE.Proxy, :base_uri => LD4L::OreRDF.configuration.base_uri, :repository => :default
 
       # common properties
-      property :type,          :predicate => RDF::type             # multiple: CO.Element, CO.ListItem, ORE.Proxy
+      # property :type,          :predicate => RDF::type             # multiple: CO.Element, CO.ListItem, ORE.Proxy
       property :contributor,   :predicate => RDF::DC.contributor,            :class_name => LD4L::FoafRDF::Person   # TODO User who added this item to the Virtual Collection (default=Virtual Collection's owner)
 
       # # properties from CO.Element
@@ -31,10 +27,10 @@ module LD4L
       # property :previousItem,  :predicate => RDFVocabularies::CO.nextItem,   :class_name => LD4L::OreRDF::Proxy
 
       # properties from ORE.Proxy
-      property :proxyFor,      :predicate => RDFVocabularies::ORE.proxyFor
-      property :proxyIn,       :predicate => RDFVocabularies::ORE.proxyIn,   :class_name => LD4L::OreRDF::Aggregation
-      property :next,          :predicate => RDFVocabularies::IANA.next,     :class_name => LD4L::OreRDF::Proxy
-      property :prev,          :predicate => RDFVocabularies::IANA.prev,     :class_name => LD4L::OreRDF::Proxy
+      property :proxy_for,     :predicate => RDFVocabularies::ORE.proxyFor
+      property :proxy_in,      :predicate => RDFVocabularies::ORE.proxyIn,   :class_name => LD4L::OreRDF::Aggregation
+      property :next_proxy,    :predicate => RDFVocabularies::IANA.next,     :class_name => LD4L::OreRDF::Proxy
+      property :prev_proxy,    :predicate => RDFVocabularies::IANA.prev,     :class_name => LD4L::OreRDF::Proxy
 
 
       # --------------------- #
@@ -45,8 +41,8 @@ module LD4L
       #   options:
       #     id                 (optional) - used to assign RDFSubject
       #                - full URI   - used as passed in
-      #                - partial id - uri generated from base_uri + id_prefix + id
-      #                - nil        - uri generated from base_uri + id_prefix + random_number
+      #                - partial id - uri generated from base_uri + localname_prefix + id
+      #                - nil        - uri generated from base_uri + localname_prefix + minted localname
       #     aggregation        (required) - aggregation to which item is being added
       #     content            (required) - content for the item being added to the collection
       #     insert_position    (optional) - used for ordered lists to place an item at a specific location (default - appends)
@@ -60,12 +56,12 @@ module LD4L
         aggregation = options[:aggregation] || nil
         raise ArgumentError, "aggregation is not LD4L::OreRDF::Aggregation" unless aggregation.kind_of?(LD4L::OreRDF::Aggregation)
 
-        id  = options[:id] || generate_id
+        id  = options[:id] || ActiveTriples::LocalName::Minter.generate_local_name(LD4L::OreRDF::Proxy,10,self.localname_prefix)  # TODO pass in localname_prefix for Aggregation class
         vci = LD4L::OreRDF::Proxy.new(id)
 
         # set ORE ontology properties
-        vci.proxyFor    = content
-        vci.proxyIn     = aggregation.kind_of?(String) ? RDF::URI(aggregation) : aggregation
+        vci.proxy_for    = content
+        vci.proxy_in     = aggregation.kind_of?(String) ? RDF::URI(aggregation) : aggregation
 
         # # set Collections ontology properties
         # vci.itemContent = content
@@ -94,7 +90,7 @@ module LD4L
         # TODO: Stubbed to return all items.  Need to implement start and limit features.
         r = ActiveTriples::Repositories.repositories[LD4L::OreRDF::Proxy.repository]
         vci_array = []
-        r.query(:predicate => RDFVocabularies::ORE.proxyIn,
+        r.query(:predicate => RDFVocabularies::ORE.proxy_in,
                 :object => aggregation.rdf_subject).statements.each do |s|
           vci = LD4L::OreRDF::Proxy.new(s.subject)
           vci_array << vci

@@ -1,15 +1,9 @@
-require 'ld4l/ore_rdf/vocab/ore'
-require 'ld4l/ore_rdf/vocab/iana'
-require 'ld4l/ore_rdf/vocab/dcterms'
-require 'ld4l/foaf_rdf'
-require 'rdf'
-require 'active_triples/local_name_minter'
-
 module LD4L
   module OreRDF
     class Aggregation < ActiveTriples::Resource
 
-      @id_prefix="vc"
+      class << self; attr_reader :localname_prefix end
+      @localname_prefix="ag"
 
       # TODO... Can we change type from Set to List to go from unordered list to ordered list?
       # TODO    Should properties for ordered lists be blocked until the list is turned into an ordered list?
@@ -44,8 +38,8 @@ module LD4L
 
       # properties from ORE.Aggregation
       property :aggregates,   :predicate => RDFVocabularies::ORE.aggregates   # multiple values
-      property :first,        :predicate => RDFVocabularies::IANA.first,     :class_name => LD4L::OreRDF::Proxy
-      property :last,         :predicate => RDFVocabularies::IANA.last,      :class_name => LD4L::OreRDF::Proxy
+      property :first_proxy,  :predicate => RDFVocabularies::IANA.first,     :class_name => LD4L::OreRDF::Proxy
+      property :last_proxy,   :predicate => RDFVocabularies::IANA.last,      :class_name => LD4L::OreRDF::Proxy
 
 
       # --------------------- #
@@ -54,7 +48,7 @@ module LD4L
 
       # Create an ore aggregation in one step passing in the required information.
       def self.create( options = {} )
-        id             = options[:id]          || ActiveTriples::LocalNameMinter.generate_local_name(LD4L::OreRDF::Aggregation)
+        id             = options[:id]          || ActiveTriples::LocalName::Minter.generate_local_name(LD4L::OreRDF::Aggregation)  # TODO pass in localname_prefix for Aggregation class
         vc = LD4L::OreRDF::Aggregation.new(id)
         vc.title       = options[:title]       || []
         vc.description = options[:description] || []
