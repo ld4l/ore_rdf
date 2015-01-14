@@ -1,5 +1,12 @@
 #LD4L::OreRDF
 
+[![Build Status](https://travis-ci.org/ld4l/ore_rdf.png?branch=setup_badges)](https://travis-ci.org/ld4l/ore_rdf) 
+[![Coverage Status](https://coveralls.io/repos/ld4l/ore_rdf/badge.png?branch=setup_badges)](https://coveralls.io/r/ld4l/ore_rdf?branch=setup_badges)
+[![Gem Version](https://badge.fury.io/rb/ld4l-ore_rdf.svg)](http://badge.fury.io/rb/ld4l-ore_rdf)
+[![Dependency Status](https://www.versioneye.com/ruby/ld4l-ore_rdf/0.0.3/badge.svg)](https://www.versioneye.com/ruby/ld4l-ore_rdf/0.0.3)
+
+
+
 LD4L ORE RDF provides tools for modeling list triples based on the ORE ontology and persisting to a triplestore.
 
 
@@ -31,8 +38,35 @@ code will work in a usable way outside of its use in LD4L Use Cases.
 
 ### Examples
 
-TBA
+*Setup required for all examples.*
+```
+require 'ld4l/ore_rdf'
 
+# create an in-memory repository
+ActiveTriples::Repositories.add_repository :default, RDF::Repository.new
+
+p = LD4L::FoafRDF::Person.new('p4')
+```
+
+# Example: Aggregation with items individually
+```
+agg10 = LD4L::OreRDF::Aggregation.create( :id=>'agg10', :title=>'My Resources', :description=>'Resources that I like', :owner=>p )
+agg10.add_item_with_content('http://exmple.org/resource_1')
+agg10.add_item_with_content('http://exmple.org/resource_2')
+agg10.add_item_with_content('http://exmple.org/resource_3')
+
+puts agg10.dump :ttl
+```
+
+# Example: Aggregation with items as array
+```
+agg11 = LD4L::OreRDF::Aggregation.create( :id=>'agg11', :title=>'More Resources', :description=>'More resources that I like', :owner=>p )
+
+items = [ 'http://exmple.org/resource_5', 'http://exmple.org/resource_6', 'http://exmple.org/resource_7' ]
+agg11.add_items_with_content(items)
+
+puts agg11.dump :ttl
+```
 
 ### Configurations
 
