@@ -48,7 +48,7 @@ ActiveTriples::Repositories.add_repository :default, RDF::Repository.new
 p = LD4L::FoafRDF::Person.new('p4')
 ```
 
-# Example: Aggregation with items individually
+#### Example: Aggregation with items individually
 ```
 agg10 = LD4L::OreRDF::Aggregation.create( :id=>'agg10', :title=>'My Resources', :description=>'Resources that I like', :owner=>p )
 agg10.add_item_with_content('http://exmple.org/resource_1')
@@ -58,7 +58,7 @@ agg10.add_item_with_content('http://exmple.org/resource_3')
 puts agg10.dump :ttl
 ```
 
-# Example: Aggregation with items as array
+#### Example: Aggregation with items as array
 ```
 agg11 = LD4L::OreRDF::Aggregation.create( :id=>'agg11', :title=>'More Resources', :description=>'More resources that I like', :owner=>p )
 
