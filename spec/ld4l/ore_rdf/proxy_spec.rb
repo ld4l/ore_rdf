@@ -256,21 +256,21 @@ describe 'LD4L::OreRDF::Proxy' do
 
     context "when collection is unordered" do
       context "and insert_position is missing" do
-        it "should add item without setting ordered properties" do
+        xit "should add item without setting ordered properties" do
           pending "this needs to be implemented"
         end
       end
 
       context "and insert position is passed in" do
-        it "should convert the list from unordered to ordered" do
+        xit "should convert the list from unordered to ordered" do
           pending "this needs to be implemented"
         end
 
-        it "should set ordered properties for new item" do
+        xit "should set ordered properties for new item" do
           pending "this needs to be implemented"
         end
 
-        it "should not change any other items in the collection" do
+        xit "should not change any other items in the collection" do
           # TODO Is this really the behavior we want when converting from unordered to ordered?
           pending "this needs to be implemented"
         end
@@ -279,17 +279,17 @@ describe 'LD4L::OreRDF::Proxy' do
 
     context "when collection is ordered" do
       context "and insert_position is missing" do
-        it "should append item to the end of the collection" do
+        xit "should append item to the end of the collection" do
           pending "this needs to be implemented"
         end
       end
 
       context "and insert position is passed in" do
-        it "should set ordered properties for new item" do
+        xit "should set ordered properties for new item" do
           pending "this needs to be implemented"
         end
 
-        it "should not change any other items in the collection" do
+        xit "should not change any other items in the collection" do
           # TODO Is this really the behavior we want for ordered lists to be partially ordered?
           pending "this needs to be implemented"
         end
@@ -380,27 +380,27 @@ describe 'LD4L::OreRDF::Proxy' do
           expect(vci_array.size).to eq(3)
         end
 
-        it "should not return any LD4L::OreRDF::Proxy instances for content not aggregated by subject" do
+        xit "should not return any LD4L::OreRDF::Proxy instances for content not aggregated by subject" do
           pending "this needs to be implemented"
         end
       end
     end
 
     context "when limit is specified" do
-      it "should return array of LD4L::OreRDF::Proxy instances with max size=limit" do
+      xit "should return array of LD4L::OreRDF::Proxy instances with max size=limit" do
         pending "this needs to be implemented"
       end
     end
 
     context "when start is specified" do
-      it "should return array of LD4L::OreRDF::Proxy instances_beginning with item at position=start" do
+      xit "should return array of LD4L::OreRDF::Proxy instances_beginning with item at position=start" do
         # TODO: What does _start_ mean in ActiveTriples?  Does it support this kind of query?
         pending "this needs to be implemented"
       end
     end
 
     context "when start and limit are specified" do
-      it "should return an array of LD4L::OreRDF::Proxy instances with max size=limit beginning with item at position=start" do
+      xit "should return an array of LD4L::OreRDF::Proxy instances with max size=limit beginning with item at position=start" do
         pending "this needs to be implemented"
       end
     end

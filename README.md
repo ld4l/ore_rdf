@@ -105,8 +105,8 @@ The LD4L::OreRDF gem provides model definitions using the
 The listed ontologies are used to represent the primary metadata about the person.
 Other ontologies may also be used that aren't listed.
  
-TODO - Add ORE ontology;  maybe remove FOAF 
-* [FOAF](http://xmlns.com/ore/spec/)
+* [ORE](http://www.openarchives.org/ore/1.0/vocabulary)
+* [FOAF](http://xmlns.com/foaf/spec/)
 * [RDF](http://www.w3.org/TR/rdf-syntax-grammar/)
 
 

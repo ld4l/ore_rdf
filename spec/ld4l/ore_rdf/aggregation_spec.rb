@@ -399,20 +399,20 @@ describe 'LD4L::OreRDF::Aggregation' do
     end
 
     context "when limit is specified" do
-      it "should return array of content with max size=limit" do
+      xit "should return array of content with max size=limit" do
         pending "this needs to be implemented"
       end
     end
 
     context "when start is specified" do
-      it "should return array of content_beginning with item at position=start" do
+      xit "should return array of content_beginning with item at position=start" do
         # TODO: What does _start_ mean in ActiveTriples?  Does it support this kind of query?
         pending "this needs to be implemented"
       end
     end
 
     context "when start and limit are specified" do
-      it "should return an array of content with max size=limit beginning with item at position=start" do
+      xit "should return an array of content with max size=limit beginning with item at position=start" do
         pending "this needs to be implemented"
       end
     end
@@ -482,58 +482,58 @@ describe 'LD4L::OreRDF::Aggregation' do
           expect(vci_array.size).to eq(3)
         end
 
-        it "should not return any LD4L::OreRDF::Proxy instances for content not aggregated by subject" do
+        xit "should not return any LD4L::OreRDF::Proxy instances for content not aggregated by subject" do
           pending "this needs to be implemented"
         end
       end
     end
 
     context "when limit is specified" do
-      it "should return array of LD4L::OreRDF::Proxy instances with max size=limit" do
+      xit "should return array of LD4L::OreRDF::Proxy instances with max size=limit" do
         pending "this needs to be implemented"
       end
     end
 
     context "when start is specified" do
-      it "should return array of LD4L::OreRDF::Proxy instances_beginning with item at position=start" do
+      xit "should return array of LD4L::OreRDF::Proxy instances_beginning with item at position=start" do
         # TODO: What does _start_ mean in ActiveTriples?  Does it support this kind of query?
         pending "this needs to be implemented"
       end
     end
 
     context "when start and limit are specified" do
-      it "should return an array of LD4L::OreRDF::Proxy instances with max size=limit beginning with item at position=start" do
+      xit "should return an array of LD4L::OreRDF::Proxy instances with max size=limit beginning with item at position=start" do
         pending "this needs to be implemented"
       end
     end
   end
 
   describe "#find_item_with_content" do
-    pending "this needs to be implemented"
+    skip "this needs to be implemented"
   end
 
   describe "#get_item_content_at" do
-    pending "this needs to be implemented"
+    skip "this needs to be implemented"
   end
 
   describe "#get_item_at" do
-    pending "this needs to be implemented"
+    skip "this needs to be implemented"
   end
 
   describe "#has_item_at?" do
-    pending "this needs to be implemented"
+    skip "this needs to be implemented"
   end
 
   describe "#has_item_content?" do
-    pending "this needs to be implemented"
+    skip "this needs to be implemented"
   end
 
   describe "#remove_item_with_content" do
-    pending "this needs to be implemented"
+    skip "this needs to be implemented"
   end
 
   describe "#is_ordered?" do
-    pending "this needs to be implemented"
+    skip "this needs to be implemented"
   end
 
   # ---------------------------------------------------
