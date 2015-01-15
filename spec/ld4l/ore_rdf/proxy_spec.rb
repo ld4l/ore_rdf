@@ -173,23 +173,28 @@ describe 'LD4L::OreRDF::Proxy' do
   describe "#create" do
     it "should create a LD4L::OreRDF::Proxy instance" do
       vc  = LD4L::OreRDF::Aggregation.new
-      vci = LD4L::OreRDF::Proxy.create(content:   RDF::URI("http://example.org/individual/b1"),
-                                                      aggregation: vc)
+      vci = LD4L::OreRDF::Proxy.create(content:     RDF::URI("http://example.org/individual/b1"),
+                                       aggregation: vc)
       expect(vci).to be_kind_of LD4L::OreRDF::Proxy
     end
 
     context "when id is not passed in" do
       it "should generate an id with random ending" do
         vc  = LD4L::OreRDF::Aggregation.new
-        vci = LD4L::OreRDF::Proxy.create(content:   RDF::URI("http://example.org/individual/b1"),
-                                                        aggregation: vc)
-        expect(vci.rdf_subject.to_s).to start_with "#{LD4L::OreRDF::Proxy.base_uri}#{LD4L::OreRDF::Proxy.localname_prefix}"
+        vci = LD4L::OreRDF::Proxy.create(content:     RDF::URI("http://example.org/individual/b1"),
+                                         aggregation: vc)
+        uri = vci.rdf_subject.to_s
+        expect(uri).to start_with "#{LD4L::OreRDF::Proxy.base_uri}#{LD4L::OreRDF::Proxy.localname_prefix}"
+        id = uri[uri.length-36..uri.length]
+        expect(id).to be_kind_of String
+        expect(id.length).to eq 36
+        expect(id).to match /[a-zA-Z0-9]{8}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{12}/
       end
 
       it "should set property values" do
         vc  = LD4L::OreRDF::Aggregation.new
-        vci = LD4L::OreRDF::Proxy.create(content:   RDF::URI("http://example.org/individual/b1"),
-                                                        aggregation: vc)
+        vci = LD4L::OreRDF::Proxy.create(content:     RDF::URI("http://example.org/individual/b1"),
+                                         aggregation: vc)
         expect(vci.proxy_for.first.rdf_subject.to_s).to eq "http://example.org/individual/b1"
         expect(vci.proxy_in.first).to eq vc
         expect(vci.next_proxy).to eq []
@@ -205,17 +210,17 @@ describe 'LD4L::OreRDF::Proxy' do
     context "when partial id is passed in" do
       it "should generate an id ending with partial id" do
         vc  = LD4L::OreRDF::Aggregation.new
-        vci = LD4L::OreRDF::Proxy.create(id:     "123",
-                                                       content: RDF::URI("http://example.org/individual/b1"),
-                                                        aggregation: vc)
-        expect(vci.rdf_subject.to_s).to eq "#{LD4L::OreRDF::Proxy.base_uri}/123"
+        vci = LD4L::OreRDF::Proxy.create(id:          "123",
+                                         content:     RDF::URI("http://example.org/individual/b1"),
+                                         aggregation: vc)
+        expect(vci.rdf_subject.to_s).to eq "#{LD4L::OreRDF::Proxy.base_uri}123"
       end
 
       it "should set property values" do
         vc  = LD4L::OreRDF::Aggregation.new
-        vci = LD4L::OreRDF::Proxy.create(id:      "123",
-                                                        content: RDF::URI("http://example.org/individual/b1"),
-                                                        aggregation: vc)
+        vci = LD4L::OreRDF::Proxy.create(id:          "123",
+                                         content:     RDF::URI("http://example.org/individual/b1"),
+                                         aggregation: vc)
         expect(vci.proxy_for.first.rdf_subject.to_s).to eq "http://example.org/individual/b1"
         expect(vci.proxy_in.first).to eq vc
         expect(vci.next_proxy).to eq []
@@ -231,17 +236,17 @@ describe 'LD4L::OreRDF::Proxy' do
     context "when URI id is passed in" do
       it "should use passed in id" do
         vc  = LD4L::OreRDF::Aggregation.new
-        vci = LD4L::OreRDF::Proxy.create(id:      "http://example.org/individual/vc123",
-                                                        content: RDF::URI("http://example.org/individual/b1"),
-                                                        aggregation: vc)
+        vci = LD4L::OreRDF::Proxy.create(id:          "http://example.org/individual/vc123",
+                                         content:     RDF::URI("http://example.org/individual/b1"),
+                                         aggregation: vc)
         expect(vci.rdf_subject.to_s).to eq "http://example.org/individual/vc123"
       end
 
       it "should set property values" do
         vc  = LD4L::OreRDF::Aggregation.new
-        vci = LD4L::OreRDF::Proxy.create(id:      "http://example.org/individual/vc123",
-                                                        content: RDF::URI("http://example.org/individual/b1"),
-                                                        aggregation: vc)
+        vci = LD4L::OreRDF::Proxy.create(id:          "http://example.org/individual/vc123",
+                                         content:     RDF::URI("http://example.org/individual/b1"),
+                                         aggregation: vc)
         expect(vci.proxy_for.first.rdf_subject.to_s).to eq "http://example.org/individual/b1"
         expect(vci.proxy_in.first).to eq vc
         expect(vci.next_proxy).to eq []
@@ -661,7 +666,7 @@ describe 'LD4L::OreRDF::Proxy' do
     end
 
     it 'should return the default label as URI when no title property exists' do
-      expect(subject.rdf_label).to eq [RDF::URI("#{LD4L::OreRDF::Proxy.base_uri}#{LD4L::OreRDF::Proxy.localname_prefix}123")]
+      expect(subject.rdf_label.first).to eq "#{LD4L::OreRDF::Proxy.base_uri}123"
     end
 
     it 'should prioritize configured label values' do

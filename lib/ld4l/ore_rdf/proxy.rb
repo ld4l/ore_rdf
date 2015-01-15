@@ -56,7 +56,11 @@ module LD4L
         aggregation = options[:aggregation] || nil
         raise ArgumentError, "aggregation is not LD4L::OreRDF::Aggregation" unless aggregation.kind_of?(LD4L::OreRDF::Aggregation)
 
-        id  = options[:id] || ActiveTriples::LocalName::Minter.generate_local_name(LD4L::OreRDF::Proxy,10,self.localname_prefix)  # TODO pass in localname_prefix for Aggregation class
+        id  = options[:id] ||
+            ActiveTriples::LocalName::Minter.generate_local_name(
+                LD4L::OreRDF::Proxy, 10, { :prefix => @localname_prefix },
+                LD4L::OreRDF.configuration.localname_minter )
+
         vci = LD4L::OreRDF::Proxy.new(id)
 
         # set ORE ontology properties
@@ -88,14 +92,27 @@ module LD4L
       # TODO: How to begin at start and limit to number of returned items, effectively handling ranges of data.
       def self.get_range( aggregation, start=0, limit=nil )
         # TODO: Stubbed to return all items.  Need to implement start and limit features.
-        r = ActiveTriples::Repositories.repositories[LD4L::OreRDF::Proxy.repository]
-        vci_array = []
-        r.query(:predicate => RDFVocabularies::ORE.proxy_in,
-                :object => aggregation.rdf_subject).statements.each do |s|
-          vci = LD4L::OreRDF::Proxy.new(s.subject)
-          vci_array << vci
+
+        # argument validation
+        # raise ArgumentError, 'Argument must be a string with at least one character'  unless
+        #     tag_value.kind_of?(String) && tag_value.size > 0
+
+        graph = ActiveTriples::Repositories.repositories[repository]
+        query = RDF::Query.new({
+                                 :proxy => {
+                                   RDF.type =>  RDFVocabularies::ORE.Proxy,
+                                   RDFVocabularies::ORE.proxyIn => aggregation,
+                                 }
+                               })
+
+        proxies = []
+        results = query.execute(graph)
+        results.each do |r|
+          proxy_uri = r.to_hash[:proxy]
+          proxy = LD4L::OreRDF::Proxy.new(proxy_uri)
+          proxies << proxy
         end
-        vci_array
+        proxies
       end
     end
   end
