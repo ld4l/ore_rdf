@@ -173,23 +173,28 @@ describe 'LD4L::OreRDF::Proxy' do
   describe "#create" do
     it "should create a LD4L::OreRDF::Proxy instance" do
       vc  = LD4L::OreRDF::Aggregation.new
-      vci = LD4L::OreRDF::Proxy.create(content:   RDF::URI("http://example.org/individual/b1"),
-                                                      aggregation: vc)
+      vci = LD4L::OreRDF::Proxy.create(content:     RDF::URI("http://example.org/individual/b1"),
+                                       aggregation: vc)
       expect(vci).to be_kind_of LD4L::OreRDF::Proxy
     end
 
     context "when id is not passed in" do
       it "should generate an id with random ending" do
         vc  = LD4L::OreRDF::Aggregation.new
-        vci = LD4L::OreRDF::Proxy.create(content:   RDF::URI("http://example.org/individual/b1"),
-                                                        aggregation: vc)
-        expect(vci.rdf_subject.to_s).to start_with "#{LD4L::OreRDF::Proxy.base_uri}#{LD4L::OreRDF::Proxy.localname_prefix}"
+        vci = LD4L::OreRDF::Proxy.create(content:     RDF::URI("http://example.org/individual/b1"),
+                                         aggregation: vc)
+        uri = vci.rdf_subject.to_s
+        expect(uri).to start_with "#{LD4L::OreRDF::Proxy.base_uri}#{LD4L::OreRDF::Proxy.localname_prefix}"
+        id = uri[uri.length-36..uri.length]
+        expect(id).to be_kind_of String
+        expect(id.length).to eq 36
+        expect(id).to match /[a-zA-Z0-9]{8}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{12}/
       end
 
       it "should set property values" do
         vc  = LD4L::OreRDF::Aggregation.new
-        vci = LD4L::OreRDF::Proxy.create(content:   RDF::URI("http://example.org/individual/b1"),
-                                                        aggregation: vc)
+        vci = LD4L::OreRDF::Proxy.create(content:     RDF::URI("http://example.org/individual/b1"),
+                                         aggregation: vc)
         expect(vci.proxy_for.first.rdf_subject.to_s).to eq "http://example.org/individual/b1"
         expect(vci.proxy_in.first).to eq vc
         expect(vci.next_proxy).to eq []
@@ -205,17 +210,17 @@ describe 'LD4L::OreRDF::Proxy' do
     context "when partial id is passed in" do
       it "should generate an id ending with partial id" do
         vc  = LD4L::OreRDF::Aggregation.new
-        vci = LD4L::OreRDF::Proxy.create(id:     "123",
-                                                       content: RDF::URI("http://example.org/individual/b1"),
-                                                        aggregation: vc)
-        expect(vci.rdf_subject.to_s).to eq "#{LD4L::OreRDF::Proxy.base_uri}/123"
+        vci = LD4L::OreRDF::Proxy.create(id:          "123",
+                                         content:     RDF::URI("http://example.org/individual/b1"),
+                                         aggregation: vc)
+        expect(vci.rdf_subject.to_s).to eq "#{LD4L::OreRDF::Proxy.base_uri}123"
       end
 
       it "should set property values" do
         vc  = LD4L::OreRDF::Aggregation.new
-        vci = LD4L::OreRDF::Proxy.create(id:      "123",
-                                                        content: RDF::URI("http://example.org/individual/b1"),
-                                                        aggregation: vc)
+        vci = LD4L::OreRDF::Proxy.create(id:          "123",
+                                         content:     RDF::URI("http://example.org/individual/b1"),
+                                         aggregation: vc)
         expect(vci.proxy_for.first.rdf_subject.to_s).to eq "http://example.org/individual/b1"
         expect(vci.proxy_in.first).to eq vc
         expect(vci.next_proxy).to eq []
@@ -231,17 +236,17 @@ describe 'LD4L::OreRDF::Proxy' do
     context "when URI id is passed in" do
       it "should use passed in id" do
         vc  = LD4L::OreRDF::Aggregation.new
-        vci = LD4L::OreRDF::Proxy.create(id:      "http://example.org/individual/vc123",
-                                                        content: RDF::URI("http://example.org/individual/b1"),
-                                                        aggregation: vc)
+        vci = LD4L::OreRDF::Proxy.create(id:          "http://example.org/individual/vc123",
+                                         content:     RDF::URI("http://example.org/individual/b1"),
+                                         aggregation: vc)
         expect(vci.rdf_subject.to_s).to eq "http://example.org/individual/vc123"
       end
 
       it "should set property values" do
         vc  = LD4L::OreRDF::Aggregation.new
-        vci = LD4L::OreRDF::Proxy.create(id:      "http://example.org/individual/vc123",
-                                                        content: RDF::URI("http://example.org/individual/b1"),
-                                                        aggregation: vc)
+        vci = LD4L::OreRDF::Proxy.create(id:          "http://example.org/individual/vc123",
+                                         content:     RDF::URI("http://example.org/individual/b1"),
+                                         aggregation: vc)
         expect(vci.proxy_for.first.rdf_subject.to_s).to eq "http://example.org/individual/b1"
         expect(vci.proxy_in.first).to eq vc
         expect(vci.next_proxy).to eq []
@@ -256,21 +261,21 @@ describe 'LD4L::OreRDF::Proxy' do
 
     context "when collection is unordered" do
       context "and insert_position is missing" do
-        it "should add item without setting ordered properties" do
+        xit "should add item without setting ordered properties" do
           pending "this needs to be implemented"
         end
       end
 
       context "and insert position is passed in" do
-        it "should convert the list from unordered to ordered" do
+        xit "should convert the list from unordered to ordered" do
           pending "this needs to be implemented"
         end
 
-        it "should set ordered properties for new item" do
+        xit "should set ordered properties for new item" do
           pending "this needs to be implemented"
         end
 
-        it "should not change any other items in the collection" do
+        xit "should not change any other items in the collection" do
           # TODO Is this really the behavior we want when converting from unordered to ordered?
           pending "this needs to be implemented"
         end
@@ -279,17 +284,17 @@ describe 'LD4L::OreRDF::Proxy' do
 
     context "when collection is ordered" do
       context "and insert_position is missing" do
-        it "should append item to the end of the collection" do
+        xit "should append item to the end of the collection" do
           pending "this needs to be implemented"
         end
       end
 
       context "and insert position is passed in" do
-        it "should set ordered properties for new item" do
+        xit "should set ordered properties for new item" do
           pending "this needs to be implemented"
         end
 
-        it "should not change any other items in the collection" do
+        xit "should not change any other items in the collection" do
           # TODO Is this really the behavior we want for ordered lists to be partially ordered?
           pending "this needs to be implemented"
         end
@@ -380,27 +385,27 @@ describe 'LD4L::OreRDF::Proxy' do
           expect(vci_array.size).to eq(3)
         end
 
-        it "should not return any LD4L::OreRDF::Proxy instances for content not aggregated by subject" do
+        xit "should not return any LD4L::OreRDF::Proxy instances for content not aggregated by subject" do
           pending "this needs to be implemented"
         end
       end
     end
 
     context "when limit is specified" do
-      it "should return array of LD4L::OreRDF::Proxy instances with max size=limit" do
+      xit "should return array of LD4L::OreRDF::Proxy instances with max size=limit" do
         pending "this needs to be implemented"
       end
     end
 
     context "when start is specified" do
-      it "should return array of LD4L::OreRDF::Proxy instances_beginning with item at position=start" do
+      xit "should return array of LD4L::OreRDF::Proxy instances_beginning with item at position=start" do
         # TODO: What does _start_ mean in ActiveTriples?  Does it support this kind of query?
         pending "this needs to be implemented"
       end
     end
 
     context "when start and limit are specified" do
-      it "should return an array of LD4L::OreRDF::Proxy instances with max size=limit beginning with item at position=start" do
+      xit "should return an array of LD4L::OreRDF::Proxy instances with max size=limit beginning with item at position=start" do
         pending "this needs to be implemented"
       end
     end
@@ -661,7 +666,7 @@ describe 'LD4L::OreRDF::Proxy' do
     end
 
     it 'should return the default label as URI when no title property exists' do
-      expect(subject.rdf_label).to eq [RDF::URI("#{LD4L::OreRDF::Proxy.base_uri}#{LD4L::OreRDF::Proxy.localname_prefix}123")]
+      expect(subject.rdf_label.first).to eq "#{LD4L::OreRDF::Proxy.base_uri}123"
     end
 
     it 'should prioritize configured label values' do
