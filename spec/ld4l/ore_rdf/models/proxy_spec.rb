@@ -170,137 +170,9 @@ describe 'LD4L::OreRDF::Proxy' do
   #  START -- Test helper methods specific to this model
   # -----------------------------------------------------
 
-  describe "#create" do
-    it "should create a LD4L::OreRDF::Proxy instance" do
-      vc  = LD4L::OreRDF::Aggregation.new
-      vci = LD4L::OreRDF::Proxy.create(content:     RDF::URI("http://example.org/individual/b1"),
-                                       aggregation: vc)
-      expect(vci).to be_kind_of LD4L::OreRDF::Proxy
-    end
 
-    context "when id is not passed in" do
-      it "should generate an id with random ending" do
-        vc  = LD4L::OreRDF::Aggregation.new
-        vci = LD4L::OreRDF::Proxy.create(content:     RDF::URI("http://example.org/individual/b1"),
-                                         aggregation: vc)
-        uri = vci.rdf_subject.to_s
-        expect(uri).to start_with "#{LD4L::OreRDF::Proxy.base_uri}#{LD4L::OreRDF::Proxy.localname_prefix}"
-        id = uri[uri.length-36..uri.length]
-        expect(id).to be_kind_of String
-        expect(id.length).to eq 36
-        expect(id).to match /[a-zA-Z0-9]{8}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{12}/
-      end
+  ########### NEED TO MOVE TO SERVICE OBJECT ####################
 
-      it "should set property values" do
-        vc  = LD4L::OreRDF::Aggregation.new
-        vci = LD4L::OreRDF::Proxy.create(content:     RDF::URI("http://example.org/individual/b1"),
-                                         aggregation: vc)
-        expect(vci.proxy_for.first.rdf_subject.to_s).to eq "http://example.org/individual/b1"
-        expect(vci.proxy_in.first).to eq vc
-        expect(vci.next_proxy).to eq []
-        expect(vci.prev_proxy).to eq []
-        # expect(vci.contentContent.first.rdf_subject.to_s).to eq "http://example.org/individual/b1"
-        # expect(vci.index).to eq []
-        # expect(vci.nextItem).to eq []
-        # expect(vci.previousItem).to eq []
-        expect(vci.contributor).to eq []
-      end
-    end
-
-    context "when partial id is passed in" do
-      it "should generate an id ending with partial id" do
-        vc  = LD4L::OreRDF::Aggregation.new
-        vci = LD4L::OreRDF::Proxy.create(id:          "123",
-                                         content:     RDF::URI("http://example.org/individual/b1"),
-                                         aggregation: vc)
-        expect(vci.rdf_subject.to_s).to eq "#{LD4L::OreRDF::Proxy.base_uri}123"
-      end
-
-      it "should set property values" do
-        vc  = LD4L::OreRDF::Aggregation.new
-        vci = LD4L::OreRDF::Proxy.create(id:          "123",
-                                         content:     RDF::URI("http://example.org/individual/b1"),
-                                         aggregation: vc)
-        expect(vci.proxy_for.first.rdf_subject.to_s).to eq "http://example.org/individual/b1"
-        expect(vci.proxy_in.first).to eq vc
-        expect(vci.next_proxy).to eq []
-        expect(vci.prev_proxy).to eq []
-        # expect(vci.contentContent.first.rdf_subject.to_s).to eq "http://example.org/individual/b1"
-        # expect(vci.index).to eq []
-        # expect(vci.nextItem).to eq []
-        # expect(vci.previousItem).to eq []
-        expect(vci.contributor).to eq []
-      end
-    end
-
-    context "when URI id is passed in" do
-      it "should use passed in id" do
-        vc  = LD4L::OreRDF::Aggregation.new
-        vci = LD4L::OreRDF::Proxy.create(id:          "http://example.org/individual/vc123",
-                                         content:     RDF::URI("http://example.org/individual/b1"),
-                                         aggregation: vc)
-        expect(vci.rdf_subject.to_s).to eq "http://example.org/individual/vc123"
-      end
-
-      it "should set property values" do
-        vc  = LD4L::OreRDF::Aggregation.new
-        vci = LD4L::OreRDF::Proxy.create(id:          "http://example.org/individual/vc123",
-                                         content:     RDF::URI("http://example.org/individual/b1"),
-                                         aggregation: vc)
-        expect(vci.proxy_for.first.rdf_subject.to_s).to eq "http://example.org/individual/b1"
-        expect(vci.proxy_in.first).to eq vc
-        expect(vci.next_proxy).to eq []
-        expect(vci.prev_proxy).to eq []
-        # expect(vci.itemContent.first.rdf_subject.to_s).to eq "http://example.org/individual/b1"
-        # expect(vci.index).to eq []
-        # expect(vci.nextItem).to eq []
-        # expect(vci.previousItem).to eq []
-        expect(vci.contributor).to eq []
-      end
-    end
-
-    context "when collection is unordered" do
-      context "and insert_position is missing" do
-        xit "should add item without setting ordered properties" do
-          pending "this needs to be implemented"
-        end
-      end
-
-      context "and insert position is passed in" do
-        xit "should convert the list from unordered to ordered" do
-          pending "this needs to be implemented"
-        end
-
-        xit "should set ordered properties for new item" do
-          pending "this needs to be implemented"
-        end
-
-        xit "should not change any other items in the collection" do
-          # TODO Is this really the behavior we want when converting from unordered to ordered?
-          pending "this needs to be implemented"
-        end
-      end
-    end
-
-    context "when collection is ordered" do
-      context "and insert_position is missing" do
-        xit "should append item to the end of the collection" do
-          pending "this needs to be implemented"
-        end
-      end
-
-      context "and insert position is passed in" do
-        xit "should set ordered properties for new item" do
-          pending "this needs to be implemented"
-        end
-
-        xit "should not change any other items in the collection" do
-          # TODO Is this really the behavior we want for ordered lists to be partially ordered?
-          pending "this needs to be implemented"
-        end
-      end
-    end
-  end
 
   describe "#get_range" do
     context "when collection has 0 items" do
@@ -316,22 +188,40 @@ describe 'LD4L::OreRDF::Proxy' do
       before do
         vc.aggregates = []
         vc.persist!
-        vci_array = vc.add_items_with_content([RDF::URI("http://example.org/individual/b1"),
-                                               RDF::URI("http://example.org/individual/b2"),
-                                               RDF::URI("http://example.org/individual/b3")])
+
+
+        ###  TODO need to update add_items_with_content to use new service
+
+
+        # vci_array = vc.add_items_with_content([RDF::URI("http://example.org/individual/b1"),
+        #                                        RDF::URI("http://example.org/individual/b2"),
+        #                                        RDF::URI("http://example.org/individual/b3")])
+
+
+
         vc.persist!
         vci_array.each { |vci| vci.persist! }
       end
 
       let(:vc) { LD4L::OreRDF::Aggregation.new }
 
-      it "should return array" do
+      xit "should return array" do
+
+
+        ###  TODO need to update add_items_with_content in BEFORE to use new service
+
+
         vci_array = LD4L::OreRDF::Proxy.get_range(vc)
         expect(vci_array).to be_a(Array)
         expect(vci_array.size).to eq(3)
       end
 
-      it "should return array of LD4L::OreRDF::Proxy instances" do
+      xit "should return array of LD4L::OreRDF::Proxy instances" do
+
+
+        ###  TODO need to update add_items_with_content in BEFORE to use new service
+
+
         vci_array = LD4L::OreRDF::Proxy.get_range(vc)
         vci_array.each do |vci|
           expect(vci).to be_a(LD4L::OreRDF::Proxy)
@@ -345,14 +235,24 @@ describe 'LD4L::OreRDF::Proxy' do
         before do
           vc.aggregates = []
           vc.persist!
-          vc.add_items_with_content([RDF::URI("http://example.org/individual/b1"),
-                                     RDF::URI("http://example.org/individual/b2"),
-                                     RDF::URI("http://example.org/individual/b3")])
+
+
+          ###  TODO need to update add_items_with_content to use new service
+
+
+          # vc.add_items_with_content([RDF::URI("http://example.org/individual/b1"),
+          #                            RDF::URI("http://example.org/individual/b2"),
+          #                            RDF::URI("http://example.org/individual/b3")])
         end
 
         let(:vc) { LD4L::OreRDF::Aggregation.new }
 
-        it "should return empty array" do
+        xit "should return empty array" do
+
+
+          ###  TODO need to update add_items_with_content in BEFORE to use new service
+
+
           vci_array = LD4L::OreRDF::Proxy.get_range(vc)
           expect(vci_array.size).to eq(0)
         end
@@ -362,16 +262,26 @@ describe 'LD4L::OreRDF::Proxy' do
         before do
           vc.aggregates = []
           vc.persist!
-          vci_array = vc.add_items_with_content([RDF::URI("http://example.org/individual/b1"),
-                                                 RDF::URI("http://example.org/individual/b2"),
-                                                 RDF::URI("http://example.org/individual/b3")])
+
+
+          ###  TODO need to update add_items_with_content to use new service
+
+
+          # vci_array = vc.add_items_with_content([RDF::URI("http://example.org/individual/b1"),
+          #                                        RDF::URI("http://example.org/individual/b2"),
+          #                                        RDF::URI("http://example.org/individual/b3")])
           vc.persist!
           vci_array.each { |vci| vci.persist! }
         end
 
         let(:vc) { LD4L::OreRDF::Aggregation.new }
 
-        it "should return array of all LD4L::OreRDF::Proxy instances for content aggregated by subject" do
+        xit "should return array of all LD4L::OreRDF::Proxy instances for content aggregated by subject" do
+
+
+          ###  TODO need to update add_items_with_content in BEFORE to use new service
+
+
           vci_array = LD4L::OreRDF::Proxy.get_range(vc)
           vci_array.each do |vci|
             expect(vci).to be_a(LD4L::OreRDF::Proxy)
@@ -504,7 +414,11 @@ describe 'LD4L::OreRDF::Proxy' do
 
       context "and the item is created by create method" do
 
-        subject { LD4L::OreRDF::Proxy.create(id: "123", aggregation: LD4L::OreRDF::Aggregation.new('1'), content: RDF::URI("http://example.org/b1"), contributor: "John Smith")}
+
+        ###  TODO need to update create to use new service
+
+
+        # subject { LD4L::OreRDF::Proxy.create(id: "123", aggregation: LD4L::OreRDF::Aggregation.new('1'), content: RDF::URI("http://example.org/b1"), contributor: "John Smith")}
 
         before do
           # Create inmemory repository
@@ -514,11 +428,11 @@ describe 'LD4L::OreRDF::Proxy' do
           subject.persist!
         end
 
-        it "should persist to the repository" do
+        xit "should persist to the repository" do
           expect(@repo.statements.first).to eq subject.statements.first
         end
 
-        it "should delete from the repository" do
+        xit "should delete from the repository" do
           subject.reload
           expect(subject.contributor).to eq ["John Smith"]
           subject.contributor = []
