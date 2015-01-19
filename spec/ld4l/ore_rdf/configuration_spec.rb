@@ -6,7 +6,7 @@ describe 'LD4L::OreRDF' do
     describe "base_uri" do
       context "when base_uri is not configured" do
         before do
-          class DummyAggregation < LD4L::OreRDF::Aggregation
+          class DummyAggregation < LD4L::OreRDF::AggregationResource
             configure :type => RDFVocabularies::ORE.Aggregation, :base_uri => LD4L::OreRDF.configuration.base_uri, :repository => :default
           end
         end
@@ -23,7 +23,7 @@ describe 'LD4L::OreRDF' do
           LD4L::OreRDF.configure do |config|
             config.base_uri = "http://localhost/test_slash/"
           end
-          class DummyAggregation < LD4L::OreRDF::Aggregation
+          class DummyAggregation < LD4L::OreRDF::AggregationResource
             configure :type => RDFVocabularies::ORE.Aggregation, :base_uri => LD4L::OreRDF.configuration.base_uri, :repository => :default
           end
         end
@@ -42,7 +42,7 @@ describe 'LD4L::OreRDF' do
           LD4L::OreRDF.configure do |config|
             config.base_uri = "http://localhost/test_no_slash"
           end
-          class DummyAggregation < LD4L::OreRDF::Aggregation
+          class DummyAggregation < LD4L::OreRDF::AggregationResource
             configure :type => RDFVocabularies::ORE.Aggregation, :base_uri => LD4L::OreRDF.configuration.base_uri, :repository => :default
           end
         end
@@ -85,7 +85,7 @@ describe 'LD4L::OreRDF' do
     describe "localname_minter" do
       context "when minter is nil" do
         before do
-          class DummyAggregation < LD4L::OreRDF::Aggregation
+          class DummyAggregation < LD4L::OreRDF::AggregationResource
             configure :type => RDFVocabularies::ORE.Aggregation, :base_uri => LD4L::OreRDF.configuration.base_uri, :repository => :default
           end
         end
@@ -94,7 +94,7 @@ describe 'LD4L::OreRDF' do
         end
         it "should use default minter in minter gem" do
           localname = ActiveTriples::LocalName::Minter.generate_local_name(
-                  LD4L::OreRDF::Aggregation, 10, {:prefix=>'default_'},
+                  LD4L::OreRDF::AggregationResource, 10, {:prefix=>'default_'},
                   LD4L::OreRDF.configuration.localname_minter )
           expect(localname).to be_kind_of String
           expect(localname.size).to eq 44
@@ -107,7 +107,7 @@ describe 'LD4L::OreRDF' do
           LD4L::OreRDF.configure do |config|
             config.localname_minter = lambda { |prefix=""| prefix+'_configured_'+SecureRandom.uuid }
           end
-          class DummyAggregation < LD4L::OreRDF::Aggregation
+          class DummyAggregation < LD4L::OreRDF::AggregationResource
             configure :type => RDFVocabularies::ORE.Aggregation, :base_uri => LD4L::OreRDF.configuration.base_uri, :repository => :default
           end
         end
@@ -118,8 +118,8 @@ describe 'LD4L::OreRDF' do
 
         it "should generate an Aggregation URI using the configured localname_minter" do
           localname = ActiveTriples::LocalName::Minter.generate_local_name(
-              LD4L::OreRDF::Aggregation, 10,
-              LD4L::OreRDF::Aggregation.localname_prefix,
+              LD4L::OreRDF::AggregationResource, 10,
+              LD4L::OreRDF::AggregationResource.localname_prefix,
               &LD4L::OreRDF.configuration.localname_minter )
           expect(localname).to be_kind_of String
           expect(localname.size).to eq 50

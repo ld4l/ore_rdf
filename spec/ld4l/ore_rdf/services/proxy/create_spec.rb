@@ -3,12 +3,12 @@ require 'spec_helper'
 describe 'LD4L::OreRDF::CreateProxy' do
 
    describe "#call" do
-    it "should create a LD4L::OreRDF::Proxy instance" do
+    it "should create a LD4L::OreRDF::ProxyResource instance" do
       aggregation  = LD4L::OreRDF::Aggregation.new
       proxy = LD4L::OreRDF::CreateProxy.call(
           resource:    RDF::URI("http://example.org/individual/b1"),
           aggregation: aggregation)
-      expect(proxy).to be_kind_of LD4L::OreRDF::Proxy
+      expect(proxy).to be_kind_of LD4L::OreRDF::ProxyResource
     end
 
     context "when id is not passed in" do
@@ -18,7 +18,7 @@ describe 'LD4L::OreRDF::CreateProxy' do
             resource:    RDF::URI("http://example.org/individual/b1"),
             aggregation: aggregation)
         uri = proxy.rdf_subject.to_s
-        expect(uri).to start_with "#{LD4L::OreRDF::Proxy.base_uri}#{LD4L::OreRDF::Proxy.localname_prefix}"
+        expect(uri).to start_with "#{LD4L::OreRDF::ProxyResource.base_uri}#{LD4L::OreRDF::ProxyResource.localname_prefix}"
         id = uri[uri.length-36..uri.length]
         expect(id).to be_kind_of String
         expect(id.length).to eq 36
@@ -31,7 +31,7 @@ describe 'LD4L::OreRDF::CreateProxy' do
             resource:    RDF::URI("http://example.org/individual/b1"),
             aggregation: aggregation)
         expect(proxy.proxy_for.first.rdf_subject.to_s).to eq "http://example.org/individual/b1"
-        expect(proxy.proxy_in.first).to eq aggregation
+        expect(proxy.proxy_in.first).to eq aggregation.aggregation_resource
         expect(proxy.next_proxy).to eq []
         expect(proxy.prev_proxy).to eq []
         # expect(proxy.contentContent.first.rdf_subject.to_s).to eq "http://example.org/individual/b1"
@@ -49,7 +49,7 @@ describe 'LD4L::OreRDF::CreateProxy' do
             id:          "123",
             resource:    RDF::URI("http://example.org/individual/b1"),
             aggregation: aggregation)
-        expect(proxy.rdf_subject.to_s).to eq "#{LD4L::OreRDF::Proxy.base_uri}123"
+        expect(proxy.rdf_subject.to_s).to eq "#{LD4L::OreRDF::ProxyResource.base_uri}123"
       end
 
       it "should set property values" do
@@ -59,7 +59,7 @@ describe 'LD4L::OreRDF::CreateProxy' do
             resource:    RDF::URI("http://example.org/individual/b1"),
             aggregation: aggregation)
         expect(proxy.proxy_for.first.rdf_subject.to_s).to eq "http://example.org/individual/b1"
-        expect(proxy.proxy_in.first).to eq aggregation
+        expect(proxy.proxy_in.first).to eq aggregation.aggregation_resource
         expect(proxy.next_proxy).to eq []
         expect(proxy.prev_proxy).to eq []
         # expect(proxy.contentContent.first.rdf_subject.to_s).to eq "http://example.org/individual/b1"
@@ -87,7 +87,7 @@ describe 'LD4L::OreRDF::CreateProxy' do
             resource:    RDF::URI("http://example.org/individual/b1"),
             aggregation: aggregation)
         expect(proxy.proxy_for.first.rdf_subject.to_s).to eq "http://example.org/individual/b1"
-        expect(proxy.proxy_in.first).to eq aggregation
+        expect(proxy.proxy_in.first).to eq aggregation.aggregation_resource
         expect(proxy.next_proxy).to eq []
         expect(proxy.prev_proxy).to eq []
         # expect(proxy.itemContent.first.rdf_subject.to_s).to eq "http://example.org/individual/b1"

@@ -12,18 +12,33 @@ module LD4L
       # Adds a resource to the list of aggregated resources for the aggregation inserting at the specified position or
       # appends to the end if position is not specified.  Creates a proxy object for the resource.
       #
-      # @param [RDF::URI] resource_uri - URI for the resources to be aggregated
+      # @param [LD4L::OreRDF::Aggregation] :aggregation to which to add resource
+      # @param [RDF::URI] :resource - URI for the resources to be aggregated
+      # @param [insert_position] :position from beginning of the list of proxies when positive; position from the
+      #    end of the list of proxies when negative
       #
-      # @returns [LD4L::OreRDF::Proxy] the proxy created for the resource
-      def self.call(aggregation,resource_uri,insert_position=nil)
+      # @returns [LD4L::OreRDF::ProxyResource] the proxy created for the resource
+      def self.call(aggregation,resource,insert_position=nil)
+        raise ArgumentError, "resource must be either a string representation of an URI or an instance of RDF::URI" unless
+            resource.kind_of?(String) || resource.kind_of?(RDF::URI)
+
+        resource = RDF::URI(resource)  unless  resource.kind_of?(RDF::URI)
+
+        # validate aggregation is of correct type
+        raise ArgumentError, "aggregation is not LD4L::OreRDF::Aggregation" unless
+            aggregation.kind_of?(LD4L::OreRDF::Aggregation)
+
+
         # aggregates = get_values('aggregates')
         # aggregates << resource_uri
         # set_value('aggregates',aggregates)
+
         aggregates = aggregation.aggregates.dup
-        aggregates << resource_uri
+        aggregates << resource
         aggregation.aggregates = aggregates
+
         LD4L::OreRDF::CreateProxy.call(
-            :resource        => resource_uri,
+            :resource        => resource,
             :aggregation     => aggregation,
             :insert_position => insert_position)
       end

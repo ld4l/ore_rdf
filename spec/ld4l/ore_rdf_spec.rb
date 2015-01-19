@@ -8,7 +8,7 @@ describe "LD4L::OreRDF" do
         config.base_uri = "http://localhost/test/"
         config.localname_minter = lambda { |prefix=""| prefix+'_configured_'+SecureRandom.uuid }
       end
-      class DummyAggregation < LD4L::OreRDF::Aggregation
+      class DummyAggregation < LD4L::OreRDF::AggregationResource
         configure :type => RDFVocabularies::ORE.Aggregation, :base_uri => LD4L::OreRDF.configuration.base_uri, :repository => :default
       end
     end
@@ -28,8 +28,8 @@ describe "LD4L::OreRDF" do
       expect(p.rdf_subject.to_s).to eq "http://localhost/test/1"
 
       oa = DummyAggregation.new(ActiveTriples::LocalName::Minter.generate_local_name(
-                                   LD4L::OreRDF::Aggregation, 10, 'foo',
-                                   &LD4L::OreRDF.configuration.localname_minter ))
+                 LD4L::OreRDF::AggregationResource, 10, 'foo',
+                 &LD4L::OreRDF.configuration.localname_minter ))
       expect(oa.rdf_subject.to_s.size).to eq 73
       expect(oa.rdf_subject.to_s).to match /http:\/\/localhost\/test\/foo_configured_[a-zA-Z0-9]{8}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{12}/
     end

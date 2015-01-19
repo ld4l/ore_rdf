@@ -17,14 +17,14 @@ describe 'LD4L::OreRDF::AddAggregatedResources' do
       expect(proxy_array).to be_a(Array)
     end
 
-    it "should return an array of LD4L::OreRDF::Proxy instances" do
+    it "should return an array of LD4L::OreRDF::ProxyResource instances" do
       proxy_array = LD4L::OreRDF::AddAggregatedResources.call(
           subject,
           [RDF::URI("http://example.org/individual/b1"),
            RDF::URI("http://example.org/individual/b2"),
            RDF::URI("http://example.org/individual/b3")])
       proxy_array.each do |proxy|
-        expect(proxy).to be_a(LD4L::OreRDF::Proxy)
+        expect(proxy).to be_a(LD4L::OreRDF::ProxyResource)
       end
     end
 
@@ -62,8 +62,8 @@ describe 'LD4L::OreRDF::AddAggregatedResources' do
            RDF::URI("http://example.org/individual/b2"),
            RDF::URI("http://example.org/individual/b3")])
       proxy_array.each do |proxy|
-        expect(proxy).to be_a(LD4L::OreRDF::Proxy)
-        expect(proxy.proxy_in.first).to eq subject
+        expect(proxy).to be_a(LD4L::OreRDF::ProxyResource)
+        expect(proxy.proxy_in.first).to eq subject.aggregation_resource
       end
       results = []
       proxy_array.each do |proxy|

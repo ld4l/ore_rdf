@@ -2,6 +2,13 @@ module LD4L
   module OreRDF
     class CreateAggregation
 
+
+
+
+      # TODO Should this service take an array of resources for the aggregation to aggregate?
+
+
+
       ##
       # Create an ore aggregation in one step passing in the required information.
       #
@@ -16,11 +23,14 @@ module LD4L
       #
       # @returns an instance of the new aggregation (not persisted)
       def self.call( options = {} )
-        id             = options[:id]          || ActiveTriples::LocalName::Minter.generate_local_name(LD4L::OreRDF::Aggregation)  # TODO pass in localname_prefix for Aggregation class
-        aggregation = LD4L::OreRDF::Aggregation.new(id)
-        aggregation.title       = options[:title]       || []
-        aggregation.description = options[:description] || []
-        aggregation.owner       = options[:owner]       || []
+        id = options[:id] || ActiveTriples::LocalName::Minter.generate_local_name(
+            LD4L::OreRDF::AggregationResource, 10, { :prefix => LD4L::OreRDF::AggregationResource.localname_prefix})
+        aggregation_resource = LD4L::OreRDF::AggregationResource.new(id)
+        aggregation_resource.title       = options[:title]       || []
+        aggregation_resource.description = options[:description] || []
+        aggregation_resource.owner       = options[:owner]       || []
+
+        aggregation = LD4L::OreRDF::Aggregation.new :list_info => aggregation_resource
         aggregation
       end
     end

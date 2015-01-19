@@ -6,46 +6,55 @@ module LD4L
       # Create an ore proxy in one step passing in the required information.
       #
       # @param [Hash] options the options to use while generating the proxy
-      # @option options [String, RDF::URI] :id - uri or localname to use for the rdf_subject of the new proxy (optional)
+      # @option options [LD4L::OreRDF::AggregationResource] :aggregation - aggregation to which the resource is being added (required)
+      # @option options [String, RDF::URI] :resource - resource uri for the resource being added to the aggregation (required)
+      # @option options [String, RDF::URI] :id - uri or localname to use for the rdf_subject of the new proxy (optional)(default - mint)
       #                - full URI   - [String, RDF::URI] used as passed in
       #                - partial id - [String] uri generated from base_uri + localname_prefix + id
       #                - nil        - uri generated from base_uri + localname_prefix + minted localname
-      # @option options [LD4L::OreRDF::Aggregation] :aggregation - aggregation to which the resource is being added (required)
-      # @option options [String, RDF::URI] :resource - resource uri for the resource being added to the aggregation (required)
       # @option options [Integer] :insert_position - used for ordered lists to place an item at a specific location (optional)(default - appends)
       # @option options [String, LD4L::FoafRDF::Person] :contributor - person adding the resource (optional)(default - list owner)
       #
       # @returns an instance of the new proxy (not persisted)
       def self.call( options = {} )
-        # validate item was passed in
+        # validate aggregation was passed in and of correct type
+        aggregation = options[:aggregation] || nil
+        raise ArgumentError, "aggregation is required" if aggregation.nil?
+        raise ArgumentError, "aggregation is not LD4L::OreRDF::Aggregation" unless
+            aggregation.kind_of?(LD4L::OreRDF::Aggregation)
+
+        # validate resource was passed in and of correct type
         resource = options[:resource] || nil
         raise ArgumentError, "resource is required" if resource.nil?
+        raise ArgumentError, "resource must be either a string representation of an URI or an instance of RDF::URI" unless
+            resource.kind_of?(String) || resource.kind_of?(RDF::URI)
+
+        # make sure resource is an RDF::URI
         resource = RDF::URI(resource)  unless  resource.kind_of?(RDF::URI)
 
-        # validate aggregation is of correct type
-        aggregation = options[:aggregation] || nil
-        raise ArgumentError, "aggregation is not LD4L::OreRDF::Aggregation" unless aggregation && aggregation.kind_of?(LD4L::OreRDF::Aggregation)
-
+        # mint an id if needed
         id  = options[:id] ||
             ActiveTriples::LocalName::Minter.generate_local_name(
-                LD4L::OreRDF::Proxy, 10, { :prefix => LD4L::OreRDF::Proxy.localname_prefix },
+                LD4L::OreRDF::ProxyResource, 10, { :prefix => LD4L::OreRDF::ProxyResource.localname_prefix },
                 LD4L::OreRDF.configuration.localname_minter )
 
-        proxy = LD4L::OreRDF::Proxy.new(id)
-
-        # set ORE ontology properties
+        # create the proxy and set properties
+        proxy = LD4L::OreRDF::ProxyResource.new(id)
         proxy.proxy_for    = resource
-        proxy.proxy_in     = aggregation
+        proxy.proxy_in     = aggregation.aggregation_resource
+        proxy.contributor = options[:contributor] || []   # TODO default to aggregation.owner
 
         insert_position = options[:insert_position] || nil
         unless insert_position.nil?
           # TODO: handle inserting item into an ordered list at position specified
-          # set nextItem, previousItem, next, and previous properties
+          # set next_proxy and prev_proxy
           # update other items that are near it
           # TODO: what happens if prev and next aren't set on the
         end
-        proxy.contributor = options[:contributor] || []   # TODO default to aggregation.owner
 
+        # TODO - defaulting to appending proxy to the end
+        # TODO - need to update next_proxy, prev_proxy related to ordering
+        aggregation << proxy
         proxy
       end
 
