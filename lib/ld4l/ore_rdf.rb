@@ -47,10 +47,13 @@ module LD4L
     # autoload service classes
     autoload :CreateAggregation,      'ld4l/ore_rdf/services/aggregation/create'
     autoload :PersistAggregation,     'ld4l/ore_rdf/services/aggregation/persist'
+    autoload :ResumeAggregation,      'ld4l/ore_rdf/services/aggregation/resume'
     autoload :FindAggregations,       'ld4l/ore_rdf/services/aggregation/find'
     autoload :AddAggregatedResource,  'ld4l/ore_rdf/services/aggregation/add_aggregated_resource'
     autoload :AddAggregatedResources, 'ld4l/ore_rdf/services/aggregation/add_aggregated_resources'
+
     autoload :CreateProxy,            'ld4l/ore_rdf/services/proxy/create'
+    autoload :FindProxies,            'ld4l/ore_rdf/services/proxy/find'
 
     def self.class_from_string(class_name, container_class=Kernel)
       container_class = container_class.name if container_class.is_a? Module

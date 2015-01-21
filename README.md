@@ -50,23 +50,40 @@ p = LD4L::FoafRDF::Person.new('p4')
 
 #### Example: Aggregation with items individually
 ```
-agg10 = LD4L::OreRDF::Aggregation.create( :id=>'agg10', :title=>'My Resources', :description=>'Resources that I like', :owner=>p )
-agg10.add_item_with_content('http://exmple.org/resource_1')
-agg10.add_item_with_content('http://exmple.org/resource_2')
-agg10.add_item_with_content('http://exmple.org/resource_3')
+agg10 = LD4L::OreRDF::CreateAggregation.call( :id=>'agg10', :title=>'My Resources', :description=>'Resources that I like', :owner=>p )
+
+LD4L::OreRDF::AddAggregatedResource.call( agg10,'http://exmple.org/resource_1')
+LD4L::OreRDF::AddAggregatedResource.call( agg10'http://exmple.org/resource_2')
+LD4L::OreRDF::AddAggregatedResource.call( agg10,'http://exmple.org/resource_3')
+
+LD4L::OreRDF::PersistAggregation.call(agg10)
 
 puts agg10.dump :ttl
+
+# To resume the aggregation at a later time, use...
+agg = LD4L::OreRDF::ResumeAggregation.call( 'agg10' )
 ```
 
 #### Example: Aggregation with items as array
 ```
-agg11 = LD4L::OreRDF::Aggregation.create( :id=>'agg11', :title=>'More Resources', :description=>'More resources that I like', :owner=>p )
+agg11 = LD4L::OreRDF::CreateAggregation.call( :id=>'agg11', :title=>'More Resources', :description=>'More resources that I like', :owner=>p )
 
-items = [ 'http://exmple.org/resource_5', 'http://exmple.org/resource_6', 'http://exmple.org/resource_7' ]
-agg11.add_items_with_content(items)
+resources = [ 'http://exmple.org/resource_5', 'http://exmple.org/resource_6', 'http://exmple.org/resource_7' ]
+LD4L::OreRDF::AddAggregatedResources.call( agg11,resources)
+
+LD4L::OreRDF::PersistAggregation.call(agg11)
 
 puts agg11.dump :ttl
+
+# To resume the aggregation at a later time, use...
+agg = LD4L::OreRDF::ResumeAggregation.call( 'agg10' )
 ```
+
+#### Example: Find all aggregations
+```
+aggregation_uris = LD4L::OreRDF::FindAggregations.call
+```
+
 
 ### Configurations
 
@@ -84,8 +101,8 @@ LD4L::OreRDF.configure do |config|
   config.base_uri = "http://example.org/"
 end
 
-a = LD4L::OreRDF::Aggregation.new(ActiveTriples::LocalName::Minter.generate_local_name(
-              LD4L::OreRDF::Aggregation, 10, {:prefix=>'a'} ))
+a = LD4L::OreRDF::AggregationResource.new(ActiveTriples::LocalName::Minter.generate_local_name(
+              LD4L::OreRDF::AggregationResource, 10, {:prefix=>'a'} ))
 
 puts a.dump :ttl
 ```
@@ -107,8 +124,8 @@ LD4L::OreRDF.configure do |config|
   config.localname_minter = lambda { |prefix=""| prefix+'_configured_'+SecureRandom.uuid }
 end
 
-a = LD4L::OreRDF::Aggregation.new(ActiveTriples::LocalName::Minter.generate_local_name(
-              LD4L::OreRDF::Aggregation, 10, 'a',
+a = LD4L::OreRDF::AggregationResource.new(ActiveTriples::LocalName::Minter.generate_local_name(
+              LD4L::OreRDF::AggregationResource, 10, 'a',
               &LD4L::OreRDF.configuration.localname_minter ))
 
 puts a.dump :ttl
@@ -131,8 +148,8 @@ The LD4L::OreRDF gem provides model definitions using the
 [ActiveTriples](https://github.com/ActiveTriples/ActiveTriples) framework extension of 
 [ruby-rdf/rdf](https://github.com/ruby-rdf/rdf).  The following models are provided:
 
-1. LD4L::OreRDF::Aggregation - Implements the Aggregation class in the ORE ontology.
-1. LD4L::OreRDF::Proxy - Implements the Proxy class in the ORE ontology.
+1. LD4L::OreRDF::AggregationResource - Implements the Aggregation class in the ORE ontology.
+1. LD4L::OreRDF::ProxyResource - Implements the Proxy class in the ORE ontology.
 
 ### Ontologies
 

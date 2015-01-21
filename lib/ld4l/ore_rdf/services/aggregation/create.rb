@@ -30,7 +30,7 @@ module LD4L
         aggregation_resource.description = options[:description] || []
         aggregation_resource.owner       = options[:owner]       || []
 
-        aggregation = LD4L::OreRDF::Aggregation.new :list_info => aggregation_resource
+        aggregation = LD4L::OreRDF::Aggregation.new :aggregation_resource => aggregation_resource
         aggregation
       end
     end
