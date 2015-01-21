@@ -13,7 +13,7 @@ module LD4L
       def self.call( aggregation )
         count = 0
         agg_persisted = aggregation.aggregation_resource.persist!
-        aggregation.proxy_resources.each { |proxy| count += 1 if proxy.persist! }
+        aggregation.proxy_resources.each { |proxy| count += 1 if proxy.persist! }  if agg_persisted
         percent_proxies = aggregation.proxy_resources.size > 0 ? count/aggregation.proxy_resources.size : 1
         ret = {
                 :aggregation_resource_persisted => agg_persisted,
