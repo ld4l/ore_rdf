@@ -81,7 +81,13 @@ agg = LD4L::OreRDF::ResumeAggregation.call( 'agg10' )
 
 #### Example: Find all aggregations
 ```
+# Find all and return only the URIs for each aggregation
 aggregation_uris = LD4L::OreRDF::FindAggregations.call
+
+# Find all and return title and description
+aggregation_properties = LD4L::OreRDF::FindAggregations.call(
+    :properties => { :title => RDF::DC.title, :description => RDF::DC.description } )
+
 ```
 
 
