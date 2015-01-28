@@ -1,6 +1,12 @@
+require 'pry'
+require 'active_model'
 module LD4L
   module OreRDF
     class Aggregation < DoublyLinkedList
+
+      def self.initialize
+        super
+      end
 
       def initialize(*args)
         new_args = args[0].dup unless args.empty?
@@ -13,12 +19,30 @@ module LD4L
         super(new_args)
       end
 
+      def title
+        titles = list_info.title
+        titles.kind_of?(Array) && titles.size > 0 ? titles[0] : ""
+      end
+
+      def description
+        descriptions = list_info.description
+        descriptions.kind_of?(Array) && descriptions.size > 0 ? descriptions[0] : ""
+      end
+
       def aggregation_resource
         list_info
       end
 
       def proxy_resources
         @list
+      end
+
+      def self.model_name
+        puts("before ActiveModel::Name")
+binding.pry
+        x = ActiveModel::Name.new(LD4L::OreRDF::Aggregation)
+        puts("before ActiveModel::Name")
+        x
       end
 
     end
