@@ -1,4 +1,3 @@
-require 'pry'
 require 'active_model'
 module LD4L
   module OreRDF
@@ -35,14 +34,6 @@ module LD4L
 
       def proxy_resources
         @list
-      end
-
-      def self.model_name
-        puts("before ActiveModel::Name")
-binding.pry
-        x = ActiveModel::Name.new(LD4L::OreRDF::Aggregation)
-        puts("before ActiveModel::Name")
-        x
       end
 
     end
