@@ -18,8 +18,8 @@ describe 'LD4L::OreRDF::CreateAggregation' do
           owner:       LD4L::FoafRDF::Person.new("http://vivo.cornell.edu/individual/JohnSmith"))
       expect(aggregation.rdf_subject.to_s).to start_with(
           "#{LD4L::OreRDF::AggregationResource.base_uri}#{LD4L::OreRDF::AggregationResource.localname_prefix}")
-      expect(aggregation.title).to eq ["Test Title"]
-      expect(aggregation.description).to eq ["Test description of aggregation."]
+      expect(aggregation.title).to eq "Test Title"
+      expect(aggregation.description).to eq "Test description of aggregation."
       expect(aggregation.owner.first.rdf_subject).to eq RDF::URI("http://vivo.cornell.edu/individual/JohnSmith")
     end
 
@@ -30,8 +30,8 @@ describe 'LD4L::OreRDF::CreateAggregation' do
           description: "Test description of aggregation.",
           owner:       LD4L::FoafRDF::Person.new("http://vivo.cornell.edu/individual/JohnSmith"))
       expect(aggregation.rdf_subject.to_s).to eq "#{LD4L::OreRDF::AggregationResource.base_uri}123"
-      expect(aggregation.title).to eq ["Test Title"]
-      expect(aggregation.description).to eq ["Test description of aggregation."]
+      expect(aggregation.title).to eq "Test Title"
+      expect(aggregation.description).to eq "Test description of aggregation."
       expect(aggregation.owner.first.rdf_subject).to eq RDF::URI("http://vivo.cornell.edu/individual/JohnSmith")
     end
 
@@ -42,8 +42,8 @@ describe 'LD4L::OreRDF::CreateAggregation' do
           description: "Test description of aggregation.",
           owner:       LD4L::FoafRDF::Person.new("http://vivo.cornell.edu/individual/JohnSmith"))
       expect(aggregation.rdf_subject.to_s).to eq "http://example.org/individual/vc123"
-      expect(aggregation.title).to eq ["Test Title"]
-      expect(aggregation.description).to eq ["Test description of aggregation."]
+      expect(aggregation.title).to eq "Test Title"
+      expect(aggregation.description).to eq "Test description of aggregation."
       expect(aggregation.owner.first.rdf_subject).to eq RDF::URI("http://vivo.cornell.edu/individual/JohnSmith")
     end
 
@@ -54,8 +54,8 @@ describe 'LD4L::OreRDF::CreateAggregation' do
           description: "Test description of aggregation.",
           owner:       LD4L::FoafRDF::Person.new("http://vivo.cornell.edu/individual/JohnSmith"))
       expect(aggregation.rdf_subject.to_s).to eq "http://example.org/individual/vc123"
-      expect(aggregation.title).to eq ["Test Title"]
-      expect(aggregation.description).to eq ["Test description of aggregation."]
+      expect(aggregation.title).to eq "Test Title"
+      expect(aggregation.description).to eq "Test description of aggregation."
       expect(aggregation.owner.first.rdf_subject).to eq RDF::URI("http://vivo.cornell.edu/individual/JohnSmith")
     end
   end
