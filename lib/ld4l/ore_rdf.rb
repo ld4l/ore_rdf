@@ -48,6 +48,7 @@ module LD4L
     autoload :CreateAggregation,      'ld4l/ore_rdf/services/aggregation/create'
     autoload :PersistAggregation,     'ld4l/ore_rdf/services/aggregation/persist'
     autoload :ResumeAggregation,      'ld4l/ore_rdf/services/aggregation/resume'
+    autoload :DestroyAggregation,     'ld4l/ore_rdf/services/aggregation/destroy'
     autoload :FindAggregations,       'ld4l/ore_rdf/services/aggregation/find'
     autoload :AddAggregatedResource,  'ld4l/ore_rdf/services/aggregation/add_aggregated_resource'
     autoload :AddAggregatedResources, 'ld4l/ore_rdf/services/aggregation/add_aggregated_resources'

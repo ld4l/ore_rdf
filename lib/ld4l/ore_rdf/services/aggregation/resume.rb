@@ -9,7 +9,12 @@ module LD4L
       #
       # @returns
       def self.call( id )
+        raise ArgumentError, 'id must be a local name string, uri string, or RDF::URI'  unless
+            id && ( id.kind_of?(String) || id.kind_of?(RDF::URI) )
+
         aggregation_resource = LD4L::OreRDF::AggregationResource.new(id)
+        return nil unless ActiveTriples::Resource.uri_persisted?(aggregation_resource.rdf_subject)
+
         proxy_resources = LD4L::OreRDF::FindProxies.call(
             :aggregation => aggregation_resource,
             :repository  => LD4L::OreRDF::ProxyResource.repository,

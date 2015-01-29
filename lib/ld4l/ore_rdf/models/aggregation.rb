@@ -10,12 +10,16 @@ module LD4L
       def initialize(*args)
         new_args = args[0].dup unless args.empty?
         unless args.empty?
-          new_args[:items]     = new_args[:proxy_resources]      if new_args.is_a?(Hash) && new_args.key?(:proxies)
+          new_args[:items]     = new_args[:proxy_resources]      if new_args.is_a?(Hash) && new_args.key?(:proxy_resources)
           new_args[:list_info] = new_args[:aggregation_resource] if new_args.is_a?(Hash) && new_args.key?(:aggregation_resource)
           new_args.delete(:proxy_resources)
           new_args.delete(:aggregation_resource)
         end
         super(new_args)
+      end
+
+      def id
+        list_info.rdf_subject.to_s
       end
 
       def title
@@ -35,6 +39,10 @@ module LD4L
       def proxy_resources
         @list
       end
+
+#       def self.model_name
+#         ActiveModel::Name.new(LD4L::OreRDF::Aggregation)
+#       end
 
     end
   end

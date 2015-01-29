@@ -17,9 +17,9 @@ module LD4L
       #                - full URI   - [String, RDF::URI] used as passed in
       #                - partial id - [String] uri generated from base_uri + localname_prefix + id
       #                - nil        - uri generated from base_uri + localname_prefix + minted localname
-      # @option options [String] :title - title of the aggregation
-      # @option options [String] :description - description of the aggregation
-      # @option options [String, LD4L::FoafRDF::Person] :owner - owner of the aggregation
+      # @option options [String] :title - title of the aggregation (optional)
+      # @option options [String] :description - description of the aggregation (optional)
+      # @option options [String, LD4L::FoafRDF::Person] :owner - owner of the aggregation (optional)
       #
       # @returns an instance of the new aggregation (not persisted)
       def self.call( options = {} )
