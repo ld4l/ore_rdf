@@ -1,4 +1,3 @@
-require 'pry'
 module LD4L
   module OreRDF
     class DestroyAggregation
@@ -23,7 +22,6 @@ module LD4L
         return true unless ActiveTriples::Resource.uri_persisted?(aggregation.aggregation_resource.rdf_subject)
 
         # have to get actual persisted proxy resources since the ones in the object may not have been persisted
-# binding.pry
         proxy_resources = LD4L::OreRDF::FindProxies.call(
             :aggregation => aggregation.aggregation_resource,
             :repository  => LD4L::OreRDF::ProxyResource.repository,
