@@ -22,7 +22,7 @@ module LD4L
         )
         LD4L::OreRDF::Aggregation.new(
             :aggregation_resource => aggregation_resource,
-            :proxy_resources      => proxy_resources)
+            :proxy_resources      => proxy_resources.values)
       end
     end
   end
