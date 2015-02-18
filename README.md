@@ -16,19 +16,16 @@ Temporary get the gem from github until the gem is released publicly.
 
 Add this line to your application's Gemfile:
 
-<!--    gem 'ld4l-ore_rdf' -->
-    gem 'ld4l-ore_rdf', '~> 0.0.3', :git => 'git@github.com:ld4l/ore_rdf.git'
+gem 'ld4l-ore_rdf'
     
 
 And then execute:
 
     $ bundle install
 
-<!--
 Or install it yourself as:
 
     $ gem install ld4l-ore_rdf
--->
 
 
 ## Usage
@@ -108,7 +105,7 @@ LD4L::OreRDF.configure do |config|
 end
 
 a = LD4L::OreRDF::AggregationResource.new(ActiveTriples::LocalName::Minter.generate_local_name(
-              LD4L::OreRDF::AggregationResource, 10, {:prefix=>'a'} ))
+              LD4L::OreRDF::AggregationResource, 10, {:prefix=>'ag'} ))
 
 puts a.dump :ttl
 ```
@@ -117,10 +114,9 @@ NOTE: If base_uri is not used, you need to restart your interactive environment 
   through the main Examples, the base_uri was set to the default base_uri.
 
 
-*Example triples created for a person with configured base_uri and default minter.*
+*Example triples created for an aggregation with configured base_uri and default minter.*
 ```
-# TODO Update Type URI
-<http://example.org/a45c9c85b-25af-4c52-96a4-cf0d8b70a768> a <http://www.w3.org/ns/oa#Annotation> .
+<http://example.org/ag45c9c85b-25af-4c52-96a4-cf0d8b70a768> a <http://www.openarchives.org/ore/terms/Aggregation> .
 ```
 
 *Example usage using configured base_uri and configured localname_minter.*
@@ -131,7 +127,7 @@ LD4L::OreRDF.configure do |config|
 end
 
 a = LD4L::OreRDF::AggregationResource.new(ActiveTriples::LocalName::Minter.generate_local_name(
-              LD4L::OreRDF::AggregationResource, 10, 'a',
+              LD4L::OreRDF::AggregationResource, 10, 'ag',
               &LD4L::OreRDF.configuration.localname_minter ))
 
 puts a.dump :ttl
@@ -141,11 +137,10 @@ NOTE: If base_uri is not used, you need to restart your interactive environment 
   through the main Examples, the base_uri was set to the default base_uri.
 
 
-*Example triples created for a person with configured base_uri and configured minter.*
+*Example triples created for an aggregation with configured base_uri and configured minter.*
 ```
-# TODO Update Type URI
-<http://example.org/a_configured_6498ba05-8b21-4e8c-b9d4-a6d5d2180966> a <http://www.w3.org/ns/oa#Annotation> .
-```
+<http://example.org/ag_configured_6498ba05-8b21-4e8c-b9d4-a6d5d2180966> a <http://www.openarchives.org/ore/terms/Aggregation> .
+   ```
 
 
 ### Models
@@ -159,7 +154,7 @@ The LD4L::OreRDF gem provides model definitions using the
 
 ### Ontologies
 
-The listed ontologies are used to represent the primary metadata about the person.
+The listed ontologies are used to represent the primary metadata about aggregation lists.
 Other ontologies may also be used that aren't listed.
  
 * [ORE](http://www.openarchives.org/ore/1.0/vocabulary)
