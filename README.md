@@ -1,7 +1,7 @@
 #LD4L::OreRDF
 
-[![Build Status](https://travis-ci.org/ld4l/ore_rdf.png?branch=rework_with_service_objects)](https://travis-ci.org/ld4l/ore_rdf) 
-[![Coverage Status](https://coveralls.io/repos/ld4l/ore_rdf/badge.png?branch=rework_with_service_objects)](https://coveralls.io/r/ld4l/ore_rdf?branch=rework_with_service_objects)
+[![Build Status](https://travis-ci.org/ld4l/ore_rdf.png?branch=master)](https://travis-ci.org/ld4l/ore_rdf) 
+[![Coverage Status](https://coveralls.io/repos/ld4l/ore_rdf/badge.png?branch=master)](https://coveralls.io/r/ld4l/ore_rdf?branch=master)
 [![Gem Version](https://badge.fury.io/rb/ld4l-ore_rdf.svg)](http://badge.fury.io/rb/ld4l-ore_rdf)
 [![Dependency Status](https://www.versioneye.com/ruby/ld4l-ore_rdf/0.0.3/badge.svg)](https://www.versioneye.com/ruby/ld4l-ore_rdf/0.0.3)
 
