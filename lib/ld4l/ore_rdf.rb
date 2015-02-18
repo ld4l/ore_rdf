@@ -2,6 +2,7 @@ require 'rdf'
 require 'active_triples'
 require 'active_triples/local_name'
 require	'linkeddata'
+require 'doubly_linked_list'
 require 'ld4l/foaf_rdf'
 require 'ld4l/ore_rdf/version'
 require 'ld4l/ore_rdf/vocab/ore'
@@ -30,15 +31,30 @@ module LD4L
 
 
     # RDF vocabularies
-    autoload :DCTERMS,               'ld4l/ore_rdf/vocab/dcterms'
-    autoload :IANA,                  'ld4l/ore_rdf/vocab/iana'
-    autoload :ORE,                   'ld4l/ore_rdf/vocab/ore'
+    autoload :DCTERMS,                'ld4l/ore_rdf/vocab/dcterms'
+    autoload :IANA,                   'ld4l/ore_rdf/vocab/iana'
+    autoload :ORE,                    'ld4l/ore_rdf/vocab/ore'
 
 
     # autoload classes
-    autoload :Configuration,         'ld4l/ore_rdf/configuration'
-    autoload :Aggregation,           'ld4l/ore_rdf/aggregation'
-    autoload :Proxy,                 'ld4l/ore_rdf/proxy'
+    autoload :Configuration,          'ld4l/ore_rdf/configuration'
+
+    # autoload model classes
+    autoload :Aggregation,            'ld4l/ore_rdf/models/aggregation'
+    autoload :AggregationResource,    'ld4l/ore_rdf/models/aggregation_resource'
+    autoload :ProxyResource,          'ld4l/ore_rdf/models/proxy_resource'
+
+    # autoload service classes
+    autoload :CreateAggregation,      'ld4l/ore_rdf/services/aggregation/create'
+    autoload :PersistAggregation,     'ld4l/ore_rdf/services/aggregation/persist'
+    autoload :ResumeAggregation,      'ld4l/ore_rdf/services/aggregation/resume'
+    autoload :DestroyAggregation,     'ld4l/ore_rdf/services/aggregation/destroy'
+    autoload :FindAggregations,       'ld4l/ore_rdf/services/aggregation/find'
+    autoload :AddAggregatedResource,  'ld4l/ore_rdf/services/aggregation/add_aggregated_resource'
+    autoload :AddAggregatedResources, 'ld4l/ore_rdf/services/aggregation/add_aggregated_resources'
+
+    autoload :CreateProxy,            'ld4l/ore_rdf/services/proxy/create'
+    autoload :FindProxies,            'ld4l/ore_rdf/services/proxy/find'
 
     def self.class_from_string(class_name, container_class=Kernel)
       container_class = container_class.name if container_class.is_a? Module
