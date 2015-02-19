@@ -16,6 +16,11 @@ module LD4L
         raise ArgumentError, 'aggregation must be an LD4L::OreRDF::Aggregation'  unless
             aggregation && aggregation.kind_of?(LD4L::OreRDF::Aggregation)
 
+        # TODO Probably shouldn't be ArgumentError
+        raise ArgumentError, "title is required" unless
+            aggregation.title && aggregation.title.first && aggregation.title.first.kind_of?(String) &&
+            aggregation.title.first.size > 0
+
         count = 0
         agg_persisted = aggregation.aggregation_resource.persist!
         aggregation.proxy_resources.each { |proxy| count += 1 if proxy.persist! }  if agg_persisted
