@@ -8,7 +8,7 @@ module LD4L
       # resource.
       #
       # @param [LD4L::OreRDF::Aggregation] :aggregation to which to add resource
-      # @param [Array<RDF::URI>] resources - array of URIs for the resources to be aggregated
+      # @param [Array<String>] resources - array of URIs for the resources to be aggregated
       # @param [insert_position] :position from beginning of the list of proxies when positive; position from the
       #    end of the list of proxies when negative
       #

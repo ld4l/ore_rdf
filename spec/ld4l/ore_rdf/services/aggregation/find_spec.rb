@@ -109,7 +109,7 @@ describe 'LD4L::OreRDF::FindAggregations' do
 
       it "should find aggregation by rdf uri criteria (aka aggregates)" do
         aggregations = LD4L::OreRDF::FindAggregations.call(
-            :criteria => { RDFVocabularies::ORE.aggregates => RDF::URI("http://example.org/individual/b32")})
+            :criteria => { RDFVocabularies::ORE.aggregates => "http://example.org/individual/b32"})
         expect(aggregations).not_to include "http::/example.org/ag1"
         expect(aggregations).not_to include "http::/example.org/ag2"
         expect(aggregations).to include "http::/example.org/ag3"

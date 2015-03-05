@@ -6,7 +6,7 @@ module LD4L
       # Create an ore proxy in one step passing in the required information.
       #
       # @param [Hash] options the options to use while generating the proxy
-      # @option options [LD4L::OreRDF::AggregationResource] :aggregation - aggregation to which the resource is being added (required)
+      # @option options [LD4L::OreRDF::Aggregation] :aggregation - abstract aggregation to which the resource is being added (required)
       # @option options [String, RDF::URI] :resource - resource uri for the resource being added to the aggregation (required)
       # @option options [String, RDF::URI] :id - uri or localname to use for the rdf_subject of the new proxy (optional)(default - mint)
       #                - full URI   - [String, RDF::URI] used as passed in
@@ -29,8 +29,8 @@ module LD4L
         raise ArgumentError, "resource must be either a string representation of an URI or an instance of RDF::URI" unless
             resource.kind_of?(String) || resource.kind_of?(RDF::URI)
 
-        # make sure resource is an RDF::URI
-        resource = RDF::URI(resource)  unless  resource.kind_of?(RDF::URI)
+        # make sure resource is a String - HANGING ERROR will occur if set as RDF::URI
+        resource = resource.to_s  if  resource.kind_of?(RDF::URI)
 
         # mint an id if needed
         id  = options[:id] ||

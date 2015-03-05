@@ -122,44 +122,44 @@ describe 'LD4L::OreRDF::AggregationResource' do
     end
 
     it "should be set to a URI producing an ActiveTriple::Resource" do
-      subject.aggregates = RDF::URI("http://example.org/individual/b1")
-      expect(subject.aggregates.first).to be_a ActiveTriples::Resource
+      subject.aggregates = "http://example.org/individual/b1"
+      expect(subject.aggregates.first).to be_a String
+      expect(subject.aggregates.first).to eq "http://example.org/individual/b1"
     end
 
     it "should be settable" do
-      subject.aggregates = RDF::URI("http://example.org/individual/b1")
-      expect(subject.aggregates.first.rdf_subject).to eq RDF::URI("http://example.org/individual/b1")
-      ['id']
+      subject.aggregates = "http://example.org/individual/b1"
+      expect(subject.aggregates.first).to eq "http://example.org/individual/b1"
     end
 
     it "should be settable to multiple values" do
-      bib1 = RDF::URI("http://example.org/individual/b1")
-      bib2 = RDF::URI("http://example.org/individual/b2")
-      bib3 = RDF::URI("http://example.org/individual/b3")
+      bib1 = "http://example.org/individual/b1"
+      bib2 = "http://example.org/individual/b2"
+      bib3 = "http://example.org/individual/b3"
       subject.aggregates = bib1
       subject.aggregates << bib2
       subject.aggregates << bib3
-      expect(subject.aggregates[0].rdf_subject).to eq bib1
-      expect(subject.aggregates[1].rdf_subject).to eq bib2
-      expect(subject.aggregates[2].rdf_subject).to eq bib3
+      expect(subject.aggregates[0]).to eq bib1
+      expect(subject.aggregates[1]).to eq bib2
+      expect(subject.aggregates[2]).to eq bib3
     end
 
     it "should be changeable" do
-      orig_bib = RDF::URI("http://example.org/individual/b1")
-      new_bib  = RDF::URI("http://example.org/individual/b1_NEW")
+      orig_bib = "http://example.org/individual/b1"
+      new_bib  = "http://example.org/individual/b1_NEW"
       subject.aggregates = orig_bib
       subject.aggregates = new_bib
-      expect(subject.aggregates.first.rdf_subject).to eq new_bib
+      expect(subject.aggregates.first).to eq new_bib
     end
 
     it "should be changeable for multiple values" do
-      orig_bib1 = RDF::URI("http://example.org/individual/b1")
-      orig_bib2 = RDF::URI("http://example.org/individual/b2")
-      orig_bib3 = RDF::URI("http://example.org/individual/b3")
+      orig_bib1 = "http://example.org/individual/b1"
+      orig_bib2 = "http://example.org/individual/b2"
+      orig_bib3 = "http://example.org/individual/b3"
 
-      new_bib1 = RDF::URI("http://example.org/individual/b1_NEW")
-      new_bib2 = RDF::URI("http://example.org/individual/b2_NEW")
-      new_bib3 = RDF::URI("http://example.org/individual/b3_NEW")
+      new_bib1 = "http://example.org/individual/b1_NEW"
+      new_bib2 = "http://example.org/individual/b2_NEW"
+      new_bib3 = "http://example.org/individual/b3_NEW"
 
       subject.aggregates = orig_bib1
       subject.aggregates << orig_bib2
@@ -171,20 +171,20 @@ describe 'LD4L::OreRDF::AggregationResource' do
       aggregates[2] = new_bib3
       subject.aggregates = aggregates
 
-      expect(subject.aggregates[0].rdf_subject).to eq new_bib1
-      # expect(subject.aggregates[1].rdf_subject).to eq new_bib2
-      expect(subject.aggregates[1].rdf_subject).to eq orig_bib2
-      expect(subject.aggregates[2].rdf_subject).to eq new_bib3
+      expect(subject.aggregates[0]).to eq new_bib1
+      # expect(subject.aggregates[1]).to eq new_bib2
+      expect(subject.aggregates[1]).to eq orig_bib2
+      expect(subject.aggregates[2]).to eq new_bib3
     end
 
     it "should be directly changeable for multiple values" do
-      orig_bib1 = RDF::URI("http://example.org/individual/b1")
-      orig_bib2 = RDF::URI("http://example.org/individual/b2")
-      orig_bib3 = RDF::URI("http://example.org/individual/b3")
+      orig_bib1 = "http://example.org/individual/b1"
+      orig_bib2 = "http://example.org/individual/b2"
+      orig_bib3 = "http://example.org/individual/b3"
 
-      new_bib1 = RDF::URI("http://example.org/individual/b1_NEW")
-      new_bib2 = RDF::URI("http://example.org/individual/b2_NEW")
-      new_bib3 = RDF::URI("http://example.org/individual/b3_NEW")
+      new_bib1 = "http://example.org/individual/b1_NEW"
+      new_bib2 = "http://example.org/individual/b2_NEW"
+      new_bib3 = "http://example.org/individual/b3_NEW"
 
       subject.aggregates = orig_bib1
       subject.aggregates << orig_bib2
@@ -194,10 +194,10 @@ describe 'LD4L::OreRDF::AggregationResource' do
       # subject.aggregates[1] = new_bib2
       subject.aggregates[2] = new_bib3
 
-      expect(subject.aggregates[0].rdf_subject).to eq new_bib1
-      # expect(subject.aggregates[1].rdf_subject).to eq new_bib2
-      expect(subject.aggregates[1].rdf_subject).to eq orig_bib2
-      expect(subject.aggregates[2].rdf_subject).to eq new_bib3
+      expect(subject.aggregates[0]).to eq new_bib1
+      # expect(subject.aggregates[1]).to eq new_bib2
+      expect(subject.aggregates[1]).to eq orig_bib2
+      expect(subject.aggregates[2]).to eq new_bib3
     end
   end
 
@@ -381,9 +381,9 @@ describe 'LD4L::OreRDF::AggregationResource' do
           end
           results = []
           vci_array.each { |vci| results << vci.proxy_for.first }
-          expect(results).to include ActiveTriples::Resource.new(RDF::URI("http://example.org/individual/b1"))
-          expect(results).to include ActiveTriples::Resource.new(RDF::URI("http://example.org/individual/b2"))
-          expect(results).to include ActiveTriples::Resource.new(RDF::URI("http://example.org/individual/b3"))
+          expect(results).to include "http://example.org/individual/b1"
+          expect(results).to include "http://example.org/individual/b2"
+          expect(results).to include "http://example.org/individual/b3"
           expect(vci_array.size).to eq(3)
         end
 

@@ -16,19 +16,19 @@ describe 'LD4L::OreRDF::AggregationResource::AddAggregatedResource' do
     it "should add a single resource to an empty set" do
       subject.aggregates = []
       LD4L::OreRDF::AddAggregatedResource.call( subject, RDF::URI("http://example.org/individual/b1") )
-      expect(subject.aggregates.first.rdf_subject).to eq RDF::URI("http://example.org/individual/b1")
+      expect(subject.aggregates.first).to eq "http://example.org/individual/b1"
     end
 
     it "should add a single resource to an existing set" do
-      subject.aggregates = RDF::URI("http://example.org/individual/b1" )
+      subject.aggregates = "http://example.org/individual/b1"
       LD4L::OreRDF::AddAggregatedResource.call( subject, RDF::URI("http://example.org/individual/b2") )
-      expect(subject.aggregates[0].rdf_subject).to eq RDF::URI("http://example.org/individual/b1")
-      expect(subject.aggregates[1].rdf_subject).to eq RDF::URI("http://example.org/individual/b2")
+      expect(subject.aggregates[0]).to eq "http://example.org/individual/b1"
+      expect(subject.aggregates[1]).to eq "http://example.org/individual/b2"
     end
 
     it "should generate the resource instance for a single resource" do
       proxy = LD4L::OreRDF::AddAggregatedResource.call( subject, RDF::URI("http://example.org/individual/b1" ))
-      expect(proxy.proxy_for.first.rdf_subject).to eq RDF::URI("http://example.org/individual/b1")
+      expect(proxy.proxy_for.first).to eq "http://example.org/individual/b1"
       expect(proxy.proxy_in.first).to eq subject.aggregation_resource
     end
   end

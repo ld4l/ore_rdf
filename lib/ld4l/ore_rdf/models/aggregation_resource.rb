@@ -26,7 +26,7 @@ module LD4L
       property :owner,       :predicate => RDFVocabularies::DCTERMS.creator, :class_name => LD4L::FoafRDF::Person
 
       # properties from ORE.Aggregation
-      property :aggregates,   :predicate => RDFVocabularies::ORE.aggregates   # multiple values
+      property :aggregates,   :predicate => RDFVocabularies::ORE.aggregates, :cast => false  # multiple values
       property :first_proxy,  :predicate => RDFVocabularies::IANA.first,     :class_name => LD4L::OreRDF::ProxyResource
       property :last_proxy,   :predicate => RDFVocabularies::IANA.last,      :class_name => LD4L::OreRDF::ProxyResource
 

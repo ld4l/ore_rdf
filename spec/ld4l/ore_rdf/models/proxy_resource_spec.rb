@@ -68,16 +68,16 @@ describe 'LD4L::OreRDF::ProxyResource' do
     end
 
     it "should be settable" do
-      subject.proxy_for = RDF::URI("http://example.org/b1")
-      expect(subject.proxy_for.first.rdf_subject).to eq RDF::URI("http://example.org/b1")
+      subject.proxy_for = "http://example.org/b1"
+      expect(subject.proxy_for.first).to eq "http://example.org/b1"
     end
 
     it "should be changeable" do
-      orig_proxy_for = RDF::URI("http://example.org/b1")
-      new_proxy_for  = RDF::URI("http://example.org/b1_NEW")
+      orig_proxy_for = "http://example.org/b1"
+      new_proxy_for  = "http://example.org/b1_NEW"
       subject.proxy_for = orig_proxy_for
       subject.proxy_for = new_proxy_for
-      expect(subject.proxy_for.first.rdf_subject).to eq new_proxy_for
+      expect(subject.proxy_for.first).to eq new_proxy_for
     end
   end
 
@@ -289,9 +289,9 @@ describe 'LD4L::OreRDF::ProxyResource' do
           end
           results = []
           vci_array.each { |vci| results << vci.proxy_for.first }
-          expect(results).to include ActiveTriples::Resource.new(RDF::URI("http://example.org/individual/b1"))
-          expect(results).to include ActiveTriples::Resource.new(RDF::URI("http://example.org/individual/b2"))
-          expect(results).to include ActiveTriples::Resource.new(RDF::URI("http://example.org/individual/b3"))
+          expect(results).to include "http://example.org/individual/b1"
+          expect(results).to include "http://example.org/individual/b2"
+          expect(results).to include "http://example.org/individual/b3"
           expect(vci_array.size).to eq(3)
         end
 
@@ -390,7 +390,7 @@ describe 'LD4L::OreRDF::ProxyResource' do
           subject.contributor = "John Smith"
           an_aggregation = LD4L::OreRDF::AggregationResource.new('1')
           subject.proxy_in = an_aggregation
-          subject.proxy_for = RDF::URI("http://example.org/b1")
+          subject.proxy_for = "http://example.org/b1"
           subject.persist!
         end
 

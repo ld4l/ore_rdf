@@ -36,9 +36,9 @@ describe 'LD4L::OreRDF::AddAggregatedResources' do
            RDF::URI("http://example.org/individual/b2"),
            RDF::URI("http://example.org/individual/b3")])
       aggregates = subject.aggregates
-      expect(aggregates).to include ActiveTriples::Resource.new(RDF::URI("http://example.org/individual/b1"))
-      expect(aggregates).to include ActiveTriples::Resource.new(RDF::URI("http://example.org/individual/b2"))
-      expect(aggregates).to include ActiveTriples::Resource.new(RDF::URI("http://example.org/individual/b3"))
+      expect(aggregates).to include "http://example.org/individual/b1"
+      expect(aggregates).to include "http://example.org/individual/b2"
+      expect(aggregates).to include "http://example.org/individual/b3"
     end
 
     it "should add multiple resources to an existing set" do
@@ -49,10 +49,10 @@ describe 'LD4L::OreRDF::AddAggregatedResources' do
            RDF::URI("http://example.org/individual/b3"),
            RDF::URI("http://example.org/individual/b4")])
       aggregates = subject.aggregates
-      expect(aggregates).to include ActiveTriples::Resource.new(RDF::URI("http://example.org/individual/b1"))
-      expect(aggregates).to include ActiveTriples::Resource.new(RDF::URI("http://example.org/individual/b2"))
-      expect(aggregates).to include ActiveTriples::Resource.new(RDF::URI("http://example.org/individual/b3"))
-      expect(aggregates).to include ActiveTriples::Resource.new(RDF::URI("http://example.org/individual/b4"))
+      expect(aggregates).to include "http://example.org/individual/b1"
+      expect(aggregates).to include "http://example.org/individual/b2"
+      expect(aggregates).to include "http://example.org/individual/b3"
+      expect(aggregates).to include "http://example.org/individual/b4"
     end
 
     it "should return an array of resource instances for each of the multiple resources" do
@@ -69,9 +69,9 @@ describe 'LD4L::OreRDF::AddAggregatedResources' do
       proxy_array.each do |proxy|
         results << proxy.proxy_for.first
       end
-      expect(results).to include ActiveTriples::Resource.new(RDF::URI("http://example.org/individual/b1"))
-      expect(results).to include ActiveTriples::Resource.new(RDF::URI("http://example.org/individual/b2"))
-      expect(results).to include ActiveTriples::Resource.new(RDF::URI("http://example.org/individual/b3"))
+      expect(results).to include "http://example.org/individual/b1"
+      expect(results).to include "http://example.org/individual/b2"
+      expect(results).to include "http://example.org/individual/b3"
     end
   end
 

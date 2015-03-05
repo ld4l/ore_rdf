@@ -8,7 +8,7 @@ module LD4L
       # configure :base_uri => LD4L::OreRDF.configuration.base_uri, repository => :default
       configure :type => RDFVocabularies::ORE.Proxy, :base_uri => LD4L::OreRDF.configuration.base_uri, :repository => :default
 
-      property :proxy_for,     :predicate => RDFVocabularies::ORE.proxyFor
+      property :proxy_for,     :predicate => RDFVocabularies::ORE.proxyFor,  :cast => false
       property :proxy_in,      :predicate => RDFVocabularies::ORE.proxyIn,   :class_name => LD4L::OreRDF::AggregationResource
       property :next_proxy,    :predicate => RDFVocabularies::IANA.next,     :class_name => LD4L::OreRDF::ProxyResource
       property :prev_proxy,    :predicate => RDFVocabularies::IANA.prev,     :class_name => LD4L::OreRDF::ProxyResource

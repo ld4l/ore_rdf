@@ -30,7 +30,7 @@ describe 'LD4L::OreRDF::CreateProxy' do
         proxy = LD4L::OreRDF::CreateProxy.call(
             resource:    RDF::URI("http://example.org/individual/b1"),
             aggregation: aggregation)
-        expect(proxy.proxy_for.first.rdf_subject.to_s).to eq "http://example.org/individual/b1"
+        expect(proxy.proxy_for.first).to eq "http://example.org/individual/b1"
         expect(proxy.proxy_in.first).to eq aggregation.aggregation_resource
         expect(proxy.next_proxy).to eq []
         expect(proxy.prev_proxy).to eq []
@@ -58,7 +58,7 @@ describe 'LD4L::OreRDF::CreateProxy' do
             id:          "123",
             resource:    RDF::URI("http://example.org/individual/b1"),
             aggregation: aggregation)
-        expect(proxy.proxy_for.first.rdf_subject.to_s).to eq "http://example.org/individual/b1"
+        expect(proxy.proxy_for.first).to eq "http://example.org/individual/b1"
         expect(proxy.proxy_in.first).to eq aggregation.aggregation_resource
         expect(proxy.next_proxy).to eq []
         expect(proxy.prev_proxy).to eq []
@@ -86,7 +86,7 @@ describe 'LD4L::OreRDF::CreateProxy' do
             id:          "http://example.org/individual/ag123",
             resource:    RDF::URI("http://example.org/individual/b1"),
             aggregation: aggregation)
-        expect(proxy.proxy_for.first.rdf_subject.to_s).to eq "http://example.org/individual/b1"
+        expect(proxy.proxy_for.first).to eq "http://example.org/individual/b1"
         expect(proxy.proxy_in.first).to eq aggregation.aggregation_resource
         expect(proxy.next_proxy).to eq []
         expect(proxy.prev_proxy).to eq []

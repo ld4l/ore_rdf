@@ -50,7 +50,7 @@ p = LD4L::FoafRDF::Person.new('p4')
 agg10 = LD4L::OreRDF::CreateAggregation.call( :id=>'agg10', :title=>'My Resources', :description=>'Resources that I like', :owner=>p )
 
 LD4L::OreRDF::AddAggregatedResource.call( agg10,'http://exmple.org/resource_1')
-LD4L::OreRDF::AddAggregatedResource.call( agg10'http://exmple.org/resource_2')
+LD4L::OreRDF::AddAggregatedResource.call( agg10,'http://exmple.org/resource_2')
 LD4L::OreRDF::AddAggregatedResource.call( agg10,'http://exmple.org/resource_3')
 
 LD4L::OreRDF::PersistAggregation.call(agg10)

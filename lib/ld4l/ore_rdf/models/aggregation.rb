@@ -3,6 +3,38 @@ module LD4L
   module OreRDF
     class Aggregation < DoublyLinkedList
 
+      @@clear_first_callback  = lambda { |aggregation| aggregation.first_proxy = [] }
+      @@clear_last_callback   = lambda { |aggregation| aggregation.last_proxy  = [] }
+      @@update_first_callback = lambda { |aggregation, proxies| aggregation.first_proxy = proxies.first }
+      @@update_last_callback  = lambda { |aggregation, proxies| aggregation.last_proxy  = proxies.last }
+
+      @@clear_next_callback   = lambda { |proxies, idx| proxies[idx].next_proxy = [] }
+      @@clear_prev_callback   = lambda { |proxies, idx| proxies[idx].prev_proxy = [] }
+      @@update_next_callback  = lambda { |proxies, idx| proxies[idx].next_proxy = proxies[idx+1] }
+      @@update_prev_callback  = lambda { |proxies, idx| proxies[idx].prev_proxy = proxies[idx-1] }
+
+      @@find_first_callback   = lambda do |aggregation, proxies|
+        first_proxy = aggregation.first_proxy
+        return first_proxy.first   if first_proxy && !first_proxy.empty?
+
+        # if first isn't set, try to figure out first by looking for an item with prev_proxy == nil
+        # NOTE: If multiple items have prev_proxy == nil, it will return the first one it finds.
+        first_idx = proxies.index { |proxy| proxy.prev_proxy == [] }
+        first_idx ? proxies[first_idx] : nil
+      end
+      @@find_last_callback    = lambda do |aggregation, proxies|
+        last_proxy = aggregation.last_proxy
+        return last_proxy.first   if last_proxy && !last_proxy.empty?
+
+        # if last isn't set, try to figure out last by looking for an item with next_proxy == nil
+        # NOTE: If multiple items have next_proxy == nil, it will return the first one it finds.
+        last_idx = proxies.index { |proxy| proxy.next_proxy == [] }
+        last_idx ? proxies[last_idx] : nil
+      end
+      @@find_next_callback    = lambda { |proxies, current_proxy| current_proxy.next_proxy.first }
+      @@find_prev_callback    = lambda { |proxies, current_proxy| current_proxy.prev_proxy.first }
+
+
       def self.initialize
         super
       end
@@ -15,6 +47,24 @@ module LD4L
           new_args.delete(:proxy_resources)
           new_args.delete(:aggregation_resource)
         end
+        new_args = {}  if args.empty?
+
+        # set callbacks
+        new_args[:clear_first_callback]  = @@clear_first_callback
+        new_args[:clear_last_callback]   = @@clear_last_callback
+        new_args[:update_first_callback] = @@update_first_callback
+        new_args[:update_last_callback]  = @@update_last_callback
+
+        new_args[:clear_next_callback]   = @@clear_next_callback
+        new_args[:clear_prev_callback]   = @@clear_prev_callback
+        new_args[:update_next_callback]  = @@update_next_callback
+        new_args[:update_prev_callback]  = @@update_prev_callback
+
+        new_args[:find_first_callback]   = @@find_first_callback
+        new_args[:find_last_callback]    = @@find_last_callback
+        new_args[:find_next_callback]    = @@find_next_callback
+        new_args[:find_prev_callback]    = @@find_prev_callback
+
         super(new_args)
       end
 

@@ -40,8 +40,8 @@ describe 'LD4L::OreRDF::FindProxies' do
         expect(proxies.size).to eq 1
         expect(proxies.first).to be_a_kind_of RDF::URI
         pr = LD4L::OreRDF::ProxyResource.new(proxies.first)
-        expect(pr.proxy_in.first.rdf_subject).to eq RDF::URI("http::/example.org/ag1")
-        expect(pr.proxy_for.first.rdf_subject).to eq RDF::URI("http://example.org/individual/b11")
+        expect(pr.proxy_in.first.rdf_subject.to_s).to eq "http::/example.org/ag1"
+        expect(pr.proxy_for.first).to eq "http://example.org/individual/b11"
       end
     end
 
@@ -108,11 +108,11 @@ describe 'LD4L::OreRDF::FindProxies' do
       it "should find proxies by criteria (aka proxy_for)" do
         proxies = LD4L::OreRDF::FindProxies.call(
             :aggregation => 'http::/example.org/ag2',
-            :criteria => { RDFVocabularies::ORE.proxyFor => RDF::URI("http://example.org/individual/b22") } )
+            :criteria => { RDFVocabularies::ORE.proxyFor => "http://example.org/individual/b22" } )
         expect(proxies.size).to eq 1
         expect(proxies.first).to be_a_kind_of RDF::URI
         pr = LD4L::OreRDF::ProxyResource.new(proxies.first)
-        expect(pr.proxy_for.first.rdf_subject).to eq RDF::URI("http://example.org/individual/b22")
+        expect(pr.proxy_for.first).to eq "http://example.org/individual/b22"
         expect(pr.proxy_in.first.rdf_subject).to eq RDF::URI("http::/example.org/ag2")
       end
 
@@ -124,12 +124,12 @@ describe 'LD4L::OreRDF::FindProxies' do
         proxies.each do |p|
           expect(p).to be_a_kind_of RDF::URI
           pr = LD4L::OreRDF::ProxyResource.new(p)
-          proxy_for << pr.proxy_for.first.rdf_subject
+          proxy_for << pr.proxy_for.first
           expect(pr.proxy_in.first.rdf_subject).to eq RDF::URI("http::/example.org/ag3")
         end
-        expect(proxy_for).to include RDF::URI("http://example.org/individual/b31")
-        expect(proxy_for).to include RDF::URI("http://example.org/individual/b32")
-        expect(proxy_for).to include RDF::URI("http://example.org/individual/b33")
+        expect(proxy_for).to include "http://example.org/individual/b31"
+        expect(proxy_for).to include "http://example.org/individual/b32"
+        expect(proxy_for).to include "http://example.org/individual/b33"
       end
 
     end
