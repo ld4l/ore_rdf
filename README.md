@@ -45,7 +45,8 @@ ActiveTriples::Repositories.add_repository :default, RDF::Repository.new
 p = LD4L::FoafRDF::Person.new('p4')
 ```
 
-#### Example: Aggregation with items individually
+*Example creating an aggregation with items individually.*
+
 ```
 agg10 = LD4L::OreRDF::CreateAggregation.call( :id=>'agg10', :title=>'My Resources', :description=>'Resources that I like', :owner=>p )
 
@@ -55,13 +56,51 @@ LD4L::OreRDF::AddAggregatedResource.call( agg10,'http://exmple.org/resource_3')
 
 LD4L::OreRDF::PersistAggregation.call(agg10)
 
-puts agg10.dump :ttl
-
 # To resume the aggregation at a later time, use...
 agg = LD4L::OreRDF::ResumeAggregation.call( 'agg10' )
 ```
+*Example triples created for an aggregation.*
 
-#### Example: Aggregation with items as array
+```
+puts agg.dump :ttl
+
+<http://localhost/agg10> a <http://www.openarchives.org/ore/terms/Aggregation>;
+   <http://purl.org/dc/terms/title> "My Resources";
+   <http://purl.org/dc/terms/creator> <http://localhost/p4>;
+   <http://purl.org/dc/terms/description> "Resources that I like";
+   <http://www.iana.org/assignments/relation/first> <http://localhost/pxeff9a617-ab30-4d7e-971f-825032a597b0>;
+   <http://www.iana.org/assignments/relation/last> <http://localhost/pxd6577d16-7565-46c7-8b0f-31e7816b0e57>;
+   <http://www.openarchives.org/ore/terms/aggregates> "http://exmple.org/resource_1",
+     "http://exmple.org/resource_2",
+     "http://exmple.org/resource_3" .
+```
+
+*Example triples created for each proxy in the list.*
+```
+puts agg.first_proxy.first.dump :ttl
+
+<http://localhost/pxeff9a617-ab30-4d7e-971f-825032a597b0> a <http://www.openarchives.org/ore/terms/Proxy>;
+   <http://www.iana.org/assignments/relation/next> <http://localhost/px0f16c9de-7d97-406d-a81a-a501bc209f79>;
+   <http://www.openarchives.org/ore/terms/proxyFor> "http://exmple.org/resource_1";
+   <http://www.openarchives.org/ore/terms/proxyIn> <http://localhost/agg10> .
+   
+puts agg.first_proxy.first.next_proxy.first.dump :ttl
+
+<http://localhost/px0f16c9de-7d97-406d-a81a-a501bc209f79> a <http://www.openarchives.org/ore/terms/Proxy>;
+   <http://www.iana.org/assignments/relation/next> <http://localhost/pxd6577d16-7565-46c7-8b0f-31e7816b0e57>;
+   <http://www.iana.org/assignments/relation/prev> <http://localhost/pxeff9a617-ab30-4d7e-971f-825032a597b0>;
+   <http://www.openarchives.org/ore/terms/proxyFor> "http://exmple.org/resource_2";
+   <http://www.openarchives.org/ore/terms/proxyIn> <http://localhost/agg10> .
+   
+puts agg.last_proxy.first.dump :ttl
+
+<http://localhost/pxd6577d16-7565-46c7-8b0f-31e7816b0e57> a <http://www.openarchives.org/ore/terms/Proxy>;
+   <http://www.iana.org/assignments/relation/prev> <http://localhost/px0f16c9de-7d97-406d-a81a-a501bc209f79>;
+   <http://www.openarchives.org/ore/terms/proxyFor> "http://exmple.org/resource_3";
+   <http://www.openarchives.org/ore/terms/proxyIn> <http://localhost/agg10> .
+```
+
+*Example creating an aggregation with items in an array.*
 ```
 agg11 = LD4L::OreRDF::CreateAggregation.call( :id=>'agg11', :title=>'More Resources', :description=>'More resources that I like', :owner=>p )
 
@@ -70,10 +109,49 @@ LD4L::OreRDF::AddAggregatedResources.call( agg11,resources)
 
 LD4L::OreRDF::PersistAggregation.call(agg11)
 
-puts agg11.dump :ttl
-
 # To resume the aggregation at a later time, use...
-agg = LD4L::OreRDF::ResumeAggregation.call( 'agg10' )
+agg = LD4L::OreRDF::ResumeAggregation.call( 'agg11' )
+```
+
+*Example triples created for an aggregation.*
+```
+puts agg.dump :ttl
+
+<http://localhost/agg11> a <http://www.openarchives.org/ore/terms/Aggregation>;
+   <http://purl.org/dc/terms/title> "More Resources";
+   <http://purl.org/dc/terms/creator> <http://localhost/p4>;
+   <http://purl.org/dc/terms/description> "More resources that I like";
+   <http://www.iana.org/assignments/relation/first> <http://localhost/pxcff53ec2-f406-422b-92e6-f603612c9856>;
+   <http://www.iana.org/assignments/relation/last> <http://localhost/px4788758e-640b-455c-91f8-10f3c255a72d>;
+   <http://www.openarchives.org/ore/terms/aggregates> 
+     "http://exmple.org/resource_5",
+     "http://exmple.org/resource_6",
+     "http://exmple.org/resource_7" .
+```
+
+*Example triples created for each proxy in the list.*
+```
+puts agg.first_proxy.first.dump :ttl
+
+<http://localhost/pxcff53ec2-f406-422b-92e6-f603612c9856> a <http://www.openarchives.org/ore/terms/Proxy>;
+   <http://www.iana.org/assignments/relation/next> <http://localhost/pxf7cd384a-2727-4201-8ebe-22c35302b6c0>;
+   <http://www.openarchives.org/ore/terms/proxyFor> "http://exmple.org/resource_5";
+   <http://www.openarchives.org/ore/terms/proxyIn> <http://localhost/agg11> .
+
+puts agg.first_proxy.first.next_proxy.first.dump :ttl
+
+<http://localhost/pxf7cd384a-2727-4201-8ebe-22c35302b6c0> a <http://www.openarchives.org/ore/terms/Proxy>;
+   <http://www.iana.org/assignments/relation/next> <http://localhost/px4788758e-640b-455c-91f8-10f3c255a72d>;
+   <http://www.iana.org/assignments/relation/prev> <http://localhost/pxcff53ec2-f406-422b-92e6-f603612c9856>;
+   <http://www.openarchives.org/ore/terms/proxyFor> "http://exmple.org/resource_6";
+   <http://www.openarchives.org/ore/terms/proxyIn> <http://localhost/agg11> .
+   
+puts agg.last_proxy.first.dump :ttl
+
+<http://localhost/px4788758e-640b-455c-91f8-10f3c255a72d> a <http://www.openarchives.org/ore/terms/Proxy>;
+   <http://www.iana.org/assignments/relation/prev> <http://localhost/pxf7cd384a-2727-4201-8ebe-22c35302b6c0>;
+   <http://www.openarchives.org/ore/terms/proxyFor> "http://exmple.org/resource_7";
+   <http://www.openarchives.org/ore/terms/proxyIn> <http://localhost/agg11> .
 ```
 
 #### Example: Find all aggregations
