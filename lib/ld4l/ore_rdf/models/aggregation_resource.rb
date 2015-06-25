@@ -92,16 +92,26 @@ module LD4L::OreRDF
       return false
     end
 
-    def generate_solr_document
+    ##
+    # Generate the solr document hash specific to a aggregation resource.
+    #
+    # @param [Array<LD4L::OreRDF::ProxyResource>] :all_proxies - pass in proxies instead of querying (optional)
+    #
+    # @returns [Hash] solr document
+    #
+    # NOTE: If all_proxies is [], then will try to query from triple store which means that if the proxies have not
+    #       yet been persisted, then they will not be found.
+    # NOTE: This method should not be called directory.  Use LD4L::OreRDF::Aggregation.generate_solr_documents instead.
+    def generate_solr_document( all_proxies=[] )
       solr_doc = ActiveTriples::Solrizer::IndexingService.new(self).generate_solr_document do |solr_doc|
         # TODO add owner_name and owner sort field
         # solr_doc.merge!(:owner_name_ti => owner.name)   # TODO add name to FOAF Gem
         # solr_doc.merge!(:owner_name_sort_ss => owner.name)
 
         # add all item_proxies
-        all_proxies = []
-        get_items.each { |item| all_proxies << item.rdf_subject.to_s }
-        solr_doc.merge!(:item_proxies_ssm => all_proxies)
+        all_proxies = get_items if all_proxies.empty?  # NOTE: get_items depends on aggregation_resource being persisted prior to this call
+        proxy_ids = all_proxies.collect { |item| item.id }
+        solr_doc.merge!(:item_proxies_ssm => proxy_ids)
         solr_doc
       end
       solr_doc

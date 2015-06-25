@@ -210,6 +210,70 @@ describe 'LD4L::OreRDF::AggregationResource' do
   #  START -- Test helper methods specific to this model
   # -----------------------------------------------------
 
+  describe '#generate_solr_document' do
+    let(:person) do
+      LD4L::FoafRDF::Person.new('http://example.org/person1')
+    end
+    let(:aggregation) do
+      LD4L::OreRDF::CreateAggregation.call( :id=>'http://example.org/moomin', :title=>'My Resources', :description=>'Resources that I like', :owner=>person )
+    end
+
+    context 'when aggregation has 0 proxies' do
+      it 'should return a solr doc with all fields' do
+        expected_solr_doc = {:id=>"http://example.org/moomin",
+                             :at_model_ssi=>"LD4L::OreRDF::AggregationResource",
+                             :object_profile_ss=>
+                                 "{\"id\":\"http://example.org/moomin\",\"title\":[\"My Resources\"],\"description\":[\"Resources that I like\"],\"owner\":\"http://example.org/person1\",\"aggregates\":[],\"first_proxy\":[],\"last_proxy\":[]}",
+                             :title_ti=>"My Resources",
+                             :title_sort_ss=>"My Resources",
+                             :description_tsi=>"Resources that I like",
+                             :owner_tsi=>"http://example.org/person1",
+                             :item_proxies_ssm=>[]}
+        expect(aggregation.aggregation_resource.generate_solr_document(aggregation.proxy_resources)).to eq expected_solr_doc
+      end
+    end
+
+    context 'when aggregation has proxies' do
+      before do
+        LD4L::OreRDF::PersistAggregation.call(aggregation)
+        aggregation = LD4L::OreRDF::ResumeAggregation.call( 'http://example.org/moomin' )
+      end
+
+      let(:proxies) do
+        [LD4L::OreRDF::AddAggregatedResource.call( aggregation,'http://example.org/resource_1'),
+         LD4L::OreRDF::AddAggregatedResource.call( aggregation,'http://example.org/resource_2'),
+         LD4L::OreRDF::AddAggregatedResource.call( aggregation,'http://example.org/resource_3')]
+      end
+
+      it 'should return a solr doc with all fields' do
+        object_profile = "{\"id\":\"http://example.org/moomin\",\"title\":[\"My Resources\"],\"description\":[\"Resources that I like\"],\"owner\":\"http://example.org/person1\",\"aggregates\":[\"http://example.org/resource_1\",\"http://example.org/resource_2\",\"http://example.org/resource_3\"],\"first_proxy\":\"#{proxies.first.id}\",\"last_proxy\":\"#{proxies.last.id}\"}"
+        proxy_ids = proxies.collect { |p| p.id }
+        expected_solr_doc = {:id=>"http://example.org/moomin",
+                             :at_model_ssi=>"LD4L::OreRDF::AggregationResource",
+                             :object_profile_ss=>object_profile,
+                             :title_ti=>"My Resources",
+                             :title_sort_ss=>"My Resources",
+                             :description_tsi=>"Resources that I like",
+                             :owner_tsi=>"http://example.org/person1",
+                             :aggregates_tsim=>
+                                 ["http://example.org/resource_1", "http://example.org/resource_2", "http://example.org/resource_3"],
+                             :item_proxies_ssm=>proxy_ids }
+        expect(aggregation.aggregation_resource.generate_solr_document(aggregation.proxy_resources)).to eq expected_solr_doc
+      end
+    end
+
+    context 'when aggregation has no owner' do
+      xit 'should return without owner information' do
+        pending 'this needs to be implemented'
+      end
+    end
+
+    context 'when aggregation has owner' do
+      xit 'should return with owner information' do
+        pending 'this needs to be implemented'
+      end
+    end
+  end
 
   ########### NEED TO MOVE TO SERVICE OBJECT ####################
 
@@ -697,7 +761,7 @@ describe 'LD4L::OreRDF::AggregationResource' do
 
   describe '#type' do
     it 'should return the type configured on the parent class' do
-      expect(subject.type).to eq [LD4L::OreRDF::AggregationResource.type]
+      expect(subject.type).to eq LD4L::OreRDF::AggregationResource.type
     end
 
     it 'should set the type' do
@@ -728,17 +792,6 @@ describe 'LD4L::OreRDF::AggregationResource' do
       subject << RDF::Statement(subject.rdf_subject, custom_label, RDF::Literal('New Label'))
       subject.title = 'Comet in Moominland'
       expect(subject.rdf_label).to eq ['New Label']
-    end
-  end
-
-  describe '#solrize' do
-    it 'should return a label for bnodes' do
-      expect(subject.solrize).to eq subject.rdf_label
-    end
-
-    it 'should return a string of the resource uri' do
-      subject.set_subject! 'http://example.org/moomin'
-      expect(subject.solrize).to eq 'http://example.org/moomin'
     end
   end
 
