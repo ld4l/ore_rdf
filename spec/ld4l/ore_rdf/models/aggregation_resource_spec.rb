@@ -227,7 +227,7 @@ describe 'LD4L::OreRDF::AggregationResource' do
                              :title_ti=>"My Resources",
                              :title_sort_ss=>"My Resources",
                              :description_tsi=>"Resources that I like",
-                             :owner_tsi=>"http://example.org/person1",
+                             :owner_ssi=>"http://example.org/person1",
                              :item_proxies_ssm=>[]}
         expect(aggregation.aggregation_resource.generate_solr_document(aggregation.proxy_resources)).to eq expected_solr_doc
       end
@@ -254,8 +254,8 @@ describe 'LD4L::OreRDF::AggregationResource' do
                              :title_ti=>"My Resources",
                              :title_sort_ss=>"My Resources",
                              :description_tsi=>"Resources that I like",
-                             :owner_tsi=>"http://example.org/person1",
-                             :aggregates_tsim=>
+                             :owner_ssi=>"http://example.org/person1",
+                             :aggregates_ssim=>
                                  ["http://example.org/resource_1", "http://example.org/resource_2", "http://example.org/resource_3"],
                              :item_proxies_ssm=>proxy_ids }
         expect(aggregation.aggregation_resource.generate_solr_document(aggregation.proxy_resources)).to eq expected_solr_doc

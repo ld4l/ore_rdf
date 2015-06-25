@@ -20,8 +20,8 @@ module LD4L::OreRDF
     configure :type => RDFVocabularies::ORE.Aggregation, :base_uri => LD4L::OreRDF.configuration.base_uri, :repository => :default
 
     # extended properties for LD4L implementation
-    property :title,       :predicate => RDF::DC.title, :indexed => true, :sortable => true
-    property :description, :predicate => RDF::DC.description, :indexed => true, :sortable => false
+    property :title,       :predicate => RDF::DC.title, :indexed => true, :sortable => true, :tokenize => true
+    property :description, :predicate => RDF::DC.description, :indexed => true, :sortable => false, :tokenize => true
     property :owner,       :predicate => RDFVocabularies::DCTERMS.creator, :class_name => LD4L::FoafRDF::Person, :indexed => true, :sortable => false
 
     # properties from ORE.Aggregation
