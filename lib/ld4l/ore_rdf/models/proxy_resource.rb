@@ -8,12 +8,26 @@ module LD4L
       # configure :base_uri => LD4L::OreRDF.configuration.base_uri, repository => :default
       configure :type => RDFVocabularies::ORE.Proxy, :base_uri => LD4L::OreRDF.configuration.base_uri, :repository => :default
 
-      property :proxy_for,     :predicate => RDFVocabularies::ORE.proxyFor,  :cast => false
-      property :proxy_in,      :predicate => RDFVocabularies::ORE.proxyIn,   :class_name => LD4L::OreRDF::AggregationResource
-      property :next_proxy,    :predicate => RDFVocabularies::IANA.next,     :class_name => LD4L::OreRDF::ProxyResource
-      property :prev_proxy,    :predicate => RDFVocabularies::IANA.prev,     :class_name => LD4L::OreRDF::ProxyResource
-      property :contributor,   :predicate => RDF::DC.contributor,            :class_name => LD4L::FoafRDF::Person   # TODO User who added this item to the Aggregation (default=Aggregation's owner)
-
+      property :proxy_for,     :predicate => RDFVocabularies::ORE.proxyFor,  :cast => false    do |index|
+        index.data_type = :string
+        index.as :stored, :indexed
+      end
+      property :proxy_in,      :predicate => RDFVocabularies::ORE.proxyIn,   :class_name => LD4L::OreRDF::AggregationResource    do |index|
+        index.data_type = :string
+        index.as :stored, :indexed
+      end
+      property :next_proxy,    :predicate => RDFVocabularies::IANA.next,     :class_name => LD4L::OreRDF::ProxyResource    do |index|
+        index.data_type = :string
+        index.as :stored
+      end
+      property :prev_proxy,    :predicate => RDFVocabularies::IANA.prev,     :class_name => LD4L::OreRDF::ProxyResource    do |index|
+        index.data_type = :string
+        index.as :stored
+      end
+      property :contributor,   :predicate => RDF::DC.contributor,            :class_name => LD4L::FoafRDF::Person  do |index|  # TODO User who added this item to the Aggregation (default=Aggregation's owner)
+        index.data_type = :string
+        index.as :stored, :indexed
+      end
 
       # --------------------- #
       #    HELPER METHODS     #

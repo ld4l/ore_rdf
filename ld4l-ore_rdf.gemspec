@@ -23,7 +23,7 @@ Gem::Specification.new do |spec|
 #  spec.add_dependency('ffi', '~> 1.9.5')
   spec.add_dependency('rdf', '~> 1.1')
 
-  spec.add_dependency('active-triples', '~> 0.5')
+  spec.add_dependency('active-triples', '0.6.1')
   spec.add_dependency('active_triples-local_name', '~> 0.1')
   spec.add_dependency('ld4l-foaf_rdf', '~> 0.0')
   spec.add_dependency('doubly_linked_list', '~> 0.0')

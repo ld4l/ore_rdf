@@ -1,5 +1,6 @@
 require 'rdf'
 require 'active_triples'
+require 'active_triples/solrizer'
 require 'active_triples/local_name'
 require	'linkeddata'
 require 'doubly_linked_list'

@@ -21,12 +21,24 @@ module LD4L
       configure :type => RDFVocabularies::ORE.Aggregation, :base_uri => LD4L::OreRDF.configuration.base_uri, :repository => :default
 
       # extended properties for LD4L implementation
-      property :title,       :predicate => RDF::DC.title
-      property :description, :predicate => RDF::DC.description
-      property :owner,       :predicate => RDFVocabularies::DCTERMS.creator, :class_name => LD4L::FoafRDF::Person
+      property :title,       :predicate => RDF::DC.title          do |index|
+        index.data_type = :text
+        index.as :indexed, :sortable
+      end
+      property :description, :predicate => RDF::DC.description    do |index|
+        index.data_type = :text
+        index.as :indexed
+      end
+      property :owner,       :predicate => RDFVocabularies::DCTERMS.creator, :class_name => LD4L::FoafRDF::Person  do |index|
+        index.data_type = :string
+        index.as :stored, :indexed
+      end
 
       # properties from ORE.Aggregation
-      property :aggregates,   :predicate => RDFVocabularies::ORE.aggregates, :cast => false  # multiple values
+      property :aggregates,   :predicate => RDFVocabularies::ORE.aggregates, :cast => false    do |index|
+        index.data_type = :text
+        index.as :stored, :indexed, :multiValued
+      end  # multiple values
       property :first_proxy,  :predicate => RDFVocabularies::IANA.first,     :class_name => LD4L::OreRDF::ProxyResource
       property :last_proxy,   :predicate => RDFVocabularies::IANA.last,      :class_name => LD4L::OreRDF::ProxyResource
 
