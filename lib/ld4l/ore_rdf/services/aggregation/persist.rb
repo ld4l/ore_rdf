@@ -23,7 +23,23 @@ module LD4L
 
         count = 0
         agg_persisted = aggregation.aggregation_resource.persist!
-        aggregation.proxy_resources.each { |proxy| count += 1 if proxy.persist! }  if agg_persisted
+
+        if agg_persisted
+          aggregation.proxy_resources.each do |proxy|
+            count += 1 if proxy.persist!
+            doc = ActiveTriples::Solrizer::IndexingService.new(proxy).generate_solr_document
+            ActiveTriples::Solrizer::SolrService.add(doc)
+            ActiveTriples::Solrizer::SolrService.commit
+          end
+        end
+
+        # doc = ActiveTriples::Solrizer::IndexingService.new(aggregation.aggregation_resource).generate_solr_document
+        doc = aggregation.aggregation_resource.generate_solr_document
+binding.pry
+        ActiveTriples::Solrizer::SolrService.add(doc)
+        ActiveTriples::Solrizer::SolrService.commit
+
+
         percent_proxies = aggregation.proxy_resources.size > 0 ? count/aggregation.proxy_resources.size : 1
         all_persisted = agg_persisted && (percent_proxies == 1)
         ret = all_persisted ? all_persisted :

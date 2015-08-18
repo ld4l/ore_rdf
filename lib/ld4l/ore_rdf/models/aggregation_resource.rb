@@ -20,12 +20,24 @@ module LD4L::OreRDF
     configure :type => RDFVocabularies::ORE.Aggregation, :base_uri => LD4L::OreRDF.configuration.base_uri, :repository => :default
 
     # extended properties for LD4L implementation
-    property :title,       :predicate => RDF::DC.title, :indexed => true, :sortable => true, :tokenize => true
-    property :description, :predicate => RDF::DC.description, :indexed => true, :sortable => false, :tokenize => true
-    property :owner,       :predicate => RDFVocabularies::DCTERMS.creator, :class_name => LD4L::FoafRDF::Person, :indexed => true, :sortable => false
+    property :title,       :predicate => RDF::DC.title          do |index|
+      index.data_type = :text
+      index.as :indexed, :sortable
+    end
+    property :description, :predicate => RDF::DC.description    do |index|
+      index.data_type = :text
+      index.as :indexed
+    end
+    property :owner,       :predicate => RDFVocabularies::DCTERMS.creator, :class_name => LD4L::FoafRDF::Person  do |index|
+      index.data_type = :string
+      index.as :stored, :indexed
+    end
 
     # properties from ORE.Aggregation
-    property :aggregates,   :predicate => RDFVocabularies::ORE.aggregates, :cast => false, :indexed => true, :multiple => true  # multiple values
+    property :aggregates,   :predicate => RDFVocabularies::ORE.aggregates, :cast => false    do |index|
+      index.data_type = :text
+      index.as :stored, :indexed, :multiValued
+    end  # multiple values
     property :first_proxy,  :predicate => RDFVocabularies::IANA.first,     :class_name => LD4L::OreRDF::ProxyResource
     property :last_proxy,   :predicate => RDFVocabularies::IANA.last,      :class_name => LD4L::OreRDF::ProxyResource
 
@@ -109,6 +121,7 @@ module LD4L::OreRDF
         # solr_doc.merge!(:owner_name_sort_ss => owner.name)
 
         # add all item_proxies
+binding.pry
         all_proxies = get_items if all_proxies.empty?  # NOTE: get_items depends on aggregation_resource being persisted prior to this call
         proxy_ids = all_proxies.collect { |item| item.id }
         solr_doc.merge!(:item_proxies_ssm => proxy_ids)

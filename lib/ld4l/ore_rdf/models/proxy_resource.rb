@@ -50,5 +50,27 @@ module LD4L
         proxies
       end
     end
+
+    # ##
+    # # Generate the solr document hash specific to a proxy resource.
+    # #
+    # # @returns [Hash] solr document
+    # #
+    # # NOTE: This method should not be called directory.  Use LD4L::OreRDF::Aggregation.generate_solr_documents instead.
+    # def generate_solr_document
+    #   solr_doc = ActiveTriples::Solrizer::IndexingService.new(self).generate_solr_document do |solr_doc|
+    #     # TODO add owner_name and owner sort field
+    #     # solr_doc.merge!(:owner_name_ti => owner.name)   # TODO add name to FOAF Gem
+    #     # solr_doc.merge!(:owner_name_sort_ss => owner.name)
+    #
+    #     # add all item_proxies
+    #     all_proxies = get_items if all_proxies.empty?  # NOTE: get_items depends on aggregation_resource being persisted prior to this call
+    #     proxy_ids = all_proxies.collect { |item| item.id }
+    #     solr_doc.merge!(:item_proxies_ssm => proxy_ids)
+    #     solr_doc
+    #   end
+    #   solr_doc
+    # end
+
   end
 end
