@@ -124,10 +124,14 @@ module LD4L::OreRDF
 binding.pry
         all_proxies = get_items if all_proxies.empty?  # NOTE: get_items depends on aggregation_resource being persisted prior to this call
         proxy_ids = all_proxies.collect { |item| item.id }
-        solr_doc.merge!(:item_proxies_ssm => proxy_ids)
+        solr_doc.merge!(self.class.item_proxies_solr_name => proxy_ids)
         solr_doc
       end
       solr_doc
+    end
+
+    def self.item_proxies_solr_name
+      :item_proxies_ssm
     end
   end
 end
