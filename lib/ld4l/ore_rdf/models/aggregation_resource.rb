@@ -121,7 +121,6 @@ module LD4L::OreRDF
         # solr_doc.merge!(:owner_name_sort_ss => owner.name)
 
         # add all item_proxies
-binding.pry
         all_proxies = get_items if all_proxies.empty?  # NOTE: get_items depends on aggregation_resource being persisted prior to this call
         proxy_ids = all_proxies.collect { |item| item.id }
         solr_doc.merge!(self.class.item_proxies_solr_name => proxy_ids)

@@ -35,7 +35,6 @@ module LD4L
 
         # doc = ActiveTriples::Solrizer::IndexingService.new(aggregation.aggregation_resource).generate_solr_document
         doc = aggregation.aggregation_resource.generate_solr_document
-binding.pry
         ActiveTriples::Solrizer::SolrService.add(doc)
         ActiveTriples::Solrizer::SolrService.commit
 

@@ -20,8 +20,8 @@ Gem::Specification.new do |spec|
 
   spec.add_dependency('rdf', '~> 1.1')
 
-  spec.add_dependency('active-triples', '0.7.1')
-  spec.add_dependency('active_triples-local_name', '~> 0.1')
+  spec.add_dependency('active-triples', '0.6.1')
+  spec.add_dependency('active_triples-local_name')
   spec.add_dependency('ld4l-foaf_rdf', '~> 0.0')
   spec.add_dependency('doubly_linked_list', '~> 0.0')
 
@@ -32,6 +32,8 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency('coveralls')
   spec.add_development_dependency('guard-rspec')
   spec.add_development_dependency('webmock')
+  spec.add_development_dependency('rubocop')
+  spec.add_development_dependency('rubocop-rspec')
 
   spec.extra_rdoc_files = [
       "LICENSE.txt",

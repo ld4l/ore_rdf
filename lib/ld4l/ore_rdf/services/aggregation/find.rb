@@ -19,8 +19,8 @@ module LD4L
       #   all_aggs = LD4L::OreRDF.FindAggregations
       def self.call( options={} )
         repository = options[:repository] || :default
-        raise ArgumentError, 'repository must be a symbol' unless repository.kind_of?(Symbol)
-        raise ArgumentError, 'repository must be a registered repository' unless
+        raise ArgumentError, "repository (#{repository}) is not a symbol" unless repository.kind_of?(Symbol)
+        raise ArgumentError, "repository (#{repository}) is not a registered repository" unless
             ActiveTriples::Repositories.repositories.has_key?(repository)
 
         resume = options[:resume] || false
