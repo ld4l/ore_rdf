@@ -39,7 +39,11 @@ module LD4L
                 LD4L::OreRDF.configuration.localname_minter )
 
         # create the proxy and set properties
-        proxy = LD4L::OreRDF::ProxyResource.new(id)
+        if aggregation.list_info.respond_to? 'persistence_strategy'  # >= ActiveTriples 0.8
+          proxy = LD4L::OreRDF::ProxyResource.new(id,aggregation.list_info)
+        else # < ActiveTriples 0.8
+          proxy = LD4L::OreRDF::ProxyResource.new(id)
+        end
         proxy.proxy_for    = resource
         proxy.proxy_in     = aggregation.aggregation_resource
         proxy.contributor = options[:contributor] || []   # TODO default to aggregation.owner
