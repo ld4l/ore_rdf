@@ -72,7 +72,7 @@ module LD4L
           uri = h[:proxy]
           if resume
             # if resume, return Hash of proxy uri => resumed proxy for each found
-            if aggregation.list_info.respond_to? 'persistence_strategy'  # >= ActiveTriples 0.8
+            if aggregation.respond_to? 'persistence_strategy'  # >= ActiveTriples 0.8
               proxies[uri] = LD4L::OreRDF::ProxyResource.new(uri,aggregation.list_info)
             else # < ActiveTriples 0.8
               proxies[uri] = LD4L::OreRDF::ProxyResource.new(uri)

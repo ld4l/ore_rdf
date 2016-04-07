@@ -46,7 +46,7 @@ describe 'LD4L::OreRDF::AggregationResource' do
       end
 
       it 'should not be settable' do
-        expect{ subject.set_subject! RDF::URI('http://example.org/moomin2') }.to raise_error
+        expect{ subject.set_subject! RDF::URI('http://example.org/moomin2') }.to raise_error(RuntimeError, 'Refusing update URI when one is already assigned!')
       end
     end
   end
@@ -158,23 +158,24 @@ describe 'LD4L::OreRDF::AggregationResource' do
       orig_bib3 = "http://example.org/individual/b3"
 
       new_bib1 = "http://example.org/individual/b1_NEW"
-      new_bib2 = "http://example.org/individual/b2_NEW"
       new_bib3 = "http://example.org/individual/b3_NEW"
 
       subject.aggregates = orig_bib1
       subject.aggregates << orig_bib2
       subject.aggregates << orig_bib3
 
-      aggregates = subject.aggregates.dup
+      if subject.respond_to? 'persistence_strategy'  # >= ActiveTriples 0.8
+        aggregates = subject.aggregates.to_a
+      else  # < ActiveTriples 0.8
+        aggregates = subject.aggregates.dup
+      end
       aggregates[0] = new_bib1
-      # aggregates[1] = new_bib2
       aggregates[2] = new_bib3
       subject.aggregates = aggregates
 
-      expect(subject.aggregates[0]).to eq new_bib1
-      # expect(subject.aggregates[1]).to eq new_bib2
-      expect(subject.aggregates[1]).to eq orig_bib2
-      expect(subject.aggregates[2]).to eq new_bib3
+      expect(subject.aggregates).to include new_bib1
+      expect(subject.aggregates).to include orig_bib2
+      expect(subject.aggregates).to include new_bib3
     end
 
     it "should be directly changeable for multiple values" do
@@ -183,21 +184,22 @@ describe 'LD4L::OreRDF::AggregationResource' do
       orig_bib3 = "http://example.org/individual/b3"
 
       new_bib1 = "http://example.org/individual/b1_NEW"
-      new_bib2 = "http://example.org/individual/b2_NEW"
       new_bib3 = "http://example.org/individual/b3_NEW"
 
       subject.aggregates = orig_bib1
       subject.aggregates << orig_bib2
       subject.aggregates << orig_bib3
 
-      subject.aggregates[0] = new_bib1
-      # subject.aggregates[1] = new_bib2
-      subject.aggregates[2] = new_bib3
-
-      expect(subject.aggregates[0]).to eq new_bib1
-      # expect(subject.aggregates[1]).to eq new_bib2
-      expect(subject.aggregates[1]).to eq orig_bib2
-      expect(subject.aggregates[2]).to eq new_bib3
+      if subject.respond_to? 'persistence_strategy'  # >= ActiveTriples 0.8
+        subject.aggregates.swap(orig_bib1, new_bib1)
+        subject.aggregates.swap(orig_bib3, new_bib3)
+      else  # < ActiveTriples 0.8
+        subject.aggregates[0] = new_bib1
+        subject.aggregates[2] = new_bib3
+      end
+      expect(subject.aggregates).to include new_bib1
+      expect(subject.aggregates).to include orig_bib2
+      expect(subject.aggregates).to include new_bib3
     end
   end
 
@@ -501,14 +503,18 @@ describe 'LD4L::OreRDF::AggregationResource' do
       context "and the item is not a blank node" do
 
         subject {LD4L::OreRDF::AggregationResource.new("123")}
+        let(:result) { subject.persist! }
 
         before do
           # Create inmemory repository
           @repo = RDF::Repository.new
-          allow(subject.class).to receive(:repository).and_return(nil)
-          allow(subject).to receive(:repository).and_return(@repo)
+          ActiveTriples::Repositories.repositories[:default] = @repo
           subject.title = "bla"
-          subject.persist!
+          result
+        end
+
+        it "should return true" do
+          expect(result).to eq true
         end
 
         it "should persist to the repository" do
@@ -534,7 +540,7 @@ describe 'LD4L::OreRDF::AggregationResource' do
       subject << RDF::Statement(RDF::DC.LicenseDocument, RDF::DC.title, 'LICENSE')
     end
 
-    subject { LD4L::FoafRDF::Person.new('456')}
+    subject { LD4L::OreRDF::AggregationResource.new('123') }
 
     it 'should return true' do
       expect(subject.destroy!).to be true
@@ -548,22 +554,26 @@ describe 'LD4L::OreRDF::AggregationResource' do
 
     context 'with a parent' do
       before do
-        parent.owner = subject
+        subject.owner = child
       end
 
-      let(:parent) do
-        LD4L::OreRDF::AggregationResource.new('123')
+      let(:child) do
+        if subject.respond_to? 'persistence_strategy'   # >= ActiveTriples 0.8
+          LD4L::FoafRDF::Person.new('456',subject)
+        else  # < ActiveTriples 0.8
+          LD4L::FoafRDF::Person.new('456')
+        end
       end
 
       it 'should empty the graph and remove it from the parent' do
-        subject.destroy
-        expect(parent.owner).to be_empty
+        child.destroy
+        expect(subject.owner).to be_empty
       end
 
       it 'should remove its whole graph from the parent' do
-        subject.destroy
-        subject.each_statement do |s|
-          expect(parent.statements).not_to include s
+        child.destroy
+        child.each_statement do |s|
+          expect(subject.statements).not_to include s
         end
       end
     end
@@ -667,7 +677,12 @@ describe 'LD4L::OreRDF::AggregationResource' do
     end
 
     it "raise an error if the value is not a URI, Node, Literal, RdfResource, or string" do
-      expect{subject.set_value(RDF::DC.title, Object.new)}.to raise_error
+      if subject.respond_to? 'persistence_strategy' # >= ActiveTriples 0.8
+        error_name = ActiveTriples::Relation::ValueError
+      else # < ActiveTriples 0.8
+        error_name = RuntimeError
+      end
+      expect{subject.set_value(RDF::DC.title, Object.new)}.to raise_error(error_name,/value must be an RDF URI, Node, Literal, or a valid datatype. See RDF::Literal.*/)
     end
 
     it "should be able to accept a subject" do
@@ -697,7 +712,8 @@ describe 'LD4L::OreRDF::AggregationResource' do
 
   describe '#type' do
     it 'should return the type configured on the parent class' do
-      expect(subject.type).to eq [LD4L::OreRDF::AggregationResource.type]
+      expected_result = LD4L::OreRDF::AggregationResource.type.kind_of?(Array) ? LD4L::OreRDF::AggregationResource.type : [LD4L::OreRDF::AggregationResource.type]
+      expect(subject.type).to eq expected_result
     end
 
     it 'should set the type' do
@@ -728,17 +744,6 @@ describe 'LD4L::OreRDF::AggregationResource' do
       subject << RDF::Statement(subject.rdf_subject, custom_label, RDF::Literal('New Label'))
       subject.title = 'Comet in Moominland'
       expect(subject.rdf_label).to eq ['New Label']
-    end
-  end
-
-  describe '#solrize' do
-    it 'should return a label for bnodes' do
-      expect(subject.solrize).to eq subject.rdf_label
-    end
-
-    it 'should return a string of the resource uri' do
-      subject.set_subject! 'http://example.org/moomin'
-      expect(subject.solrize).to eq 'http://example.org/moomin'
     end
   end
 

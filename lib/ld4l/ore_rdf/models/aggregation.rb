@@ -77,7 +77,7 @@ module LD4L
         title = ""
         if list_info.respond_to? 'persistence_strategy'  # >= ActiveTriples 0.8
           title = titles.first if titles.kind_of?(ActiveTriples::Relation) && titles.size > 0
-        else
+        else  # < ActiveTriples 0.8
           title = titles.first if titles.kind_of?(Array) && titles.size > 0
         end
         title
@@ -88,7 +88,7 @@ module LD4L
         description = ""
         if list_info.respond_to? 'persistence_strategy'  # >= ActiveTriples 0.8
           description = descriptions.first if descriptions.kind_of?(ActiveTriples::Relation) && descriptions.size > 0
-        else
+        else  # < ActiveTriples 0.8
           description = descriptions.first if descriptions.kind_of?(Array) && descriptions.size > 0
         end
         description
