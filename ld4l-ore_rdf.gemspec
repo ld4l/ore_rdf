@@ -17,20 +17,16 @@ Gem::Specification.new do |spec|
 
   spec.files         = `git ls-files -z`.split("\x0")
   spec.test_files    = spec.files.grep(%r{^(test|spec|features)/})
-  # spec.test_files    = `git ls-files -- {spec}/*`.split("\n")               # FROM ActiveTriples gemspec file
-  # spec.require_paths = ["lib"]                                              # NOT IN ActiveTriples gemspec file
 
-#  spec.add_dependency('ffi', '~> 1.9.5')
-  spec.add_dependency('rdf', '~> 1.1')
+  spec.add_dependency('rdf', '= 1.99.0')
 
-  spec.add_dependency('active-triples', '~> 0.5')
+  spec.add_dependency('active-triples', '~> 0.5', '~> 0.6', '~>0.8.2')
   spec.add_dependency('active_triples-local_name', '~> 0.1')
   spec.add_dependency('ld4l-foaf_rdf', '~> 0.0')
   spec.add_dependency('doubly_linked_list', '~> 0.0')
 
   spec.add_development_dependency('pry')
-  # spec.add_development_dependency('pry-byebug')    # Works with ruby > 2
-  # spec.add_development_dependency('pry-debugger')  # Works with ruby < 2
+  spec.add_development_dependency('pry-byebug')
   spec.add_development_dependency('rdoc')
   spec.add_development_dependency('rspec')
   spec.add_development_dependency('coveralls')
