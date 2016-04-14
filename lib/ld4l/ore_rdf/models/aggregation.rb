@@ -74,12 +74,24 @@ module LD4L
 
       def title
         titles = list_info.title
-        titles.kind_of?(Array) && titles.size > 0 ? titles[0] : ""
+        title = ""
+        if list_info.respond_to? 'persistence_strategy'  # >= ActiveTriples 0.8
+          title = titles.first if titles.kind_of?(ActiveTriples::Relation) && titles.size > 0
+        else  # < ActiveTriples 0.8
+          title = titles.first if titles.kind_of?(Array) && titles.size > 0
+        end
+        title
       end
 
       def description
         descriptions = list_info.description
-        descriptions.kind_of?(Array) && descriptions.size > 0 ? descriptions[0] : ""
+        description = ""
+        if list_info.respond_to? 'persistence_strategy'  # >= ActiveTriples 0.8
+          description = descriptions.first if descriptions.kind_of?(ActiveTriples::Relation) && descriptions.size > 0
+        else  # < ActiveTriples 0.8
+          description = descriptions.first if descriptions.kind_of?(Array) && descriptions.size > 0
+        end
+        description
       end
 
       def aggregation_resource

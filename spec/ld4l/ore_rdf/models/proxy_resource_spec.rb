@@ -46,7 +46,7 @@ describe 'LD4L::OreRDF::ProxyResource' do
       end
 
       it 'should not be settable' do
-        expect{ subject.set_subject! RDF::URI('http://example.org/moomin2') }.to raise_error
+        expect{ subject.set_subject! RDF::URI('http://example.org/moomin2') }.to raise_error(RuntimeError, 'Refusing update URI when one is already assigned!')
       end
     end
   end
@@ -381,17 +381,21 @@ describe 'LD4L::OreRDF::ProxyResource' do
       context "and the item is not a blank node" do
 
         subject {LD4L::OreRDF::ProxyResource.new("123")}
+        let(:result) { subject.persist! }
 
         before do
           # Create inmemory repository
           @repo = RDF::Repository.new
-          allow(subject.class).to receive(:repository).and_return(nil)
-          allow(subject).to receive(:repository).and_return(@repo)
+          ActiveTriples::Repositories.repositories[:default] = @repo
           subject.contributor = "John Smith"
           an_aggregation = LD4L::OreRDF::AggregationResource.new('1')
           subject.proxy_in = an_aggregation
           subject.proxy_for = "http://example.org/b1"
-          subject.persist!
+          result
+        end
+
+        it "should return true" do
+          expect(result).to eq true
         end
 
         it "should persist to the repository" do
@@ -408,7 +412,11 @@ describe 'LD4L::OreRDF::ProxyResource' do
           subject.persist!
           subject.reload
           expect(subject.contributor).to eq []
-          expect(@repo.statements.to_a.length).to eq 1 # Only the type statement
+          if subject.respond_to? 'persistence_strategy'   # >= ActiveTriples 0.8
+            expect(@repo.statements.to_a.length).to eq 2 # Only the type statements for aggregation and proxy
+          else  # < ActiveTriples 0.8
+            expect(@repo.statements.to_a.length).to eq 1 # Only the type statements for proxy
+          end
         end
       end
 
@@ -453,7 +461,7 @@ describe 'LD4L::OreRDF::ProxyResource' do
       subject << RDF::Statement(RDF::DC.LicenseDocument, RDF::DC.title, 'LICENSE')
     end
 
-    subject { LD4L::FoafRDF::Person.new('456')}
+    subject { LD4L::OreRDF::ProxyResource.new('123') }
 
     it 'should return true' do
       expect(subject.destroy!).to be true
@@ -467,22 +475,26 @@ describe 'LD4L::OreRDF::ProxyResource' do
 
     context 'with a parent' do
       before do
-        parent.contributor = subject
+        subject.contributor = child
       end
 
-      let(:parent) do
-        LD4L::OreRDF::ProxyResource.new('123')
+      let(:child) do
+        if subject.respond_to? 'persistence_strategy'   # >= ActiveTriples 0.8
+          LD4L::FoafRDF::Person.new('456',subject)
+        else  # < ActiveTriples 0.8
+          LD4L::FoafRDF::Person.new('456')
+        end
       end
 
       it 'should empty the graph and remove it from the parent' do
-        subject.destroy
-        expect(parent.contributor).to be_empty
+        child.destroy
+        expect(subject.contributor).to be_empty
       end
 
       it 'should remove its whole graph from the parent' do
-        subject.destroy
-        subject.each_statement do |s|
-          expect(parent.statements).not_to include s
+        child.destroy
+        child.each_statement do |s|
+          expect(subject.statements).not_to include s
         end
       end
     end
@@ -588,17 +600,6 @@ describe 'LD4L::OreRDF::ProxyResource' do
       subject.class.configure :rdf_label => custom_label
       subject << RDF::Statement(subject.rdf_subject, custom_label, RDF::Literal('New Label'))
       expect(subject.rdf_label).to eq ['New Label']
-    end
-  end
-
-  describe '#solrize' do
-    it 'should return a label for bnodes' do
-      expect(subject.solrize).to eq subject.rdf_label
-    end
-
-    it 'should return a string of the resource uri' do
-      subject.set_subject! 'http://example.org/moomin'
-      expect(subject.solrize).to eq 'http://example.org/moomin'
     end
   end
 

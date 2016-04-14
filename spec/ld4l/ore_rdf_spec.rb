@@ -1,6 +1,10 @@
 require "spec_helper"
 
 describe "LD4L::OreRDF" do
+  after(:all) do
+    ActiveTriples::RDFSource.type_registry.keys.each { |k| ActiveTriples::RDFSource.type_registry.delete(k) } if Object.const_defined?("ActiveTriples::RDFSource")
+  end
+
   describe "#configure" do
 
     before do

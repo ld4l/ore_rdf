@@ -18,8 +18,7 @@ module LD4L
 
         # TODO Probably shouldn't be ArgumentError
         raise ArgumentError, "title is required" unless
-            aggregation.title && aggregation.title && aggregation.title.kind_of?(String) &&
-            aggregation.title.size > 0
+            aggregation.title && aggregation.title.kind_of?(String) && aggregation.title.size > 0
 
         count = 0
         agg_persisted = aggregation.aggregation_resource.persist!
@@ -36,4 +35,3 @@ module LD4L
     end
   end
 end
-
