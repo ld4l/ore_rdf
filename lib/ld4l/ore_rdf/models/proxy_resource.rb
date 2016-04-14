@@ -44,7 +44,11 @@ module LD4L
         results = query.execute(graph)
         results.each do |r|
           proxy_uri = r.to_hash[:proxy]
-          proxy = LD4L::OreRDF::ProxyResource.new(proxy_uri)
+          if aggregation.list_info.respond_to? 'persistence_strategy'  # >= ActiveTriples 0.8
+            proxy = LD4L::OreRDF::ProxyResource.new(proxy_uri,aggregation.list_info)
+          else # < ActiveTriples 0.8
+            proxy = LD4L::OreRDF::ProxyResource.new(proxy_uri)
+          end
           proxies << proxy
         end
         proxies
