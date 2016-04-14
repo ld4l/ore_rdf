@@ -412,7 +412,11 @@ describe 'LD4L::OreRDF::ProxyResource' do
           subject.persist!
           subject.reload
           expect(subject.contributor).to eq []
-          expect(@repo.statements.to_a.length).to eq 1 # Only the type statements for proxy
+          if subject.respond_to? 'persistence_strategy'   # >= ActiveTriples 0.8
+            expect(@repo.statements.to_a.length).to eq 2 # Only the type statements for aggregation and proxy
+          else  # < ActiveTriples 0.8
+            expect(@repo.statements.to_a.length).to eq 1 # Only the type statements for proxy
+          end
         end
       end
 
