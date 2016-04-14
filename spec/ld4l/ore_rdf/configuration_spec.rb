@@ -3,6 +3,10 @@ require 'spec_helper'
 describe 'LD4L::OreRDF' do
 
   describe '#configuration' do
+    after(:all) do
+      ActiveTriples::RDFSource.type_registry.keys.each { |k| ActiveTriples::RDFSource.type_registry.delete(k) } if Object.const_defined?("ActiveTriples::RDFSource")
+    end
+
     describe "base_uri" do
       context "when base_uri is not configured" do
         before do
