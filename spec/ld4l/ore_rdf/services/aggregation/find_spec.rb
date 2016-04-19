@@ -175,12 +175,12 @@ describe 'LD4L::OreRDF::FindAggregations' do
     context "when arguments are invalid" do
       it "should raise error when repository isn't a symbol" do
         expect{ LD4L::OreRDF::FindAggregations.call(:repository => 'BAD VALUE') }.to raise_error(
-            ArgumentError,'repository must be a symbol')
+            ArgumentError,'repository (BAD VALUE) is not a symbol')
       end
 
       it "should raise error when repository is a symbol, but isn't a registered repository" do
         expect{ LD4L::OreRDF::FindAggregations.call(:repository => :nonexistent_repo) }.to raise_error(
-            ArgumentError,'repository must be a registered repository')
+            ArgumentError,'repository (nonexistent_repo) is not a registered repository')
       end
 
       it "should raise error when resume is other than true or false" do

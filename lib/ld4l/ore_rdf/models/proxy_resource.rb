@@ -28,15 +28,17 @@ module LD4L
       def self.get_range( aggregation, start=0, limit=nil )
         # TODO: Stubbed to return all items.  Need to implement start and limit features.
 
-        # argument validation
-        # raise ArgumentError, 'Argument must be a string with at least one character'  unless
-        #     tag_value.kind_of?(String) && tag_value.size > 0
+        raise ArgumentError, 'aggregation must be Aggregation or AggregationResource'  unless
+            aggregation.kind_of?(LD4L::OreRDF::Aggregation) || aggregation.kind_of?(LD4L::OreRDF::AggregationResource)
+
+        aggregation_resource = aggregation
+        aggregation_resource = aggregation.list_info if aggregation.kind_of?(LD4L::OreRDF::Aggregation)
 
         graph = ActiveTriples::Repositories.repositories[repository]
         query = RDF::Query.new({
                                  :proxy => {
                                    RDF.type =>  RDFVocabularies::ORE.Proxy,
-                                   RDFVocabularies::ORE.proxyIn => aggregation,
+                                   RDFVocabularies::ORE.proxyIn => aggregation_resource,
                                  }
                                })
 
@@ -44,8 +46,8 @@ module LD4L
         results = query.execute(graph)
         results.each do |r|
           proxy_uri = r.to_hash[:proxy]
-          if aggregation.list_info.respond_to? 'persistence_strategy'  # >= ActiveTriples 0.8
-            proxy = LD4L::OreRDF::ProxyResource.new(proxy_uri,aggregation.list_info)
+          if aggregation_resource.respond_to? 'persistence_strategy'  # >= ActiveTriples 0.8
+            proxy = LD4L::OreRDF::ProxyResource.new(proxy_uri,aggregation_resource)
           else # < ActiveTriples 0.8
             proxy = LD4L::OreRDF::ProxyResource.new(proxy_uri)
           end

@@ -27,6 +27,8 @@ describe 'LD4L::OreRDF::DestroyAggregation' do
     context "when aggregation doesn't have proxies" do
       before do
         ActiveTriples::Repositories.add_repository :default, RDF::Repository.new
+        ActiveTriples::Solrizer::SolrService.register
+
         @id = "http::/example.org/NO_PROXIES"
         @aggregation = LD4L::OreRDF::CreateAggregation.call(
             id:          @id,
@@ -48,6 +50,8 @@ describe 'LD4L::OreRDF::DestroyAggregation' do
     context "when aggregation has proxies" do
       before do
         ActiveTriples::Repositories.add_repository :default, RDF::Repository.new
+        ActiveTriples::Solrizer::SolrService.register
+
         @id1 = "http::/example.org/ag1"
         @ag1 = LD4L::OreRDF::CreateAggregation.call(
             id:          @id1,

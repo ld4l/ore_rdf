@@ -21,12 +21,24 @@ module LD4L
       configure :type => RDFVocabularies::ORE.Aggregation, :base_uri => LD4L::OreRDF.configuration.base_uri, :repository => :default
 
       # extended properties for LD4L implementation
-      property :title,       :predicate => RDF::DC.title
-      property :description, :predicate => RDF::DC.description
-      property :owner,       :predicate => RDFVocabularies::DCTERMS.creator, :class_name => LD4L::FoafRDF::Person
+      property :title, :predicate => RDF::DC.title do |index|
+        index.data_type = :text
+        index.as :indexed, :sortable
+      end
+      property :description, :predicate => RDF::DC.description do |index|
+        index.data_type = :text
+        index.as :indexed
+      end
+      property :owner, :predicate => RDFVocabularies::DCTERMS.creator, :class_name => LD4L::FoafRDF::Person do |index|
+        index.data_type = :string
+        index.as :stored, :indexed
+      end
 
       # properties from ORE.Aggregation
-      property :aggregates,   :predicate => RDFVocabularies::ORE.aggregates, :cast => false  # multiple values
+      property :aggregates, :predicate => RDFVocabularies::ORE.aggregates, :cast => false do |index|
+        index.data_type = :text
+        index.as :stored, :indexed, :multiValued
+      end
       property :first_proxy,  :predicate => RDFVocabularies::IANA.first,     :class_name => LD4L::OreRDF::ProxyResource
       property :last_proxy,   :predicate => RDFVocabularies::IANA.last,      :class_name => LD4L::OreRDF::ProxyResource
 
@@ -92,7 +104,35 @@ module LD4L
         # TODO Stubbed to always return false until ordered lists are implemented
         return false
       end
+
+      ##
+      # Generate the solr document hash specific to a aggregation resource.
+      #
+      # @param [Array<LD4L::OreRDF::ProxyResource>] :all_proxies - pass in proxies instead of querying (optional)
+      #
+      # @returns [Hash] solr document
+      #
+      # NOTE: If all_proxies is [], then will try to query from triple store which means that if the proxies have not
+      #       yet been persisted, then they will not be found.
+      # NOTE: This method should not be called directory.  Use LD4L::OreRDF::Aggregation.generate_solr_documents instead.
+      def generate_solr_document( all_proxies=[] )
+        solr_doc = ActiveTriples::Solrizer::IndexingService.new(self).generate_solr_document do |solr_doc|
+          # TODO add owner_name and owner sort field
+          # solr_doc.merge!(:owner_name_ti => owner.name)   # TODO add name to FOAF Gem
+          # solr_doc.merge!(:owner_name_sort_ss => owner.name)
+
+          # add all item_proxies
+          all_proxies = get_items if all_proxies.empty?  # NOTE: get_items depends on aggregation_resource being persisted prior to this call
+          proxy_ids = all_proxies.collect { |item| item.id }
+          solr_doc.merge!(self.class.item_proxies_solr_name => proxy_ids)
+          solr_doc
+        end
+        solr_doc
+     end
+
+      def self.item_proxies_solr_name
+        :item_proxies_ssm
+      end
     end
   end
 end
-
