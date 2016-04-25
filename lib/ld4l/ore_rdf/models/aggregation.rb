@@ -3,36 +3,36 @@ module LD4L
   module OreRDF
     class Aggregation < DoublyLinkedList
 
-      @@clear_first_callback  = lambda { |aggregation| aggregation.first_proxy = [] }
-      @@clear_last_callback   = lambda { |aggregation| aggregation.last_proxy  = [] }
+      @@clear_first_callback  = lambda { |aggregation| aggregation.first_proxy = nil }
+      @@clear_last_callback   = lambda { |aggregation| aggregation.last_proxy  = nil }
       @@update_first_callback = lambda { |aggregation, proxies| aggregation.first_proxy = proxies.first }
       @@update_last_callback  = lambda { |aggregation, proxies| aggregation.last_proxy  = proxies.last }
 
-      @@clear_next_callback   = lambda { |proxies, idx| proxies[idx].next_proxy = [] }
-      @@clear_prev_callback   = lambda { |proxies, idx| proxies[idx].prev_proxy = [] }
+      @@clear_next_callback   = lambda { |proxies, idx| proxies[idx].next_proxy = nil }
+      @@clear_prev_callback   = lambda { |proxies, idx| proxies[idx].prev_proxy = nil }
       @@update_next_callback  = lambda { |proxies, idx| proxies[idx].next_proxy = proxies[idx+1] }
       @@update_prev_callback  = lambda { |proxies, idx| proxies[idx].prev_proxy = proxies[idx-1] }
 
       @@find_first_callback   = lambda do |aggregation, proxies|
         first_proxy = aggregation.first_proxy
-        return first_proxy.first   if first_proxy && !first_proxy.empty?
+        return first_proxy unless first_proxy.nil?
 
         # if first isn't set, try to figure out first by looking for an item with prev_proxy == nil
         # NOTE: If multiple items have prev_proxy == nil, it will return the first one it finds.
-        first_idx = proxies.index { |proxy| proxy.prev_proxy == [] }
+        first_idx = proxies.index { |proxy| proxy.prev_proxy.nil? }
         first_idx ? proxies[first_idx] : nil
       end
       @@find_last_callback    = lambda do |aggregation, proxies|
         last_proxy = aggregation.last_proxy
-        return last_proxy.first   if last_proxy && !last_proxy.empty?
+        return last_proxy unless last_proxy.nil?
 
         # if last isn't set, try to figure out last by looking for an item with next_proxy == nil
         # NOTE: If multiple items have next_proxy == nil, it will return the first one it finds.
-        last_idx = proxies.index { |proxy| proxy.next_proxy == [] }
+        last_idx = proxies.index { |proxy| proxy.next_proxy.nil? }
         last_idx ? proxies[last_idx] : nil
       end
-      @@find_next_callback    = lambda { |proxies, current_proxy| current_proxy.next_proxy.first }
-      @@find_prev_callback    = lambda { |proxies, current_proxy| current_proxy.prev_proxy.first }
+      @@find_next_callback    = lambda { |proxies, current_proxy| current_proxy.next_proxy }
+      @@find_prev_callback    = lambda { |proxies, current_proxy| current_proxy.prev_proxy }
 
 
       def self.initialize
@@ -96,6 +96,15 @@ module LD4L
 #         ActiveModel::Name.new(LD4L::OreRDF::Aggregation)
 #       end
 
+      private
+        def self.get_first_value source, value, as_subject=false
+          val = value
+          val = val.to_a if Object::ActiveTriples.const_defined?("Relation") && val.kind_of?(ActiveTriples::Relation)
+          return nil if val.nil? || val.size <= 0
+          val = val.first if val.is_a? Array
+          val = val.rdf_subject.to_s if as_subject && (val.is_a? ActiveTriples::Resource)
+          val
+        end
     end
   end
 end

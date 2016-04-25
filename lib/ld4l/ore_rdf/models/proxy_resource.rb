@@ -8,11 +8,64 @@ module LD4L
       # configure :base_uri => LD4L::OreRDF.configuration.base_uri, repository => :default
       configure :type => RDFVocabularies::ORE.Proxy, :base_uri => LD4L::OreRDF.configuration.base_uri, :repository => :default
 
-      property :proxy_for,     :predicate => RDFVocabularies::ORE.proxyFor,  :cast => false
-      property :proxy_in,      :predicate => RDFVocabularies::ORE.proxyIn,   :class_name => LD4L::OreRDF::AggregationResource
-      property :next_proxy,    :predicate => RDFVocabularies::IANA.next,     :class_name => LD4L::OreRDF::ProxyResource
-      property :prev_proxy,    :predicate => RDFVocabularies::IANA.prev,     :class_name => LD4L::OreRDF::ProxyResource
-      property :contributor,   :predicate => RDF::DC.contributor,            :class_name => LD4L::FoafRDF::Person   # TODO User who added this item to the Aggregation (default=Aggregation's owner)
+      property :proxy_for_,   :predicate => RDFVocabularies::ORE.proxyFor,  :cast => false
+      property :proxy_in_,    :predicate => RDFVocabularies::ORE.proxyIn,   :class_name => LD4L::OreRDF::AggregationResource
+      property :next_proxy_,  :predicate => RDFVocabularies::IANA.next,     :class_name => LD4L::OreRDF::ProxyResource
+      property :prev_proxy_,  :predicate => RDFVocabularies::IANA.prev,     :class_name => LD4L::OreRDF::ProxyResource
+      property :contributor,  :predicate => RDF::DC.contributor,            :class_name => LD4L::FoafRDF::Person   # TODO User who added this item to the Aggregation (default=Aggregation's owner)
+
+
+      def proxy_for= value
+        value = [] if value.nil?
+        self.proxy_for_ = value
+      end
+
+      def proxy_for
+        OreRDF::Aggregation.get_first_value self, proxy_for_
+      end
+
+      def proxy_for_subject
+        OreRDF::Aggregation.get_first_value self, proxy_for_, true
+      end
+
+      def proxy_in= value
+        value = [] if value.nil?
+        self.proxy_in_ = value
+      end
+
+      def proxy_in
+        OreRDF::Aggregation.get_first_value self, proxy_in_
+      end
+
+      def proxy_in_subject
+        OreRDF::Aggregation.get_first_value self, proxy_in_, true
+      end
+
+      def next_proxy= value
+        self.next_proxy_ = value
+        value = [] if value.nil?
+      end
+
+      def next_proxy
+        OreRDF::Aggregation.get_first_value self, next_proxy_
+      end
+
+      def next_proxy_subject
+        OreRDF::Aggregation.get_first_value self, next_proxy_, true
+      end
+
+      def prev_proxy= value
+        value = [] if value.nil?
+        self.prev_proxy_ = value
+      end
+
+      def prev_proxy
+        OreRDF::Aggregation.get_first_value self, prev_proxy_
+      end
+
+      def prev_proxy_subject
+        OreRDF::Aggregation.get_first_value self, prev_proxy_, true
+      end
 
 
       # --------------------- #

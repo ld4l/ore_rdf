@@ -62,14 +62,33 @@ describe 'LD4L::OreRDF::ProxyResource' do
     end
   end
 
-  describe 'proxy_for' do
+  describe 'proxy_for_' do
     it "should be empty array if we haven't set it" do
-      expect(subject.proxy_for).to match_array([])
+      expect(subject.proxy_for_).to match_array([])
+    end
+
+    it "should be settable" do
+      subject.proxy_for_ = "http://example.org/b1"
+      expect(subject.proxy_for_.first).to eq "http://example.org/b1"
+    end
+
+    it "should be changeable" do
+      orig_proxy_for = "http://example.org/b1"
+      new_proxy_for  = "http://example.org/b1_NEW"
+      subject.proxy_for_ = orig_proxy_for
+      subject.proxy_for_ = new_proxy_for
+      expect(subject.proxy_for_.first).to eq new_proxy_for
+    end
+  end
+
+  describe 'proxy_for' do
+    it "should be nil if we haven't set it" do
+      expect(subject.proxy_for).to be_nil
     end
 
     it "should be settable" do
       subject.proxy_for = "http://example.org/b1"
-      expect(subject.proxy_for.first).to eq "http://example.org/b1"
+      expect(subject.proxy_for).to eq "http://example.org/b1"
     end
 
     it "should be changeable" do
@@ -77,19 +96,39 @@ describe 'LD4L::OreRDF::ProxyResource' do
       new_proxy_for  = "http://example.org/b1_NEW"
       subject.proxy_for = orig_proxy_for
       subject.proxy_for = new_proxy_for
-      expect(subject.proxy_for.first).to eq new_proxy_for
+      expect(subject.proxy_for).to eq new_proxy_for
+    end
+  end
+
+  describe 'proxy_in_' do
+    it "should be empty array if we haven't set it" do
+      expect(subject.proxy_in_).to match_array([])
+    end
+
+    it "should be settable" do
+      an_aggregation = LD4L::OreRDF::AggregationResource.new('1')
+      subject.proxy_in_ = an_aggregation
+      expect(subject.proxy_in_.first).to eq an_aggregation
+    end
+
+    it "should be changeable" do
+      orig_aggregation = LD4L::OreRDF::AggregationResource.new('1')
+      new_aggregation = LD4L::OreRDF::AggregationResource.new('2')
+      subject.proxy_in_ = orig_aggregation
+      subject.proxy_in_ = new_aggregation
+      expect(subject.proxy_in_.first).to eq new_aggregation
     end
   end
 
   describe 'proxy_in' do
-    it "should be empty array if we haven't set it" do
-      expect(subject.proxy_in).to match_array([])
+    it "should be nil if we haven't set it" do
+      expect(subject.proxy_in).to be_nil
     end
 
     it "should be settable" do
       an_aggregation = LD4L::OreRDF::AggregationResource.new('1')
       subject.proxy_in = an_aggregation
-      expect(subject.proxy_in.first).to eq an_aggregation
+      expect(subject.proxy_in).to eq an_aggregation
     end
 
     it "should be changeable" do
@@ -97,19 +136,45 @@ describe 'LD4L::OreRDF::ProxyResource' do
       new_aggregation = LD4L::OreRDF::AggregationResource.new('2')
       subject.proxy_in = orig_aggregation
       subject.proxy_in = new_aggregation
-      expect(subject.proxy_in.first).to eq new_aggregation
+      expect(subject.proxy_in).to eq new_aggregation
+    end
+
+    it "should be able to get rdf_subject" do
+      an_aggregation = LD4L::OreRDF::AggregationResource.new('http://www.example.org/agg1')
+      subject.proxy_in = an_aggregation
+      expect(subject.proxy_in_subject).to eq 'http://www.example.org/agg1'
+    end
+  end
+
+  describe 'next_proxy_' do
+    it "should be empty array if we haven't set it" do
+      expect(subject.next_proxy_).to match_array([])
+    end
+
+    it "should be settable" do
+      an_proxy = LD4L::OreRDF::ProxyResource.new('1')
+      subject.next_proxy_ = an_proxy
+      expect(subject.next_proxy_.first).to eq an_proxy
+    end
+
+    it "should be changeable" do
+      orig_proxy = LD4L::OreRDF::ProxyResource.new('1')
+      new_proxy = LD4L::OreRDF::ProxyResource.new('2')
+      subject.next_proxy_ = orig_proxy
+      subject.next_proxy_ = new_proxy
+      expect(subject.next_proxy_.first).to eq new_proxy
     end
   end
 
   describe 'next_proxy' do
-    it "should be empty array if we haven't set it" do
-      expect(subject.next_proxy).to match_array([])
+    it "should be nil if we haven't set it" do
+      expect(subject.next_proxy).to be_nil
     end
 
     it "should be settable" do
       an_proxy = LD4L::OreRDF::ProxyResource.new('1')
       subject.next_proxy = an_proxy
-      expect(subject.next_proxy.first).to eq an_proxy
+      expect(subject.next_proxy).to eq an_proxy
     end
 
     it "should be changeable" do
@@ -117,19 +182,45 @@ describe 'LD4L::OreRDF::ProxyResource' do
       new_proxy = LD4L::OreRDF::ProxyResource.new('2')
       subject.next_proxy = orig_proxy
       subject.next_proxy = new_proxy
-      expect(subject.next_proxy.first).to eq new_proxy
+      expect(subject.next_proxy).to eq new_proxy
+    end
+
+    it "should be able to get subject" do
+      an_proxy = LD4L::OreRDF::ProxyResource.new('http://www.example.org/proxy1')
+      subject.next_proxy = an_proxy
+      expect(subject.next_proxy_subject).to eq 'http://www.example.org/proxy1'
+    end
+  end
+
+  describe 'prev_proxy_' do
+    it "should be empty array if we haven't set it" do
+      expect(subject.prev_proxy_).to match_array([])
+    end
+
+    it "should be settable" do
+      an_proxy = LD4L::OreRDF::ProxyResource.new('1')
+      subject.prev_proxy_ = an_proxy
+      expect(subject.prev_proxy_.first).to eq an_proxy
+    end
+
+    it "should be changeable" do
+      orig_proxy = LD4L::OreRDF::ProxyResource.new('1')
+      new_proxy = LD4L::OreRDF::ProxyResource.new('2')
+      subject.prev_proxy_ = orig_proxy
+      subject.prev_proxy_ = new_proxy
+      expect(subject.prev_proxy_.first).to eq new_proxy
     end
   end
 
   describe 'prev_proxy' do
-    it "should be empty array if we haven't set it" do
-      expect(subject.prev_proxy).to match_array([])
+    it "should be nil if we haven't set it" do
+      expect(subject.prev_proxy).to be_nil
     end
 
     it "should be settable" do
       an_proxy = LD4L::OreRDF::ProxyResource.new('1')
       subject.prev_proxy = an_proxy
-      expect(subject.prev_proxy.first).to eq an_proxy
+      expect(subject.prev_proxy).to eq an_proxy
     end
 
     it "should be changeable" do
@@ -137,7 +228,13 @@ describe 'LD4L::OreRDF::ProxyResource' do
       new_proxy = LD4L::OreRDF::ProxyResource.new('2')
       subject.prev_proxy = orig_proxy
       subject.prev_proxy = new_proxy
-      expect(subject.prev_proxy.first).to eq new_proxy
+      expect(subject.prev_proxy).to eq new_proxy
+    end
+
+    it "should be able to get subject" do
+      an_proxy = LD4L::OreRDF::ProxyResource.new('http://www.example.org/proxy1')
+      subject.prev_proxy = an_proxy
+      expect(subject.prev_proxy_subject).to eq 'http://www.example.org/proxy1'
     end
   end
 
@@ -288,7 +385,7 @@ describe 'LD4L::OreRDF::ProxyResource' do
             expect(vci.proxy_in.first).to eq vc
           end
           results = []
-          vci_array.each { |vci| results << vci.proxy_for.first }
+          vci_array.each { |vci| results << vci.proxy_for_.first }
           expect(results).to include "http://example.org/individual/b1"
           expect(results).to include "http://example.org/individual/b2"
           expect(results).to include "http://example.org/individual/b3"
@@ -406,8 +503,8 @@ describe 'LD4L::OreRDF::ProxyResource' do
           subject.reload
           expect(subject.contributor).to eq ["John Smith"]
           subject.contributor = []
-          subject.proxy_in = []
-          subject.proxy_for = []
+          subject.proxy_in_ = []
+          subject.proxy_for_ = []
           expect(subject.contributor).to eq []
           subject.persist!
           subject.reload
@@ -444,8 +541,8 @@ describe 'LD4L::OreRDF::ProxyResource' do
           subject.reload
           expect(subject.contributor).to eq ["John Smith"]
           subject.contributor = []
-          subject.proxy_in = []
-          subject.proxy_for = []
+          subject.proxy_in_ = []
+          subject.proxy_for_ = []
           expect(subject.contributor).to eq []
           subject.persist!
           subject.reload
@@ -515,7 +612,7 @@ describe 'LD4L::OreRDF::ProxyResource' do
     end
 
     it 'should contain data' do
-      expect(subject.attributes['proxy_for']).to eq ['Dummy Proxy']
+      expect(subject.attributes['proxy_for_']).to eq ['Dummy Proxy']
     end
 
     it 'should contain child objects' do
@@ -562,8 +659,8 @@ describe 'LD4L::OreRDF::ProxyResource' do
 
   describe 'property methods' do
     it 'should set and get properties' do
-      subject.proxy_for = 'Comet in Moominland'
-      expect(subject.proxy_for).to eq ['Comet in Moominland']
+      subject.proxy_for_ = 'Comet in Moominland'
+      expect(subject.proxy_for_).to eq ['Comet in Moominland']
     end
   end
 
@@ -612,7 +709,7 @@ describe 'LD4L::OreRDF::ProxyResource' do
     it 'should delete properties when statements are removed' do
       subject << RDF::Statement.new(subject.rdf_subject, RDFVocabularies::ORE.proxyFor, 'Comet in Moominland')
       subject.delete RDF::Statement.new(subject.rdf_subject, RDFVocabularies::ORE.proxyFor, 'Comet in Moominland')
-      expect(subject.proxy_for).to eq []
+      expect(subject.proxy_for_).to eq []
     end
   end
 

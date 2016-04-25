@@ -40,8 +40,8 @@ describe 'LD4L::OreRDF::FindProxies' do
         expect(proxies.size).to eq 1
         expect(proxies.first).to be_a_kind_of RDF::URI
         pr = LD4L::OreRDF::ProxyResource.new(proxies.first)
-        expect(pr.proxy_in.first.rdf_subject.to_s).to eq "http::/example.org/ag1"
-        expect(pr.proxy_for.first).to eq "http://example.org/individual/b11"
+        expect(pr.proxy_in_.first.rdf_subject.to_s).to eq "http::/example.org/ag1"
+        expect(pr.proxy_for_.first).to eq "http://example.org/individual/b11"
       end
     end
 
@@ -112,8 +112,8 @@ describe 'LD4L::OreRDF::FindProxies' do
         expect(proxies.size).to eq 1
         expect(proxies.first).to be_a_kind_of RDF::URI
         pr = LD4L::OreRDF::ProxyResource.new(proxies.first)
-        expect(pr.proxy_for.first).to eq "http://example.org/individual/b22"
-        expect(pr.proxy_in.first.rdf_subject).to eq RDF::URI("http::/example.org/ag2")
+        expect(pr.proxy_for_.first).to eq "http://example.org/individual/b22"
+        expect(pr.proxy_in_.first.rdf_subject).to eq RDF::URI("http::/example.org/ag2")
       end
 
       it "should find all proxies for aggregation" do
@@ -124,8 +124,8 @@ describe 'LD4L::OreRDF::FindProxies' do
         proxies.each do |p|
           expect(p).to be_a_kind_of RDF::URI
           pr = LD4L::OreRDF::ProxyResource.new(p)
-          proxy_for << pr.proxy_for.first
-          expect(pr.proxy_in.first.rdf_subject).to eq RDF::URI("http::/example.org/ag3")
+          proxy_for << pr.proxy_for_.first
+          expect(pr.proxy_in_.first.rdf_subject).to eq RDF::URI("http::/example.org/ag3")
         end
         expect(proxy_for).to include "http://example.org/individual/b31"
         expect(proxy_for).to include "http://example.org/individual/b32"

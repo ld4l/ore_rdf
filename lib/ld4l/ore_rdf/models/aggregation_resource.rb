@@ -39,8 +39,35 @@ module LD4L
         index.data_type = :text
         index.as :stored, :indexed, :multiValued
       end
-      property :first_proxy,  :predicate => RDFVocabularies::IANA.first,     :class_name => LD4L::OreRDF::ProxyResource
-      property :last_proxy,   :predicate => RDFVocabularies::IANA.last,      :class_name => LD4L::OreRDF::ProxyResource
+      property :first_proxy_,  :predicate => RDFVocabularies::IANA.first,     :class_name => LD4L::OreRDF::ProxyResource
+      property :last_proxy_,   :predicate => RDFVocabularies::IANA.last,      :class_name => LD4L::OreRDF::ProxyResource
+
+
+      def first_proxy= value
+        value = [] if value.nil?
+        self.first_proxy_ = value
+      end
+
+      def first_proxy
+        OreRDF::Aggregation.get_first_value self, first_proxy_
+      end
+
+      def first_proxy_subject
+        OreRDF::Aggregation.get_first_value self, first_proxy_, true
+      end
+
+      def last_proxy= value
+        value = [] if value.nil?
+        self.last_proxy_ = value
+      end
+
+      def last_proxy
+        OreRDF::Aggregation.get_first_value self, last_proxy_
+      end
+
+      def last_proxy_subject
+        OreRDF::Aggregation.get_first_value self, last_proxy_, true
+      end
 
 
       # --------------------- #
