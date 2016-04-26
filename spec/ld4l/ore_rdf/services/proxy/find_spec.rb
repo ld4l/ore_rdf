@@ -28,7 +28,7 @@ describe 'LD4L::OreRDF::FindProxies' do
         LD4L::OreRDF::AddAggregatedResources.call(
             ag1,
             [RDF::URI("http://example.org/individual/b11")])
-        LD4L::OreRDF::PersistAggregation.call(ag1)
+        LD4L::OreRDF::PersistAggregation.call(ag1,false)
       end
       after do
         ActiveTriples::Repositories.add_repository :default, RDF::Repository.new
@@ -60,7 +60,7 @@ describe 'LD4L::OreRDF::FindProxies' do
             [RDF::URI("http://example.org/individual/b11"),
              RDF::URI("http://example.org/individual/b12"),
              RDF::URI("http://example.org/individual/b13")])
-        LD4L::OreRDF::PersistAggregation.call(ag1)
+        LD4L::OreRDF::PersistAggregation.call(ag1,false)
 
         ag2 = LD4L::OreRDF::CreateAggregation.call(
             id:          "http::/example.org/ag2",
@@ -72,7 +72,7 @@ describe 'LD4L::OreRDF::FindProxies' do
             [RDF::URI("http://example.org/individual/b21"),
              RDF::URI("http://example.org/individual/b22"),
              RDF::URI("http://example.org/individual/b23")])
-        LD4L::OreRDF::PersistAggregation.call(ag2)
+        LD4L::OreRDF::PersistAggregation.call(ag2,false)
 
         ag3 = LD4L::OreRDF::CreateAggregation.call(
             id:          "http::/example.org/ag3",
@@ -84,7 +84,7 @@ describe 'LD4L::OreRDF::FindProxies' do
             [RDF::URI("http://example.org/individual/b31"),
              RDF::URI("http://example.org/individual/b32"),
              RDF::URI("http://example.org/individual/b33")])
-        LD4L::OreRDF::PersistAggregation.call(ag3)
+        LD4L::OreRDF::PersistAggregation.call(ag3,false)
       end
       after do
         ActiveTriples::Repositories.add_repository :default, RDF::Repository.new
