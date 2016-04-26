@@ -22,7 +22,7 @@ Gem::Specification.new do |spec|
 
   spec.add_dependency('active-triples')
   spec.add_dependency('active_triples-local_name')
-  # spec.add_dependency('active_triples-solrizer')
+  spec.add_dependency('active_triples-solrizer')
   spec.add_dependency('ld4l-foaf_rdf')
   spec.add_dependency('doubly_linked_list')
 
