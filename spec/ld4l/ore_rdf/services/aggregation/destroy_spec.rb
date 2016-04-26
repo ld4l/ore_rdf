@@ -27,12 +27,13 @@ describe 'LD4L::OreRDF::DestroyAggregation' do
     context "when aggregation doesn't have proxies" do
       before do
         ActiveTriples::Repositories.add_repository :default, RDF::Repository.new
+
         @id = "http::/example.org/NO_PROXIES"
         @aggregation = LD4L::OreRDF::CreateAggregation.call(
             id:          @id,
             title:       "No Proxy Aggregation",
             description: "Test aggregation with no proxies." )
-        LD4L::OreRDF::PersistAggregation.call(@aggregation)
+        LD4L::OreRDF::PersistAggregation.call(@aggregation,false)
         expect( LD4L::OreRDF::ResumeAggregation.call(@id).rdf_subject.to_s ).to eq @id
       end
       after do
@@ -48,6 +49,7 @@ describe 'LD4L::OreRDF::DestroyAggregation' do
     context "when aggregation has proxies" do
       before do
         ActiveTriples::Repositories.add_repository :default, RDF::Repository.new
+
         @id1 = "http::/example.org/ag1"
         @ag1 = LD4L::OreRDF::CreateAggregation.call(
             id:          @id1,
@@ -58,7 +60,7 @@ describe 'LD4L::OreRDF::DestroyAggregation' do
             [RDF::URI("http://example.org/individual/b11"),
              RDF::URI("http://example.org/individual/b12"),
              RDF::URI("http://example.org/individual/b13")])
-        LD4L::OreRDF::PersistAggregation.call(@ag1)
+        LD4L::OreRDF::PersistAggregation.call(@ag1,false)
         a1 = LD4L::OreRDF::ResumeAggregation.call(@id1)
         expect( a1.aggregation_resource.rdf_subject.to_s ).to eq @id1
         expect( a1.proxy_resources.length).to eq 3
@@ -74,7 +76,7 @@ describe 'LD4L::OreRDF::DestroyAggregation' do
             [RDF::URI("http://example.org/individual/b21"),
              RDF::URI("http://example.org/individual/b22"),
              RDF::URI("http://example.org/individual/b23")])
-        LD4L::OreRDF::PersistAggregation.call(@ag2)
+        LD4L::OreRDF::PersistAggregation.call(@ag2,false)
         a2 = LD4L::OreRDF::ResumeAggregation.call(@id2)
         expect( a2.aggregation_resource.rdf_subject.to_s ).to eq @id2
         expect( a2.proxy_resources.length).to eq 3
@@ -85,7 +87,7 @@ describe 'LD4L::OreRDF::DestroyAggregation' do
             title:       "Aggregation 3",
             description: "Test description of aggregation 3.",
             owner:       p )
-        LD4L::OreRDF::PersistAggregation.call(@ag3)
+        LD4L::OreRDF::PersistAggregation.call(@ag3,false)
         a3 = LD4L::OreRDF::ResumeAggregation.call(@id3)
         expect( a3.aggregation_resource.rdf_subject.to_s ).to eq @id3
         expect( a3.proxy_resources.length).to eq 0

@@ -212,6 +212,65 @@ describe 'LD4L::OreRDF::AggregationResource' do
   #  START -- Test helper methods specific to this model
   # -----------------------------------------------------
 
+  describe '#generate_solr_document' do
+    before do
+      ActiveTriples::Repositories.add_repository :default, RDF::Repository.new
+      @person = LD4L::FoafRDF::Person.new('http://example.org/person1')
+      @aggregation = LD4L::OreRDF::CreateAggregation.call( :id=>'http://example.org/moomin', :title=>'My Resources',
+                                                           :description=>'Resources that I like', :owner=>@person )
+    end
+
+    context 'when aggregation has 0 proxies' do
+      it 'should return a solr doc with all fields' do
+        expected_solr_doc = {:id=>"http://example.org/moomin",
+                             :at_model_ssi=>"LD4L::OreRDF::AggregationResource",
+                             :object_profile_ss=>
+                                 "{\"id\":\"http://example.org/moomin\",\"title\":[\"My Resources\"],\"description\":[\"Resources that I like\"],\"owner\":\"http://example.org/person1\",\"aggregates\":[],\"first_proxy_\":[],\"last_proxy_\":[]}",
+                             :title_ti=>"My Resources",
+                             :title_ssort=>"My Resources",
+                             :description_ti=>"Resources that I like",
+                             :owner_ssi=>"http://example.org/person1",
+                             :item_proxies_ssm=>[]}
+        expect(@aggregation.aggregation_resource.generate_solr_document(@aggregation.proxy_resources)).to eq expected_solr_doc
+      end
+    end
+
+    context 'when aggregation has proxies' do
+      let(:proxies) do
+        [LD4L::OreRDF::AddAggregatedResource.call( @aggregation,'http://example.org/resource_1'),
+         LD4L::OreRDF::AddAggregatedResource.call( @aggregation,'http://example.org/resource_2'),
+         LD4L::OreRDF::AddAggregatedResource.call( @aggregation,'http://example.org/resource_3')]
+      end
+
+      it 'should return a solr doc with all fields' do
+        object_profile = "{\"id\":\"http://example.org/moomin\",\"title\":[\"My Resources\"],\"description\":[\"Resources that I like\"],\"owner\":\"http://example.org/person1\",\"aggregates\":[\"http://example.org/resource_1\",\"http://example.org/resource_2\",\"http://example.org/resource_3\"],\"first_proxy_\":\"#{proxies.first.id}\",\"last_proxy_\":\"#{proxies.last.id}\"}"
+        proxy_ids = proxies.collect { |p| p.id }
+        expected_solr_doc = {:id=>"http://example.org/moomin",
+                             :at_model_ssi=>"LD4L::OreRDF::AggregationResource",
+                             :object_profile_ss=>object_profile,
+                             :title_ti=>"My Resources",
+                             :title_ssort=>"My Resources",
+                             :description_ti=>"Resources that I like",
+                             :owner_ssi=>"http://example.org/person1",
+                             :aggregates_tsim=>
+                                 ["http://example.org/resource_1", "http://example.org/resource_2", "http://example.org/resource_3"],
+                             :item_proxies_ssm=>proxy_ids }
+        expect(@aggregation.aggregation_resource.generate_solr_document(@aggregation.proxy_resources)).to eq expected_solr_doc
+      end
+    end
+
+    context 'when aggregation has no owner' do
+      xit 'should return without owner information' do
+        pending 'this needs to be implemented'
+      end
+    end
+
+    context 'when aggregation has owner' do
+      xit 'should return with owner information' do
+        pending 'this needs to be implemented'
+      end
+    end
+  end
 
   ########### NEED TO MOVE TO SERVICE OBJECT ####################
 
@@ -379,10 +438,10 @@ describe 'LD4L::OreRDF::AggregationResource' do
           vci_array = subject.get_items
           vci_array.each do |vci|
             expect(vci).to be_a(LD4L::OreRDF::ProxyResource)
-            expect(vci.proxy_in.first).to eq subject
+            expect(vci.proxy_in_.first).to eq subject
           end
           results = []
-          vci_array.each { |vci| results << vci.proxy_for.first }
+          vci_array.each { |vci| results << vci.proxy_for_.first }
           expect(results).to include "http://example.org/individual/b1"
           expect(results).to include "http://example.org/individual/b2"
           expect(results).to include "http://example.org/individual/b3"

@@ -28,8 +28,8 @@ describe 'LD4L::OreRDF::AggregationResource::AddAggregatedResource' do
 
     it "should generate the resource instance for a single resource" do
       proxy = LD4L::OreRDF::AddAggregatedResource.call( subject, RDF::URI("http://example.org/individual/b1" ))
-      expect(proxy.proxy_for.first).to eq "http://example.org/individual/b1"
-      expect(proxy.proxy_in.first).to eq subject.aggregation_resource
+      expect(proxy.proxy_for_.first).to eq "http://example.org/individual/b1"
+      expect(proxy.proxy_in_.first).to eq subject.aggregation_resource
     end
   end
 

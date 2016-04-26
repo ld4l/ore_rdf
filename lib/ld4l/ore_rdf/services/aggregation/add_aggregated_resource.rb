@@ -23,27 +23,19 @@ module LD4L
             resource.kind_of?(String) || resource.kind_of?(RDF::URI)
 
         # make sure resource is a String - HANGING ERROR will occur if set as RDF::URI
-        resource = resource.to_s         if      resource.kind_of?(RDF::URI)
+        resource = resource.to_s if resource.kind_of?(RDF::URI)
 
         # validate aggregation is of correct type
         raise ArgumentError, "aggregation is not LD4L::OreRDF::Aggregation" unless
             aggregation.kind_of?(LD4L::OreRDF::Aggregation)
 
-
-        # aggregates = get_values('aggregates')
-        # aggregates << resource_uri
-        # set_value('aggregates',aggregates)
-
-        aggregates = aggregation.aggregates.dup
-        aggregates << resource
-        aggregation.aggregates = aggregates
+        aggregation.aggregates << resource
 
         LD4L::OreRDF::CreateProxy.call(
             :resource        => resource,
             :aggregation     => aggregation,
             :insert_position => insert_position)
       end
-
     end
   end
 end

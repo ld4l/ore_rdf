@@ -63,11 +63,11 @@ describe 'LD4L::OreRDF::AddAggregatedResources' do
            RDF::URI("http://example.org/individual/b3")])
       proxy_array.each do |proxy|
         expect(proxy).to be_a(LD4L::OreRDF::ProxyResource)
-        expect(proxy.proxy_in.first).to eq subject.aggregation_resource
+        expect(proxy.proxy_in_.first).to eq subject.aggregation_resource
       end
       results = []
       proxy_array.each do |proxy|
-        results << proxy.proxy_for.first
+        results << proxy.proxy_for_.first
       end
       expect(results).to include "http://example.org/individual/b1"
       expect(results).to include "http://example.org/individual/b2"

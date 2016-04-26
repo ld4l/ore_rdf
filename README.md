@@ -42,6 +42,12 @@ require 'ld4l/ore_rdf'
 # create an in-memory repository
 ActiveTriples::Repositories.add_repository :default, RDF::Repository.new
 
+# configure the solr url
+ActiveTriples::Solrizer.configure do |config|
+  config.solr_uri = "http://localhost:8983/solr/#/~cores/active_triples"
+end
+
+
 p = LD4L::FoafRDF::Person.new('p4')
 ```
 
