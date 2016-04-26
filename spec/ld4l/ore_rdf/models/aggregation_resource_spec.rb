@@ -215,11 +215,9 @@ describe 'LD4L::OreRDF::AggregationResource' do
   describe '#generate_solr_document' do
     before do
       ActiveTriples::Repositories.add_repository :default, RDF::Repository.new
-
       @person = LD4L::FoafRDF::Person.new('http://example.org/person1')
       @aggregation = LD4L::OreRDF::CreateAggregation.call( :id=>'http://example.org/moomin', :title=>'My Resources',
                                                            :description=>'Resources that I like', :owner=>@person )
-      LD4L::OreRDF::PersistAggregation.call(@aggregation)
     end
 
     context 'when aggregation has 0 proxies' do
