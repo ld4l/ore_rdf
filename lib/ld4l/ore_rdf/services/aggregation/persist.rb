@@ -12,7 +12,7 @@ module LD4L
       #     returns Hash with
       #       :aggregation_resource_persisted is true if aggregation_resource successfully persisted; otherwise, false
       #       :percent_proxies_persisted is % of proxies successfully persisted
-      def self.call( aggregation, index_into_solr=false )
+      def self.call( aggregation, index_into_solr=true )
         raise ArgumentError, 'aggregation must be an LD4L::OreRDF::Aggregation'  unless
             aggregation && aggregation.kind_of?(LD4L::OreRDF::Aggregation)
 
