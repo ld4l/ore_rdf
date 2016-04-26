@@ -215,7 +215,6 @@ describe 'LD4L::OreRDF::AggregationResource' do
   describe '#generate_solr_document' do
     before do
       ActiveTriples::Repositories.add_repository :default, RDF::Repository.new
-      ActiveTriples::Solrizer::SolrService.register
 
       @person = LD4L::FoafRDF::Person.new('http://example.org/person1')
       @aggregation = LD4L::OreRDF::CreateAggregation.call( :id=>'http://example.org/moomin', :title=>'My Resources',
