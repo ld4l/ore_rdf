@@ -108,7 +108,7 @@ describe 'LD4L::OreRDF::FindProxies' do
       it "should find proxies by criteria (aka proxy_for)" do
         proxies = LD4L::OreRDF::FindProxies.call(
             :aggregation => 'http::/example.org/ag2',
-            :criteria => { RDFVocabularies::ORE.proxyFor => "http://example.org/individual/b22" } )
+            :criteria => { RDF::Vocab::ORE.proxyFor => "http://example.org/individual/b22" } )
         expect(proxies.size).to eq 1
         expect(proxies.first).to be_a_kind_of RDF::URI
         pr = LD4L::OreRDF::ProxyResource.new(proxies.first)

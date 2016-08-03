@@ -7,8 +7,8 @@ module LD4L
       #
       # @param [Hash] options the options to use to find proxies
       # @option options [String, RDF::URI, LD4L::OreRDF::AggregationResource] :aggregation - limit proxies found to this aggregation (required)
-      # @option options [Hash<Object,Object>] :criteria for finding proxies (ex. RDF::DC.proxy_in=>RDF::URI('http://example.org/ag123')) (default - nil for all proxies in the aggregation)
-      # @option options [Hash<Symbol><Object>] :properties to return with the proxy uri (ex. :proxy_for=>RDFVocabularies::ORE.proxyFor) (default - nil aggregation uri only)
+      # @option options [Hash<Object,Object>] :criteria for finding proxies (ex. RDF::Vocab::ORE.proxy_in=>RDF::URI('http://example.org/ag123')) (default - nil for all proxies in the aggregation)
+      # @option options [Hash<Symbol><Object>] :properties to return with the proxy uri (ex. :proxy_for=>RDF::Vocab::ORE.proxyFor) (default - nil aggregation uri only)
       # @option options [Symbol] :repository to search (default - :default)
       # @option options [TrueClass,FalseClass] :resume if true, find and resume; otherwise, find only (default - false)
       #
@@ -50,8 +50,8 @@ module LD4L
         raise ArgumentError, 'criteria must be a hash of attribute-value pairs for searching for proxies'  unless
             criteria.nil? || criteria.kind_of?(Hash)
         criteria = criteria ? criteria.dup : {}
-        criteria[RDF.type] = RDFVocabularies::ORE.Proxy
-        criteria[RDFVocabularies::ORE.proxyIn] = aggregation
+        criteria[RDF.type] = RDF::Vocab::ORE.Proxy
+        criteria[RDF::Vocab::ORE.proxyIn] = aggregation
 
         # properties are ignored when resume==true because all properties are returned as part of the resumed proxies
         properties = options[:properties] || nil

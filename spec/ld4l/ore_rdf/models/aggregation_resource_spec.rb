@@ -21,22 +21,22 @@ describe 'LD4L::OreRDF::AggregationResource' do
 
     describe 'when changing subject' do
       before do
-        subject << RDF::Statement.new(subject.rdf_subject, RDF::DC.title, RDF::Literal('Comet in Moominland'))
-        subject << RDF::Statement.new(RDF::URI('http://example.org/moomin_comics'), RDF::DC.isPartOf, subject.rdf_subject)
-        subject << RDF::Statement.new(RDF::URI('http://example.org/moomin_comics'), RDF::DC.relation, 'http://example.org/moomin_land')
+        subject << RDF::Statement.new(subject.rdf_subject, RDF::Vocab::DC.title, RDF::Literal('Comet in Moominland'))
+        subject << RDF::Statement.new(RDF::URI('http://example.org/moomin_comics'), RDF::Vocab::DC.isPartOf, subject.rdf_subject)
+        subject << RDF::Statement.new(RDF::URI('http://example.org/moomin_comics'), RDF::Vocab::DC.relation, 'http://example.org/moomin_land')
         subject.set_subject! RDF::URI('http://example.org/moomin')
       end
 
       it 'should update graph subjects' do
-        expect(subject.has_statement?(RDF::Statement.new(subject.rdf_subject, RDF::DC.title, RDF::Literal('Comet in Moominland')))).to be true
+        expect(subject.has_statement?(RDF::Statement.new(subject.rdf_subject, RDF::Vocab::DC.title, RDF::Literal('Comet in Moominland')))).to be true
       end
 
       it 'should update graph objects' do
-        expect(subject.has_statement?(RDF::Statement.new(RDF::URI('http://example.org/moomin_comics'), RDF::DC.isPartOf, subject.rdf_subject))).to be true
+        expect(subject.has_statement?(RDF::Statement.new(RDF::URI('http://example.org/moomin_comics'), RDF::Vocab::DC.isPartOf, subject.rdf_subject))).to be true
       end
 
       it 'should leave other uris alone' do
-        expect(subject.has_statement?(RDF::Statement.new(RDF::URI('http://example.org/moomin_comics'), RDF::DC.relation, 'http://example.org/moomin_land'))).to be true
+        expect(subject.has_statement?(RDF::Statement.new(RDF::URI('http://example.org/moomin_comics'), RDF::Vocab::DC.relation, 'http://example.org/moomin_land'))).to be true
       end
     end
 
@@ -58,7 +58,7 @@ describe 'LD4L::OreRDF::AggregationResource' do
 
   describe 'type' do
     it "should be an ORE.Aggregation" do
-      expect(subject.type.first.value).to eq RDFVocabularies::ORE.Aggregation.value
+      expect(subject.type.first.value).to eq RDF::Vocab::ORE.Aggregation.value
     end
   end
 
@@ -139,9 +139,7 @@ describe 'LD4L::OreRDF::AggregationResource' do
       subject.aggregates = bib1
       subject.aggregates << bib2
       subject.aggregates << bib3
-      expect(subject.aggregates[0]).to eq bib1
-      expect(subject.aggregates[1]).to eq bib2
-      expect(subject.aggregates[2]).to eq bib3
+      expect(subject.aggregates).to match_array [bib1,bib2,bib3]
     end
 
     it "should be changeable" do
@@ -169,8 +167,8 @@ describe 'LD4L::OreRDF::AggregationResource' do
       else  # < ActiveTriples 0.8
         aggregates = subject.aggregates.dup
       end
-      aggregates[0] = new_bib1
-      aggregates[2] = new_bib3
+      aggregates[aggregates.index(orig_bib1)] = new_bib1
+      aggregates[aggregates.index(orig_bib3)] = new_bib3
       subject.aggregates = aggregates
 
       expect(subject.aggregates).to include new_bib1
@@ -194,8 +192,8 @@ describe 'LD4L::OreRDF::AggregationResource' do
         subject.aggregates.swap(orig_bib1, new_bib1)
         subject.aggregates.swap(orig_bib3, new_bib3)
       else  # < ActiveTriples 0.8
-        subject.aggregates[0] = new_bib1
-        subject.aggregates[2] = new_bib3
+        aggregates[aggregates.index(orig_bib1)] = new_bib1
+        aggregates[aggregates.index(orig_bib3)] = new_bib3
       end
       expect(subject.aggregates).to include new_bib1
       expect(subject.aggregates).to include orig_bib2
@@ -243,19 +241,19 @@ describe 'LD4L::OreRDF::AggregationResource' do
       end
 
       it 'should return a solr doc with all fields' do
-        object_profile = "{\"id\":\"http://example.org/moomin\",\"title\":[\"My Resources\"],\"description\":[\"Resources that I like\"],\"owner\":\"http://example.org/person1\",\"aggregates\":[\"http://example.org/resource_1\",\"http://example.org/resource_2\",\"http://example.org/resource_3\"],\"first_proxy_\":\"#{proxies.first.id}\",\"last_proxy_\":\"#{proxies.last.id}\"}"
+        object_profile = /{\"id\":\"http:\/\/example.org\/moomin\",\"title\":\[\"My Resources\"\],\"description\":\[\"Resources that I like\"\],\"owner\":\"http:\/\/example.org\/person1\",\"aggregates\":\[\"http:\/\/example.org\/resource_[123]\",\"http:\/\/example.org\/resource_[123]\",\"http:\/\/example.org\/resource_[123]\"\],\"first_proxy_\":\"#{Regexp.quote(proxies.first.id)}\",\"last_proxy_\":\"#{Regexp.quote(proxies.last.id)}\"}/
         proxy_ids = proxies.collect { |p| p.id }
-        expected_solr_doc = {:id=>"http://example.org/moomin",
-                             :at_model_ssi=>"LD4L::OreRDF::AggregationResource",
-                             :object_profile_ss=>object_profile,
-                             :title_ti=>"My Resources",
-                             :title_ssort=>"My Resources",
-                             :description_ti=>"Resources that I like",
-                             :owner_ssi=>"http://example.org/person1",
-                             :aggregates_tsim=>
-                                 ["http://example.org/resource_1", "http://example.org/resource_2", "http://example.org/resource_3"],
-                             :item_proxies_ssm=>proxy_ids }
-        expect(@aggregation.aggregation_resource.generate_solr_document(@aggregation.proxy_resources)).to eq expected_solr_doc
+
+        solr_doc = @aggregation.aggregation_resource.generate_solr_document(@aggregation.proxy_resources).to_hash
+        expect(solr_doc[:id]).to eq "http://example.org/moomin"
+        expect(solr_doc[:at_model_ssi]).to eq "LD4L::OreRDF::AggregationResource"
+        expect(solr_doc[:title_ti]).to eq "My Resources"
+        expect(solr_doc[:title_ssort]).to eq "My Resources"
+        expect(solr_doc[:description_ti]).to eq "Resources that I like"
+        expect(solr_doc[:owner_ssi]).to eq "http://example.org/person1"
+        expect(solr_doc[:aggregates_tsim]).to match_array ["http://example.org/resource_1", "http://example.org/resource_2", "http://example.org/resource_3"]
+        expect(solr_doc[:item_proxies_ssm]).to match_array proxy_ids
+        expect(solr_doc[:object_profile_ss]).to match object_profile
       end
     end
 
@@ -442,9 +440,7 @@ describe 'LD4L::OreRDF::AggregationResource' do
           end
           results = []
           vci_array.each { |vci| results << vci.proxy_for_.first }
-          expect(results).to include "http://example.org/individual/b1"
-          expect(results).to include "http://example.org/individual/b2"
-          expect(results).to include "http://example.org/individual/b3"
+          expect(results).to match_array ["http://example.org/individual/b1","http://example.org/individual/b2","http://example.org/individual/b3"]
           expect(vci_array.size).to eq(3)
         end
 
@@ -596,7 +592,7 @@ describe 'LD4L::OreRDF::AggregationResource' do
 
   describe '#destroy!' do
     before do
-      subject << RDF::Statement(RDF::DC.LicenseDocument, RDF::DC.title, 'LICENSE')
+      subject << RDF::Statement(RDF::Vocab::DC.LicenseDocument, RDF::Vocab::DC.title, 'LICENSE')
     end
 
     subject { LD4L::OreRDF::AggregationResource.new('123') }
@@ -662,29 +658,29 @@ describe 'LD4L::OreRDF::AggregationResource' do
 
     context 'with unmodeled data' do
       before do
-        subject << RDF::Statement(subject.rdf_subject, RDF::DC.contributor, 'Tove Jansson')
-        subject << RDF::Statement(subject.rdf_subject, RDF::DC.relation, RDF::URI('http://example.org/moomi'))
+        subject << RDF::Statement(subject.rdf_subject, RDF::Vocab::DC.contributor, 'Tove Jansson')
+        subject << RDF::Statement(subject.rdf_subject, RDF::Vocab::DC.relation, RDF::URI('http://example.org/moomi'))
         node = RDF::Node.new
-        subject << RDF::Statement(RDF::URI('http://example.org/moomi'), RDF::DC.relation, node)
-        subject << RDF::Statement(node, RDF::DC.title, 'bnode')
+        subject << RDF::Statement(RDF::URI('http://example.org/moomi'), RDF::Vocab::DC.relation, node)
+        subject << RDF::Statement(node, RDF::Vocab::DC.title, 'bnode')
       end
 
       it 'should include data with URIs as attribute names' do
-        expect(subject.attributes[RDF::DC.contributor.to_s]).to eq ['Tove Jansson']
+        expect(subject.attributes[RDF::Vocab::DC.contributor.to_s]).to eq ['Tove Jansson']
       end
 
       it 'should return generic Resources' do
-        expect(subject.attributes[RDF::DC.relation.to_s].first).to be_a ActiveTriples::Resource
+        expect(subject.attributes[RDF::Vocab::DC.relation.to_s].first).to be_a ActiveTriples::Resource
       end
 
       it 'should build deep data for Resources' do
-        expect(subject.attributes[RDF::DC.relation.to_s].first.get_values(RDF::DC.relation).
-                   first.get_values(RDF::DC.title)).to eq ['bnode']
+        expect(subject.attributes[RDF::Vocab::DC.relation.to_s].first.get_values(RDF::Vocab::DC.relation).
+                   first.get_values(RDF::Vocab::DC.title)).to eq ['bnode']
       end
 
       it 'should include deep data in serializable_hash' do
-        expect(subject.serializable_hash[RDF::DC.relation.to_s].first.get_values(RDF::DC.relation).
-                   first.get_values(RDF::DC.title)).to eq ['bnode']
+        expect(subject.serializable_hash[RDF::Vocab::DC.relation.to_s].first.get_values(RDF::Vocab::DC.relation).
+                   first.get_values(RDF::Vocab::DC.title)).to eq ['bnode']
       end
     end
 
@@ -724,8 +720,8 @@ describe 'LD4L::OreRDF::AggregationResource' do
 
   describe '#set_value' do
     it 'should set a value in the graph' do
-      subject.set_value(RDF::DC.title, 'Comet in Moominland')
-      subject.query(:subject => subject.rdf_subject, :predicate => RDF::DC.title).each_statement do |s|
+      subject.set_value(RDF::Vocab::DC.title, 'Comet in Moominland')
+      subject.query(:subject => subject.rdf_subject, :predicate => RDF::Vocab::DC.title).each_statement do |s|
         expect(s.object.to_s).to eq 'Comet in Moominland'
       end
     end
@@ -741,12 +737,12 @@ describe 'LD4L::OreRDF::AggregationResource' do
       else # < ActiveTriples 0.8
         error_name = RuntimeError
       end
-      expect{subject.set_value(RDF::DC.title, Object.new)}.to raise_error(error_name,/value must be an RDF URI, Node, Literal, or a valid datatype. See RDF::Literal.*/)
+      expect{subject.set_value(RDF::Vocab::DC.title, Object.new)}.to raise_error(error_name,/value must be an RDF URI, Node, Literal, or a valid datatype. See RDF::Literal.*/)
     end
 
     it "should be able to accept a subject" do
-      expect{subject.set_value(RDF::URI("http://opaquenamespace.org/jokes"), RDF::DC.title, 'Comet in Moominland')}.not_to raise_error
-      expect(subject.query(:subject => RDF::URI("http://opaquenamespace.org/jokes"), :predicate => RDF::DC.title).statements.to_a.length).to eq 1
+      expect{subject.set_value(RDF::URI("http://opaquenamespace.org/jokes"), RDF::Vocab::DC.title, 'Comet in Moominland')}.not_to raise_error
+      expect(subject.query(:subject => RDF::URI("http://opaquenamespace.org/jokes"), :predicate => RDF::Vocab::DC.title).statements.to_a.length).to eq 1
     end
   end
   describe '#get_values' do
@@ -755,16 +751,16 @@ describe 'LD4L::OreRDF::AggregationResource' do
     end
 
     it 'should return values for a predicate uri' do
-      expect(subject.get_values(RDF::DC.title)).to eq ['Comet in Moominland', 'Finn Family Moomintroll']
+      expect(subject.get_values(RDF::Vocab::DC.title)).to match_array ['Comet in Moominland', 'Finn Family Moomintroll']
     end
 
     it 'should return values for a registered predicate symbol' do
-      expect(subject.get_values(:title)).to eq ['Comet in Moominland', 'Finn Family Moomintroll']
+      expect(subject.get_values(:title)).to match_array ['Comet in Moominland', 'Finn Family Moomintroll']
     end
 
     it "should return values for other subjects if asked" do
       expect(subject.get_values(RDF::URI("http://opaquenamespace.org/jokes"),:title)).to eq []
-      subject.set_value(RDF::URI("http://opaquenamespace.org/jokes"), RDF::DC.title, 'Comet in Moominland')
+      subject.set_value(RDF::URI("http://opaquenamespace.org/jokes"), RDF::Vocab::DC.title, 'Comet in Moominland')
       expect(subject.get_values(RDF::URI("http://opaquenamespace.org/jokes"),:title)).to eq ["Comet in Moominland"]
     end
   end
@@ -808,13 +804,13 @@ describe 'LD4L::OreRDF::AggregationResource' do
 
   describe 'editing the graph' do
     it 'should write properties when statements are added' do
-      subject << RDF::Statement.new(subject.rdf_subject, RDF::DC.title, 'Comet in Moominland')
+      subject << RDF::Statement.new(subject.rdf_subject, RDF::Vocab::DC.title, 'Comet in Moominland')
       expect(subject.title).to include 'Comet in Moominland'
     end
 
     it 'should delete properties when statements are removed' do
-      subject << RDF::Statement.new(subject.rdf_subject, RDF::DC.title, 'Comet in Moominland')
-      subject.delete RDF::Statement.new(subject.rdf_subject, RDF::DC.title, 'Comet in Moominland')
+      subject << RDF::Statement.new(subject.rdf_subject, RDF::Vocab::DC.title, 'Comet in Moominland')
+      subject.delete RDF::Statement.new(subject.rdf_subject, RDF::Vocab::DC.title, 'Comet in Moominland')
       expect(subject.title).to eq []
     end
   end
@@ -823,18 +819,18 @@ describe 'LD4L::OreRDF::AggregationResource' do
     before do
       class DummyPerson < ActiveTriples::Resource
         configure :type => RDF::URI('http://example.org/Person')
-        property :foafname, :predicate => RDF::FOAF.name
-        property :publications, :predicate => RDF::FOAF.publications, :class_name => 'DummyDocument'
-        property :knows, :predicate => RDF::FOAF.knows, :class_name => DummyPerson
+        property :foafname, :predicate => RDF::Vocab::FOAF.name
+        property :publications, :predicate => RDF::Vocab::FOAF.publications, :class_name => 'DummyDocument'
+        property :knows, :predicate => RDF::Vocab::FOAF.knows, :class_name => DummyPerson
       end
 
       class DummyDocument < ActiveTriples::Resource
         configure :type => RDF::URI('http://example.org/Document')
-        property :title, :predicate => RDF::DC.title
-        property :creator, :predicate => RDF::DC.creator, :class_name => 'DummyPerson'
+        property :title, :predicate => RDF::Vocab::DC.title
+        property :creator, :predicate => RDF::Vocab::DC.creator, :class_name => 'DummyPerson'
       end
 
-      LD4L::OreRDF::AggregationResource.property :item, :predicate => RDF::DC.relation, :class_name => DummyDocument
+      LD4L::OreRDF::AggregationResource.property :item, :predicate => RDF::Vocab::DC.relation, :class_name => DummyDocument
     end
 
     subject { LD4L::OreRDF::AggregationResource.new }
@@ -887,8 +883,10 @@ END
       document1.creator = [person1, person2]
       document2.creator = person1
       person1.knows = person2
+      person2.knows = person1
       subject.item = [document1]
-      expect(subject.item.first.creator.first.knows.first.foafname).to eq ['Bob']
+      expect(subject.item.first.creator.first.knows.first.foafname)
+          .to satisfy { |names| ['Alice', 'Bob'].include? names.first }
     end
   end
 end

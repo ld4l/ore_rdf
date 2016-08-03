@@ -6,9 +6,6 @@ require	'linkeddata'
 require 'doubly_linked_list'
 require 'ld4l/foaf_rdf'
 require 'ld4l/ore_rdf/version'
-require 'ld4l/ore_rdf/vocab/ore'
-require 'ld4l/ore_rdf/vocab/iana'
-require 'ld4l/ore_rdf/vocab/dcterms'
 
 module LD4L
   module OreRDF
@@ -29,12 +26,6 @@ module LD4L
     def self.configure
       yield(configuration)
     end
-
-
-    # RDF vocabularies
-    autoload :DCTERMS,                'ld4l/ore_rdf/vocab/dcterms'
-    autoload :IANA,                   'ld4l/ore_rdf/vocab/iana'
-    autoload :ORE,                    'ld4l/ore_rdf/vocab/ore'
 
 
     # autoload classes
