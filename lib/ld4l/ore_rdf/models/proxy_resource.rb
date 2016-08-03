@@ -6,13 +6,13 @@ module LD4L
       @localname_prefix="px"
 
       # configure :base_uri => LD4L::OreRDF.configuration.base_uri, repository => :default
-      configure :type => RDFVocabularies::ORE.Proxy, :base_uri => LD4L::OreRDF.configuration.base_uri, :repository => :default
+      configure :type => RDF::Vocab::ORE.Proxy, :base_uri => LD4L::OreRDF.configuration.base_uri, :repository => :default
 
-      property :proxy_for_,   :predicate => RDFVocabularies::ORE.proxyFor,  :cast => false
-      property :proxy_in_,    :predicate => RDFVocabularies::ORE.proxyIn,   :class_name => LD4L::OreRDF::AggregationResource
-      property :next_proxy_,  :predicate => RDFVocabularies::IANA.next,     :class_name => LD4L::OreRDF::ProxyResource
-      property :prev_proxy_,  :predicate => RDFVocabularies::IANA.prev,     :class_name => LD4L::OreRDF::ProxyResource
-      property :contributor,  :predicate => RDF::DC.contributor,            :class_name => LD4L::FoafRDF::Person   # TODO User who added this item to the Aggregation (default=Aggregation's owner)
+      property :proxy_for_,   :predicate => RDF::Vocab::ORE.proxyFor,  :cast => false
+      property :proxy_in_,    :predicate => RDF::Vocab::ORE.proxyIn,   :class_name => LD4L::OreRDF::AggregationResource
+      property :next_proxy_,  :predicate => RDF::Vocab::IANA.next,     :class_name => LD4L::OreRDF::ProxyResource
+      property :prev_proxy_,  :predicate => RDF::Vocab::IANA.prev,     :class_name => LD4L::OreRDF::ProxyResource
+      property :contributor,  :predicate => RDF::Vocab::DC.contributor,            :class_name => LD4L::FoafRDF::Person   # TODO User who added this item to the Aggregation (default=Aggregation's owner)
 
 
       def proxy_for= value
@@ -90,8 +90,8 @@ module LD4L
         graph = ActiveTriples::Repositories.repositories[repository]
         query = RDF::Query.new({
                                  :proxy => {
-                                   RDF.type =>  RDFVocabularies::ORE.Proxy,
-                                   RDFVocabularies::ORE.proxyIn => aggregation_resource,
+                                   RDF.type =>  RDF::Vocab::ORE.Proxy,
+                                   RDF::Vocab::ORE.proxyIn => aggregation_resource,
                                  }
                                })
 

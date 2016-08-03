@@ -28,6 +28,11 @@ Or install it yourself as:
     $ gem install ld4l-ore_rdf
 
 
+## Primary Dependencies
+
+* [ActiveTriples 0.10.0](https://github.com/ActiveTriples/ActiveTriples/tree/v0.10.0)
+* [RDF 2.0.2](https://github.com/ruby-rdf/rdf/tree/2.0.2)
+
 ## Usage
 
 **Caveat:** This gem is part of the LD4L Project and is being used in that context.  There is no guarantee that the 
@@ -167,7 +172,7 @@ aggregation_uris = LD4L::OreRDF::FindAggregations.call
 
 # Find all and return title and description
 aggregation_properties = LD4L::OreRDF::FindAggregations.call(
-    :properties => { :title => RDF::DC.title, :description => RDF::DC.description } )
+    :properties => { :title => RDF::Vocab::DC.title, :description => RDF::Vocab::DC.description } )
 
 ```
 

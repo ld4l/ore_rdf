@@ -6,8 +6,8 @@ module LD4L
       # Find aggregations matching the specified criteria.
       #
       # @param [Hash] options the options to use to find aggregations
-      # @option options [Hash<Object,Object>] :criteria for finding aggregations (ex. RDF::DC.title=>'My Aggregation') (default - nil for all aggregations)
-      # @option options [Hash<Symbol><Object>] :properties to return with the aggregation uri (ex. :first_proxy=>RDFVocabularies::IANA.first) (default - nil aggregation uri only)
+      # @option options [Hash<Object,Object>] :criteria for finding aggregations (ex. RDF::Vocab::DC.title=>'My Aggregation') (default - nil for all aggregations)
+      # @option options [Hash<Symbol><Object>] :properties to return with the aggregation uri (ex. :first_proxy=>RDF::Vocab::IANA.first) (default - nil aggregation uri only)
       # @option options [Symbol] :repository to search (default - :default)
       # @option options [TrueClass,FalseClass] :resume if true, find and resume; otherwise, find only (default - false)
       #
@@ -31,7 +31,7 @@ module LD4L
         raise ArgumentError, 'criteria must be a hash of attribute-value pairs for searching for aggregations'  unless
             criteria.nil? || criteria.kind_of?(Hash)
         criteria = criteria ? criteria.dup : {}
-        criteria[RDF.type] = RDFVocabularies::ORE.Aggregation
+        criteria[RDF.type] = RDF::Vocab::ORE.Aggregation
 
         # properties are ignored when resume==true because all properties are returned as part of the resumed aggregations
         properties = options[:properties] || nil

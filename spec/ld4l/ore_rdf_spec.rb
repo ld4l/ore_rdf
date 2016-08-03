@@ -13,7 +13,7 @@ describe "LD4L::OreRDF" do
         config.localname_minter = lambda { |prefix=""| prefix+'_configured_'+SecureRandom.uuid }
       end
       class DummyAggregation < LD4L::OreRDF::AggregationResource
-        configure :type => RDFVocabularies::ORE.Aggregation, :base_uri => LD4L::OreRDF.configuration.base_uri, :repository => :default
+        configure :type => RDF::Vocab::ORE.Aggregation, :base_uri => LD4L::OreRDF.configuration.base_uri, :repository => :default
       end
     end
     after do

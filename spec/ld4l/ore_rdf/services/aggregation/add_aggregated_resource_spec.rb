@@ -22,8 +22,7 @@ describe 'LD4L::OreRDF::AggregationResource::AddAggregatedResource' do
     it "should add a single resource to an existing set" do
       subject.aggregates = "http://example.org/individual/b1"
       LD4L::OreRDF::AddAggregatedResource.call( subject, RDF::URI("http://example.org/individual/b2") )
-      expect(subject.aggregates[0]).to eq "http://example.org/individual/b1"
-      expect(subject.aggregates[1]).to eq "http://example.org/individual/b2"
+      expect(subject.aggregates).to match_array ["http://example.org/individual/b1","http://example.org/individual/b2"]
     end
 
     it "should generate the resource instance for a single resource" do

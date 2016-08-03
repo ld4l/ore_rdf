@@ -18,29 +18,29 @@ module LD4L
       # TODO    DOWNSIDE: items and aggregators could get out of sync.  Then which is right?  Could be a problem with the first option too.
 
 
-      configure :type => RDFVocabularies::ORE.Aggregation, :base_uri => LD4L::OreRDF.configuration.base_uri, :repository => :default
+      configure :type => RDF::Vocab::ORE.Aggregation, :base_uri => LD4L::OreRDF.configuration.base_uri, :repository => :default
 
       # extended properties for LD4L implementation
-      property :title, :predicate => RDF::DC.title do |index|
+      property :title, :predicate => RDF::Vocab::DC.title do |index|
         index.data_type = :text
         index.as :indexed, :sortable
       end
-      property :description, :predicate => RDF::DC.description do |index|
+      property :description, :predicate => RDF::Vocab::DC.description do |index|
         index.data_type = :text
         index.as :indexed
       end
-      property :owner, :predicate => RDFVocabularies::DCTERMS.creator, :class_name => LD4L::FoafRDF::Person do |index|
+      property :owner, :predicate => RDF::Vocab::DC.creator, :class_name => LD4L::FoafRDF::Person do |index|
         index.data_type = :string
         index.as :stored, :indexed
       end
 
       # properties from ORE.Aggregation
-      property :aggregates, :predicate => RDFVocabularies::ORE.aggregates, :cast => false do |index|
+      property :aggregates, :predicate => RDF::Vocab::ORE.aggregates, :cast => false do |index|
         index.data_type = :text
         index.as :stored, :indexed, :multiValued
       end
-      property :first_proxy_,  :predicate => RDFVocabularies::IANA.first,     :class_name => LD4L::OreRDF::ProxyResource
-      property :last_proxy_,   :predicate => RDFVocabularies::IANA.last,      :class_name => LD4L::OreRDF::ProxyResource
+      property :first_proxy_,  :predicate => RDF::Vocab::IANA.first,     :class_name => LD4L::OreRDF::ProxyResource
+      property :last_proxy_,   :predicate => RDF::Vocab::IANA.last,      :class_name => LD4L::OreRDF::ProxyResource
 
 
       def first_proxy= value

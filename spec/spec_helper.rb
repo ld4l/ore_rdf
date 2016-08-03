@@ -5,7 +5,7 @@ require 'bundler/setup'
 Bundler.setup
 
 require 'ld4l/ore_rdf'
-require 'pry'
+require 'pry' unless ENV["CI"]
 
 Dir['./spec/support/**/*.rb'].each { |f| require f }
 

@@ -13,25 +13,21 @@ Gem::Specification.new do |spec|
   spec.description   = %q{LD4L ORE RDF provides tools for modeling list triples based on the ORE ontology and persisting to a triplestore.}
   spec.homepage      = "https://github.com/ld4l/ore_rdf"
   spec.license       = "APACHE2"
-  spec.required_ruby_version     = '>= 1.9.3'
+  spec.required_ruby_version     = '>= 2.1'
 
   spec.files         = `git ls-files -z`.split("\x0")
   spec.test_files    = spec.files.grep(%r{^(test|spec|features)/})
 
-  spec.add_dependency('rdf', '= 1.99.0')
-
+  spec.add_dependency('rdf')
   spec.add_dependency('active-triples')
   spec.add_dependency('active_triples-local_name')
   spec.add_dependency('active_triples-solrizer')
   spec.add_dependency('ld4l-foaf_rdf')
   spec.add_dependency('doubly_linked_list')
 
-  spec.add_development_dependency('pry')
-  spec.add_development_dependency('pry-byebug')
   spec.add_development_dependency('rdoc')
   spec.add_development_dependency('rspec')
   spec.add_development_dependency('coveralls')
-  spec.add_development_dependency('guard-rspec')
   spec.add_development_dependency('webmock')
 
   spec.extra_rdoc_files = [

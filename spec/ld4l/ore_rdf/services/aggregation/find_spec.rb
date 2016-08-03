@@ -100,7 +100,7 @@ describe 'LD4L::OreRDF::FindAggregations' do
       end
 
       it "should find aggregation by literal criteria (aka title)" do
-        aggregations = LD4L::OreRDF::FindAggregations.call(:criteria => { RDF::DC.title => "Aggregation 2"})
+        aggregations = LD4L::OreRDF::FindAggregations.call(:criteria => { RDF::Vocab::DC.title => "Aggregation 2"})
         expect(aggregations).not_to include "http::/example.org/ag1"
         expect(aggregations).to include "http::/example.org/ag2"
         expect(aggregations).not_to include "http::/example.org/ag3"
@@ -109,7 +109,7 @@ describe 'LD4L::OreRDF::FindAggregations' do
 
       it "should find aggregation by rdf uri criteria (aka aggregates)" do
         aggregations = LD4L::OreRDF::FindAggregations.call(
-            :criteria => { RDFVocabularies::ORE.aggregates => "http://example.org/individual/b32"})
+            :criteria => { RDF::Vocab::ORE.aggregates => "http://example.org/individual/b32"})
         expect(aggregations).not_to include "http::/example.org/ag1"
         expect(aggregations).not_to include "http::/example.org/ag2"
         expect(aggregations).to include "http::/example.org/ag3"
@@ -117,7 +117,7 @@ describe 'LD4L::OreRDF::FindAggregations' do
       end
 
       it "should return empty array when criteria (aka title) doesn't match any aggregations" do
-        aggregations = LD4L::OreRDF::FindAggregations.call(:criteria => { RDF::DC.title => "NON-EXISTENT TITLE"})
+        aggregations = LD4L::OreRDF::FindAggregations.call(:criteria => { RDF::Vocab::DC.title => "NON-EXISTENT TITLE"})
         expect(aggregations).to eq []
       end
 
@@ -142,15 +142,15 @@ describe 'LD4L::OreRDF::FindAggregations' do
 
       it "should return values for specified literal property in results when criteria specified" do
         aggregations = LD4L::OreRDF::FindAggregations.call(
-            :criteria   => { RDF::DC.title => "Aggregation 2" },
-            :properties => { :description => RDF::DC.description } )
+            :criteria   => { RDF::Vocab::DC.title => "Aggregation 2" },
+            :properties => { :description => RDF::Vocab::DC.description } )
         expect(aggregations).to eq ( { RDF::URI("http::/example.org/ag2") => {
                                           :description => RDF::Literal("Test description of aggregation 2.") } } )
       end
 
       it "should return values for specified properties in results when criteria not specified" do
         aggregations = LD4L::OreRDF::FindAggregations.call(
-            :properties => { :title => RDF::DC.title, :description => RDF::DC.description } )
+            :properties => { :title => RDF::Vocab::DC.title, :description => RDF::Vocab::DC.description } )
         expect(aggregations.size).to eq 3
         expect(aggregations).to have_key RDF::URI("http::/example.org/ag1")
         expect(aggregations).to have_key RDF::URI("http::/example.org/ag2")

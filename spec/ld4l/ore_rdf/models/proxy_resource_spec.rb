@@ -21,22 +21,22 @@ describe 'LD4L::OreRDF::ProxyResource' do
 
     describe 'when changing subject' do
       before do
-        subject << RDF::Statement.new(subject.rdf_subject, RDF::DC.title, RDF::Literal('Comet in Moominland'))
-        subject << RDF::Statement.new(RDF::URI('http://example.org/moomin_comics'), RDF::DC.isPartOf, subject.rdf_subject)
-        subject << RDF::Statement.new(RDF::URI('http://example.org/moomin_comics'), RDF::DC.relation, 'http://example.org/moomin_land')
+        subject << RDF::Statement.new(subject.rdf_subject, RDF::Vocab::DC.title, RDF::Literal('Comet in Moominland'))
+        subject << RDF::Statement.new(RDF::URI('http://example.org/moomin_comics'), RDF::Vocab::DC.isPartOf, subject.rdf_subject)
+        subject << RDF::Statement.new(RDF::URI('http://example.org/moomin_comics'), RDF::Vocab::DC.relation, 'http://example.org/moomin_land')
         subject.set_subject! RDF::URI('http://example.org/moomin')
       end
 
       it 'should update graph subjects' do
-        expect(subject.has_statement?(RDF::Statement.new(subject.rdf_subject, RDF::DC.title, RDF::Literal('Comet in Moominland')))).to be true
+        expect(subject.has_statement?(RDF::Statement.new(subject.rdf_subject, RDF::Vocab::DC.title, RDF::Literal('Comet in Moominland')))).to be true
       end
 
       it 'should update graph objects' do
-        expect(subject.has_statement?(RDF::Statement.new(RDF::URI('http://example.org/moomin_comics'), RDF::DC.isPartOf, subject.rdf_subject))).to be true
+        expect(subject.has_statement?(RDF::Statement.new(RDF::URI('http://example.org/moomin_comics'), RDF::Vocab::DC.isPartOf, subject.rdf_subject))).to be true
       end
 
       it 'should leave other uris alone' do
-        expect(subject.has_statement?(RDF::Statement.new(RDF::URI('http://example.org/moomin_comics'), RDF::DC.relation, 'http://example.org/moomin_land'))).to be true
+        expect(subject.has_statement?(RDF::Statement.new(RDF::URI('http://example.org/moomin_comics'), RDF::Vocab::DC.relation, 'http://example.org/moomin_land'))).to be true
       end
     end
 
@@ -57,8 +57,8 @@ describe 'LD4L::OreRDF::ProxyResource' do
   # -------------------------------------------------
 
   describe 'type' do
-    it "should be an RDFVocabularies::ORE.Proxy" do
-      expect(subject.type.first.value).to eq RDFVocabularies::ORE.Proxy.value
+    it "should be an RDF::Vocab::ORE.Proxy" do
+      expect(subject.type.first.value).to eq RDF::Vocab::ORE.Proxy.value
     end
   end
 
@@ -555,7 +555,7 @@ describe 'LD4L::OreRDF::ProxyResource' do
 
   describe '#destroy!' do
     before do
-      subject << RDF::Statement(RDF::DC.LicenseDocument, RDF::DC.title, 'LICENSE')
+      subject << RDF::Statement(RDF::Vocab::DC.LicenseDocument, RDF::Vocab::DC.title, 'LICENSE')
     end
 
     subject { LD4L::OreRDF::ProxyResource.new('123') }
@@ -621,29 +621,29 @@ describe 'LD4L::OreRDF::ProxyResource' do
 
     context 'with unmodeled data' do
       before do
-        subject << RDF::Statement(subject.rdf_subject, RDF::DC.creator, 'Tove Jansson')
-        subject << RDF::Statement(subject.rdf_subject, RDF::DC.relation, RDF::URI('http://example.org/moomi'))
+        subject << RDF::Statement(subject.rdf_subject, RDF::Vocab::DC.creator, 'Tove Jansson')
+        subject << RDF::Statement(subject.rdf_subject, RDF::Vocab::DC.relation, RDF::URI('http://example.org/moomi'))
         node = RDF::Node.new
-        subject << RDF::Statement(RDF::URI('http://example.org/moomi'), RDF::DC.relation, node)
-        subject << RDF::Statement(node, RDF::DC.title, 'bnode')
+        subject << RDF::Statement(RDF::URI('http://example.org/moomi'), RDF::Vocab::DC.relation, node)
+        subject << RDF::Statement(node, RDF::Vocab::DC.title, 'bnode')
       end
 
       it 'should include data with URIs as attribute names' do
-        expect(subject.attributes[RDF::DC.creator.to_s]).to eq ['Tove Jansson']
+        expect(subject.attributes[RDF::Vocab::DC.creator.to_s]).to eq ['Tove Jansson']
       end
 
       it 'should return generic Resources' do
-        expect(subject.attributes[RDF::DC.relation.to_s].first).to be_a ActiveTriples::Resource
+        expect(subject.attributes[RDF::Vocab::DC.relation.to_s].first).to be_a ActiveTriples::Resource
       end
 
       it 'should build deep data for Resources' do
-        expect(subject.attributes[RDF::DC.relation.to_s].first.get_values(RDF::DC.relation).
-                   first.get_values(RDF::DC.title)).to eq ['bnode']
+        expect(subject.attributes[RDF::Vocab::DC.relation.to_s].first.get_values(RDF::Vocab::DC.relation).
+                   first.get_values(RDF::Vocab::DC.title)).to eq ['bnode']
       end
 
       it 'should include deep data in serializable_hash' do
-        expect(subject.serializable_hash[RDF::DC.relation.to_s].first.get_values(RDF::DC.relation).
-                   first.get_values(RDF::DC.title)).to eq ['bnode']
+        expect(subject.serializable_hash[RDF::Vocab::DC.relation.to_s].first.get_values(RDF::Vocab::DC.relation).
+                   first.get_values(RDF::Vocab::DC.title)).to eq ['bnode']
       end
     end
 
@@ -702,13 +702,13 @@ describe 'LD4L::OreRDF::ProxyResource' do
 
   describe 'editing the graph' do
     it 'should write properties when statements are added' do
-      subject << RDF::Statement.new(subject.rdf_subject, RDFVocabularies::ORE.proxyFor, 'Comet in Moominland')
+      subject << RDF::Statement.new(subject.rdf_subject, RDF::Vocab::ORE.proxyFor, 'Comet in Moominland')
       expect(subject.proxy_for).to include 'Comet in Moominland'
     end
 
     it 'should delete properties when statements are removed' do
-      subject << RDF::Statement.new(subject.rdf_subject, RDFVocabularies::ORE.proxyFor, 'Comet in Moominland')
-      subject.delete RDF::Statement.new(subject.rdf_subject, RDFVocabularies::ORE.proxyFor, 'Comet in Moominland')
+      subject << RDF::Statement.new(subject.rdf_subject, RDF::Vocab::ORE.proxyFor, 'Comet in Moominland')
+      subject.delete RDF::Statement.new(subject.rdf_subject, RDF::Vocab::ORE.proxyFor, 'Comet in Moominland')
       expect(subject.proxy_for_).to eq []
     end
   end
@@ -717,18 +717,18 @@ describe 'LD4L::OreRDF::ProxyResource' do
     before do
       class DummyPerson < ActiveTriples::Resource
         configure :type => RDF::URI('http://example.org/Person')
-        property :foafname, :predicate => RDF::FOAF.name
-        property :publications, :predicate => RDF::FOAF.publications, :class_name => 'DummyDocument'
-        property :knows, :predicate => RDF::FOAF.knows, :class_name => DummyPerson
+        property :foafname, :predicate => RDF::Vocab::FOAF.name
+        property :publications, :predicate => RDF::Vocab::FOAF.publications, :class_name => 'DummyDocument'
+        property :knows, :predicate => RDF::Vocab::FOAF.knows, :class_name => DummyPerson
       end
 
       class DummyDocument < ActiveTriples::Resource
         configure :type => RDF::URI('http://example.org/Document')
-        property :title, :predicate => RDF::DC.title
-        property :creator, :predicate => RDF::DC.creator, :class_name => 'DummyPerson'
+        property :title, :predicate => RDF::Vocab::DC.title
+        property :creator, :predicate => RDF::Vocab::DC.creator, :class_name => 'DummyPerson'
       end
 
-      LD4L::OreRDF::ProxyResource.property :item, :predicate => RDF::DC.relation, :class_name => DummyDocument
+      LD4L::OreRDF::ProxyResource.property :item, :predicate => RDF::Vocab::DC.relation, :class_name => DummyDocument
     end
 
     subject { LD4L::OreRDF::ProxyResource.new }
@@ -781,8 +781,10 @@ END
       document1.creator = [person1, person2]
       document2.creator = person1
       person1.knows = person2
+      person2.knows = person1
       subject.item = [document1]
-      expect(subject.item.first.creator.first.knows.first.foafname).to eq ['Bob']
+      expect(subject.item.first.creator.first.knows.first.foafname)
+          .to satisfy { |names| ['Alice', 'Bob'].include? names.first }
     end
   end
 end

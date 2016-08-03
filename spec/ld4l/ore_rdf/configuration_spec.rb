@@ -11,7 +11,7 @@ describe 'LD4L::OreRDF' do
       context "when base_uri is not configured" do
         before do
           class DummyAggregation < LD4L::OreRDF::AggregationResource
-            configure :type => RDFVocabularies::ORE.Aggregation, :base_uri => LD4L::OreRDF.configuration.base_uri, :repository => :default
+            configure :type => RDF::Vocab::ORE.Aggregation, :base_uri => LD4L::OreRDF.configuration.base_uri, :repository => :default
           end
         end
         after do
@@ -28,7 +28,7 @@ describe 'LD4L::OreRDF' do
             config.base_uri = "http://localhost/test_slash/"
           end
           class DummyAggregation < LD4L::OreRDF::AggregationResource
-            configure :type => RDFVocabularies::ORE.Aggregation, :base_uri => LD4L::OreRDF.configuration.base_uri, :repository => :default
+            configure :type => RDF::Vocab::ORE.Aggregation, :base_uri => LD4L::OreRDF.configuration.base_uri, :repository => :default
           end
         end
         after do
@@ -47,7 +47,7 @@ describe 'LD4L::OreRDF' do
             config.base_uri = "http://localhost/test_no_slash"
           end
           class DummyAggregation < LD4L::OreRDF::AggregationResource
-            configure :type => RDFVocabularies::ORE.Aggregation, :base_uri => LD4L::OreRDF.configuration.base_uri, :repository => :default
+            configure :type => RDF::Vocab::ORE.Aggregation, :base_uri => LD4L::OreRDF.configuration.base_uri, :repository => :default
           end
         end
         after do
@@ -90,7 +90,7 @@ describe 'LD4L::OreRDF' do
       context "when minter is nil" do
         before do
           class DummyAggregation < LD4L::OreRDF::AggregationResource
-            configure :type => RDFVocabularies::ORE.Aggregation, :base_uri => LD4L::OreRDF.configuration.base_uri, :repository => :default
+            configure :type => RDF::Vocab::ORE.Aggregation, :base_uri => LD4L::OreRDF.configuration.base_uri, :repository => :default
           end
         end
         after do
@@ -112,7 +112,7 @@ describe 'LD4L::OreRDF' do
             config.localname_minter = lambda { |prefix=""| prefix+'_configured_'+SecureRandom.uuid }
           end
           class DummyAggregation < LD4L::OreRDF::AggregationResource
-            configure :type => RDFVocabularies::ORE.Aggregation, :base_uri => LD4L::OreRDF.configuration.base_uri, :repository => :default
+            configure :type => RDF::Vocab::ORE.Aggregation, :base_uri => LD4L::OreRDF.configuration.base_uri, :repository => :default
           end
         end
         after do
